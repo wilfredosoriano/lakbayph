@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   initDB, getBudgetSummary, getExpenses,
   addExpense, deleteExpense, getExpenseMonths,
+  getSetting, setSetting,
   CATEGORIES, CATEGORY_META,
 } from '../database/db';
 import { getLakbayTip } from '../utils/budgetTips';
@@ -376,21 +377,30 @@ export default function BudgetScreen() {
   const [selectedMonth, setSelectedMonth]     = useState(null); // null = all time
   const [availableMonths, setAvailableMonths] = useState([]);
   const [loading, setLoading]                 = useState(true);
+  const [people, setPeople]                   = useState(1);
 
   const loadData = useCallback(async () => {
     await initDB();
-    const [sum, exp, months] = await Promise.all([
+    const [sum, exp, months, savedPeople] = await Promise.all([
       getBudgetSummary('1', selectedMonth),
       getExpenses('1', selectedMonth),
       getExpenseMonths(),
+      getSetting('budget_people', '1'),
     ]);
     setSummary(sum);
     setExpenses(exp);
     setAvailableMonths(months.map(m => m.month));
+    setPeople(Math.max(1, parseInt(savedPeople) || 1));
     setLoading(false);
   }, [selectedMonth]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  const handlePeopleChange = async (n) => {
+    const val = Math.max(1, Math.min(20, n));
+    setPeople(val);
+    await setSetting('budget_people', String(val));
+  };
 
   const handleDelete = (id) => {
     Alert.alert('Delete Expense', 'Remove this expense?', [
@@ -460,6 +470,28 @@ export default function BudgetScreen() {
           <View style={{ marginTop: s(12) }}>
             <Text style={styles.remainingLabel}>Remaining</Text>
             <Text style={styles.remainingValue}>₱{(summary?.remaining ?? 0).toLocaleString()}.00</Text>
+          </View>
+
+          {/* Per-person split */}
+          <View style={styles.splitRow}>
+            <TouchableOpacity
+              style={styles.splitBtn}
+              onPress={() => handlePeopleChange(people - 1)}
+            >
+              <Ionicons name="remove" size={s(14)} color={Colors.white} />
+            </TouchableOpacity>
+            <View style={styles.splitCenter}>
+              <Ionicons name="people-outline" size={s(13)} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.splitText}>
+                {people === 1 ? 'Solo' : `${people} people · ₱${Math.ceil((summary?.spent ?? 0) / people).toLocaleString()} each`}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.splitBtn}
+              onPress={() => handlePeopleChange(people + 1)}
+            >
+              <Ionicons name="add" size={s(14)} color={Colors.white} />
+            </TouchableOpacity>
           </View>
         </View>
         <DonutRing pct={pct} />
@@ -614,6 +646,19 @@ const styles = StyleSheet.create({
   },
   remainingLabel: { fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.75)', fontSize: s(12) },
   remainingValue: { fontFamily: Fonts.bold, color: Colors.white, fontSize: s(18), marginTop: s(2) },
+  splitRow: {
+    flexDirection: 'row', alignItems: 'center',
+    marginTop: s(14), gap: s(8),
+  },
+  splitBtn: {
+    width: s(26), height: s(26), borderRadius: s(13),
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  splitCenter: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', gap: s(5),
+  },
+  splitText: { fontSize: s(12), fontFamily: Fonts.medium, color: 'rgba(255,255,255,0.9)', flex: 1 },
 
   // Tabs
   tabRow: {

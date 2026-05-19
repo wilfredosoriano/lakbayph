@@ -571,6 +571,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row', justifyContent: 'flex-end',
     alignItems: 'center', marginTop: s(4), marginBottom: s(8),
+    gap: s(8),
   },
   greetingBlock: { marginBottom: s(8) },
   greeting: { fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.85)', fontSize: s(13) },

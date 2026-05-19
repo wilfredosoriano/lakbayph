@@ -6,14 +6,14 @@
  *   2. Each image URL is downloaded once to device storage
  *   3. A registry file (cache-registry.json) maps placeId → { uri, cachedAt }
  *   4. CachedImage component reads the registry to resolve URIs offline
- *   5. Images older than 30 days are re-downloaded to comply with Google's ToS
+ *   5. Images older than 1 year are refreshed (Wikimedia URLs are permanent)
  */
 
 import * as FileSystem from 'expo-file-system/legacy';
 
 const CACHE_DIR     = FileSystem.documentDirectory + 'place-images/';
 const REGISTRY_PATH = CACHE_DIR + 'cache-registry.json';
-const MAX_AGE_MS    = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
+const MAX_AGE_MS    = 365 * 24 * 60 * 60 * 1000; // 1 year — Wikimedia URLs are permanent
 
 // In-memory registry loaded once at startup
 let _registry = null;

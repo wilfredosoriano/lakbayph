@@ -1,14 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform,
+  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform, RefreshControl, Animated, Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { getTrips, deleteTrip, updateTrip, duplicateTrip } from '../database/db';
+import * as ImagePicker from 'expo-image-picker';
+import { getTrips, deleteTrip, updateTrip, duplicateTrip, updateTripCoverPhoto } from '../database/db';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
@@ -133,9 +134,13 @@ function TripCard({ trip, onPress, onLongPress }) {
       delayLongPress={400}
     >
       <View style={styles.card}>
-        <View style={styles.emojiBox}>
-          <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
-        </View>
+        {trip.cover_photo ? (
+          <Image source={{ uri: trip.cover_photo }} style={styles.coverPhoto} resizeMode="cover" />
+        ) : (
+          <View style={styles.emojiBox}>
+            <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
+          </View>
+        )}
 
         <View style={styles.info}>
           <Text style={styles.tripName} numberOfLines={1}>{trip.name}</Text>
@@ -167,6 +172,32 @@ function TripCard({ trip, onPress, onLongPress }) {
   );
 }
 
+// ── Skeleton Card ─────────────────────────────────────────────────────────────
+
+function SkeletonCard() {
+  const pulse = useRef(new Animated.Value(0.4)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 0.4, duration: 700, useNativeDriver: true }),
+      ])
+    ).start();
+  }, [pulse]);
+
+  return (
+    <Animated.View style={[skeleton.card, { opacity: pulse }]}>
+      <View style={skeleton.icon} />
+      <View style={skeleton.body}>
+        <View style={skeleton.titleLine} />
+        <View style={skeleton.subLine} />
+        <View style={skeleton.tagLine} />
+      </View>
+    </Animated.View>
+  );
+}
+
 // ── Empty State ───────────────────────────────────────────────────────────────
 
 function EmptyState({ onCreate }) {
@@ -191,10 +222,35 @@ export default function TripsListScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const [trips, setTrips] = useState([]);
   const [editTrip, setEditTrip] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useFocusEffect(useCallback(() => {
-    getTrips().then(setTrips);
+    getTrips().then(data => { setTrips(data); setLoading(false); });
   }, []));
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const updated = await getTrips();
+    setTrips(updated);
+    setRefreshing(false);
+  };
+
+  const handleSetCoverPhoto = async (trip) => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission needed', 'Allow photo access to set a cover photo.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 2], quality: 0.85,
+    });
+    if (!result.canceled && result.assets?.[0]?.uri) {
+      await updateTripCoverPhoto(trip.id, result.assets[0].uri);
+      const updated = await getTrips();
+      setTrips(updated);
+    }
+  };
 
   const handleLongPress = (trip) => {
     Alert.alert(
@@ -204,6 +260,10 @@ export default function TripsListScreen({ navigation }) {
         {
           text: 'Edit Trip',
           onPress: () => setEditTrip(trip),
+        },
+        {
+          text: trip.cover_photo ? 'Change Cover Photo' : 'Set Cover Photo',
+          onPress: () => handleSetCoverPhoto(trip),
         },
         {
           text: 'Duplicate Trip',
@@ -271,12 +331,25 @@ export default function TripsListScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {trips.length === 0 ? (
+      {loading ? (
+        <ScrollView contentContainerStyle={styles.list} showsVerticalScrollIndicator={false}>
+          {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+        </ScrollView>
+      ) : trips.length === 0 ? (
         <EmptyState onCreate={handleAddTrip} />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+              progressBackgroundColor={Colors.white}
+            />
+          }
         >
           {trips.map(trip => (
             <TripCard
@@ -349,6 +422,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryBg,
     alignItems: 'center', justifyContent: 'center',
     marginVertical: s(14),
+  },
+  coverPhoto: {
+    width: s(64), height: s(82), borderRadius: s(12),
+    marginVertical: s(8),
   },
   emoji: { fontSize: s(28) },
   info: { flex: 1, paddingVertical: s(14) },
@@ -424,4 +501,21 @@ const modal = StyleSheet.create({
     paddingVertical: s(14), alignItems: 'center', marginTop: s(4),
   },
   saveBtnText: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.white },
+});
+
+const skeleton = StyleSheet.create({
+  card: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: Colors.white, borderRadius: s(16),
+    padding: s(12), gap: s(12),
+    borderWidth: 1, borderColor: Colors.border + '60',
+  },
+  icon: {
+    width: s(54), height: s(54), borderRadius: s(14),
+    backgroundColor: Colors.bgLight,
+  },
+  body: { flex: 1, gap: s(8) },
+  titleLine: { height: s(13), borderRadius: s(6), backgroundColor: Colors.bgLight, width: '70%' },
+  subLine:   { height: s(11), borderRadius: s(6), backgroundColor: Colors.bgLight, width: '50%' },
+  tagLine:   { height: s(11), borderRadius: s(6), backgroundColor: Colors.bgLight, width: '30%' },
 });

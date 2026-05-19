@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
+  View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity,
   Dimensions, Image, StatusBar, Modal, TextInput,
-  Platform, Keyboard, Alert, Pressable,
+  Platform, Keyboard, Alert, Pressable, Share, Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
@@ -11,9 +11,11 @@ import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Haptics from 'expo-haptics';
+import { Swipeable } from 'react-native-gesture-handler';
 import { getTripActivities, getAllTripActivities, addTripActivity, updateTripActivity, deleteTripActivity, toggleActivityDone, updateActivityPhotos, updateActivityNotes, updateActivityLocation, getDayLabel, setDayLabel, getPackingItems, addPackingItem, togglePackingItem, deletePackingItem, reorderActivities } from '../database/db';
 
-const { width } = Dimensions.get('window');
+const { width, height: screenHeight } = Dimensions.get('window');
 const scale = width / 390;
 const s = (n) => Math.round(n * scale);
 // list pad s(16)*2 + timeCol s(52) + timelineCol s(20) + card marginLeft s(10) + card pad s(10)*2 + container pad s(10)*2 + 2 gaps s(6)*2
@@ -266,25 +268,42 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
   const [editingLocation, setEditingLocation] = useState(false);
   const [locationText, setLocationText] = useState(activity.location || '');
 
-  const handleAddPhoto = async () => {
-    try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Allow photo access to attach images to activities.');
-        return;
-      }
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-      });
-      if (!result.canceled && result.assets?.[0]?.uri) {
-        onPhotoUpdate([...photos, result.assets[0].uri]);
-      }
-    } catch (e) {
-      Alert.alert('Error', e?.message || 'Could not open photo library.');
-    }
+  const handleAddPhoto = () => {
+    Alert.alert('Add Photo', 'Choose a source', [
+      {
+        text: 'Take Photo',
+        onPress: async () => {
+          try {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert('Permission needed', 'Allow camera access to take photos.');
+              return;
+            }
+            const result = await ImagePicker.launchCameraAsync({ allowsEditing: false, quality: 0.85 });
+            if (!result.canceled && result.assets?.[0]?.uri) {
+              onPhotoUpdate([...photos, result.assets[0].uri]);
+            }
+          } catch (e) { Alert.alert('Error', e?.message || 'Could not open camera.'); }
+        },
+      },
+      {
+        text: 'Choose from Gallery',
+        onPress: async () => {
+          try {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert('Permission needed', 'Allow photo access to attach images.');
+              return;
+            }
+            const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: false, quality: 0.85 });
+            if (!result.canceled && result.assets?.[0]?.uri) {
+              onPhotoUpdate([...photos, result.assets[0].uri]);
+            }
+          } catch (e) { Alert.alert('Error', e?.message || 'Could not open gallery.'); }
+        },
+      },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
   const handleRemovePhoto = (index) => {
@@ -307,33 +326,55 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
         {!isLast && <View style={styles.line} />}
       </View>
       <View style={[styles.card, done && styles.cardDone, isActive && styles.cardDragging]}>
+        {/* Row 1: edit / delete / drag handle */}
+        <View style={styles.cardActionRow}>
+          <TouchableOpacity style={styles.editChip} onPress={onEdit} activeOpacity={0.7}>
+            <Ionicons name="create-outline" size={s(11)} color={Colors.primary} />
+            <Text style={styles.editChipText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteChip}
+            onPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Delete', style: 'destructive', onPress: onDelete },
+            ])}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="trash-outline" size={s(11)} color="#b91c1c" />
+            <Text style={styles.deleteChipText}>Delete</Text>
+          </TouchableOpacity>
+          <View style={{ flex: 1 }} />
+          <TouchableOpacity
+            onLongPress={dragEnabled ? drag : undefined}
+            delayLongPress={150}
+            style={[styles.dragHandle, isActive && styles.dragHandleActive, !dragEnabled && styles.dragHandleDisabled]}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            disabled={!dragEnabled}
+          >
+            <Ionicons name="menu-outline" size={s(18)} color={isActive ? '#ef4444' : Colors.grayMedium} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Row 2: mark done */}
+        <TouchableOpacity onPress={onToggleDone} style={[styles.doneBtn, done && styles.doneBtnActive]} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+          {done ? (
+            <View style={styles.doneCircleFilled}>
+              <Ionicons name="checkmark" size={s(7)} color={Colors.white} />
+            </View>
+          ) : (
+            <View style={styles.doneCircleEmpty} />
+          )}
+          <Text style={[styles.doneBtnLabel, done && styles.doneBtnLabelActive]}>
+            {done ? 'Done' : 'Mark done'}
+          </Text>
+        </TouchableOpacity>
+
         <View style={styles.cardTopRow}>
           <ActivityIconView category={activity.category} />
           <View style={styles.cardBody}>
             <Text style={[styles.cardTitle, done && styles.cardTitleDone]}>{activity.title}</Text>
             {!!activity.subtitle && <Text style={[styles.cardSub, done && styles.cardSubDone]}>{activity.subtitle}</Text>}
           </View>
-          <TouchableOpacity onPress={onToggleDone} style={[styles.doneBtn, done && styles.doneBtnActive]} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            {done ? (
-              <View style={styles.doneCircleFilled}>
-                <Ionicons name="checkmark" size={s(8)} color={Colors.white} />
-              </View>
-            ) : (
-              <View style={styles.doneCircleEmpty} />
-            )}
-            <Text style={[styles.doneBtnLabel, done && styles.doneBtnLabelActive]}>
-              {done ? 'Done' : 'Mark done'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onLongPress={dragEnabled ? drag : undefined}
-            delayLongPress={150}
-            style={[styles.dragHandle, !dragEnabled && styles.dragHandleDisabled]}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            disabled={!dragEnabled}
-          >
-            <Ionicons name="menu-outline" size={s(18)} color={Colors.grayMedium} />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.cardBottomContainer}>
@@ -362,43 +403,16 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
               </Text>
             </TouchableOpacity>
 
-            <View style={styles.cardMetaRow}>
-              <View style={styles.cardMetaLeft}>
-                <TouchableOpacity
-                  style={[styles.locationLabel, locationText && styles.locationLabelFilled]}
-                  onPress={() => { setLocationText(activity.location || ''); setEditingLocation(true); }}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name="location-outline" size={s(11)} color={locationText ? Colors.primary : Colors.grayMedium} />
-                  <Text style={[styles.locationLabelText, locationText && styles.locationLabelTextFilled]} numberOfLines={1}>
-                    {locationText || 'Add location'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.cardMetaActions}>
-                <TouchableOpacity
-                  style={styles.editChip}
-                  onPress={onEdit}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name="create-outline" size={s(11)} color={Colors.primary} />
-                  <Text style={styles.editChipText}>Edit</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.deleteChip}
-                  onPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Delete', style: 'destructive', onPress: onDelete },
-                  ])}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name="trash-outline" size={s(11)} color="#b91c1c" />
-                  <Text style={styles.deleteChipText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <TouchableOpacity
+              style={[styles.locationLabel, locationText && styles.locationLabelFilled]}
+              onPress={() => { setLocationText(activity.location || ''); setEditingLocation(true); }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="location-outline" size={s(11)} color={locationText ? Colors.primary : Colors.grayMedium} />
+              <Text style={[styles.locationLabelText, locationText && styles.locationLabelTextFilled]} numberOfLines={1}>
+                {locationText || 'Add location'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -471,6 +485,116 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
   );
 }
 
+function MemoryViewer({ photo, onClose }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [playing, setPlaying]           = useState(false);
+  const flatListRef = useRef(null);
+  const timerRef    = useRef(null);
+
+  const allPhotos = photo?.allPhotos || [];
+  const current   = allPhotos[currentIndex] || photo;
+
+  useEffect(() => {
+    if (photo) {
+      const idx = photo.index ?? 0;
+      setCurrentIndex(idx);
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({ index: idx, animated: false });
+      }, 50);
+    }
+  }, [photo]);
+
+  useEffect(() => {
+    if (playing) {
+      timerRef.current = setInterval(() => {
+        setCurrentIndex(i => {
+          if (i >= allPhotos.length - 1) { setPlaying(false); return i; }
+          const next = i + 1;
+          flatListRef.current?.scrollToIndex({ index: next, animated: true });
+          return next;
+        });
+      }, 2500);
+    } else {
+      clearInterval(timerRef.current);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [playing, allPhotos.length]);
+
+  const handleShare = async () => {
+    if (!current?.uri) return;
+    try {
+      await Share.share({ url: current.uri, message: `${current.title} — Day ${current.day}` });
+    } catch {}
+  };
+
+  if (!photo) return null;
+
+  return (
+    <Modal visible animationType="fade" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={mem.viewer}>
+
+        {/* Top bar */}
+        <View style={mem.viewerTopBar}>
+          <TouchableOpacity style={mem.viewerIconBtn} onPress={onClose}>
+            <Ionicons name="close" size={s(22)} color="#fff" />
+          </TouchableOpacity>
+          <Text style={mem.viewerCounter}>{currentIndex + 1} / {allPhotos.length}</Text>
+          <TouchableOpacity style={mem.viewerIconBtn} onPress={handleShare}>
+            <Ionicons name="share-outline" size={s(22)} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Swipeable photos */}
+        <FlatList
+          ref={flatListRef}
+          data={allPhotos}
+          horizontal
+          pagingEnabled
+          bounces={false}
+          overScrollMode="never"
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, i) => String(i)}
+          initialScrollIndex={photo.index ?? 0}
+          getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          onMomentumScrollEnd={(e) => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / width);
+            setCurrentIndex(index);
+            setPlaying(false);
+          }}
+          renderItem={({ item }) => (
+            <View style={{ width, height: screenHeight, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' }}>
+              <Image source={{ uri: item.uri }} style={{ width, height: screenHeight }} resizeMode="contain" />
+            </View>
+          )}
+        />
+
+        {/* Caption */}
+        <View style={mem.viewerCaption}>
+          <Text style={mem.viewerTitle}>{current?.title}</Text>
+          <Text style={mem.viewerDay}>Day {current?.day}</Text>
+        </View>
+
+        {/* Play/pause */}
+        <View style={mem.viewerControls}>
+          <TouchableOpacity style={mem.viewerPlayBtn} onPress={() => setPlaying(p => !p)}>
+            <Ionicons name={playing ? 'pause' : 'play'} size={s(22)} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Progress dots */}
+        {allPhotos.length > 1 && (
+          <View style={mem.dots}>
+            {allPhotos.map((_, i) => (
+              <View key={i} style={[mem.dot, i === currentIndex && mem.dotActive]} />
+            ))}
+          </View>
+        )}
+      </View>
+    </Modal>
+  );
+}
+
 export default function TripDetailsScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
   const trip = route?.params?.trip;
@@ -481,7 +605,11 @@ export default function TripDetailsScreen({ navigation, route }) {
   const [editingDayLabel, setEditingDayLabel] = useState(false);
   const [dayLabelDraft, setDayLabelDraft] = useState('');
   const [allActivities, setAllActivities] = useState([]);
-  const [activeView, setActiveView] = useState('itinerary'); // 'itinerary' | 'packing'
+  const [undoSnack, setUndoSnack] = useState(null); // { message, onUndo }
+  const undoTimerRef = useRef(null);
+  const swipeableRefs = useRef({});
+  const [activeView, setActiveView] = useState('itinerary'); // 'itinerary' | 'packing' | 'memories'
+  const [viewingPhoto, setViewingPhoto] = useState(null); // { uri, title, day }
   const [packingItems, setPackingItems] = useState([]);
   const [newPackingItem, setNewPackingItem] = useState('');
   const [addingPackingItem, setAddingPackingItem] = useState(false);
@@ -526,9 +654,35 @@ export default function TripDetailsScreen({ navigation, route }) {
     loadPackingItems();
   };
 
+  const showUndo = (message, onUndo) => {
+    clearTimeout(undoTimerRef.current);
+    setUndoSnack({ message, onUndo });
+    undoTimerRef.current = setTimeout(() => setUndoSnack(null), 3500);
+  };
+
   const handleTogglePackingItem = async (item) => {
     await togglePackingItem(item.id, !item.checked);
     loadPackingItems();
+  };
+
+  const handleSwipeDone = async (item) => {
+    const wasChecked = !!item.checked;
+    await togglePackingItem(item.id, !wasChecked);
+    loadPackingItems();
+    showUndo(wasChecked ? 'Marked undone' : 'Marked as done', async () => {
+      await togglePackingItem(item.id, wasChecked);
+      loadPackingItems();
+    });
+  };
+
+  const handleSwipeDelete = async (item) => {
+    const wasChecked = !!item.checked;
+    await deletePackingItem(item.id);
+    loadPackingItems();
+    showUndo(`"${item.item}" removed`, async () => {
+      await addPackingItem(trip.id, item.item, wasChecked);
+      loadPackingItems();
+    });
   };
 
   const handleDeletePackingItem = (id) => {
@@ -560,6 +714,7 @@ export default function TripDetailsScreen({ navigation, route }) {
 
   const handleToggleDone = async (activity) => {
     await toggleActivityDone(activity.id, !activity.done);
+    Haptics.impactAsync(!activity.done ? Haptics.ImpactFeedbackStyle.Medium : Haptics.ImpactFeedbackStyle.Light);
     loadActivities();
     loadAllActivities();
   };
@@ -600,7 +755,7 @@ export default function TripDetailsScreen({ navigation, route }) {
           {!!trip?.dates && <Text style={styles.headerSub}>{trip.dates}</Text>}
         </View>
         <TouchableOpacity style={styles.headerBtn}
-          onPress={() => navigation.navigate('PlaceDiscovery', { trip })}>
+          onPress={() => navigation.navigate('Main', { screen: 'Discover' })}>
           <Ionicons name="compass-outline" size={s(22)} color={Colors.white} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.headerBtn} onPress={() => setShowAddModal(true)}>
@@ -615,17 +770,14 @@ export default function TripDetailsScreen({ navigation, route }) {
             <Text style={styles.summaryValue}>{days}</Text>
             <Text style={styles.summaryLabel}>Days</Text>
           </View>
-          <View style={styles.summaryDivider} />
           <View style={styles.summaryItem}>
             <Text style={styles.summaryValue}>{totalActivities}</Text>
             <Text style={styles.summaryLabel}>Activities</Text>
           </View>
-          <View style={styles.summaryDivider} />
           <View style={styles.summaryItem}>
             <Text style={styles.summaryValue}>{doneActivities}/{totalActivities}</Text>
             <Text style={styles.summaryLabel}>Done</Text>
           </View>
-          <View style={styles.summaryDivider} />
           <View style={styles.summaryItem}>
             <Text style={[styles.summaryValue, completionPct === 100 && { color: Colors.primary }]}>{completionPct}%</Text>
             <Text style={styles.summaryLabel}>Complete</Text>
@@ -637,29 +789,31 @@ export default function TripDetailsScreen({ navigation, route }) {
         </View>
       </View>
 
-      {/* View switcher */}
+      {/* View switcher — segmented control */}
       <View style={styles.viewSwitcher}>
-        <TouchableOpacity
-          style={[styles.viewSwitcherBtn, activeView === 'itinerary' && styles.viewSwitcherActive]}
-          onPress={() => setActiveView('itinerary')}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="calendar-outline" size={s(14)} color={activeView === 'itinerary' ? Colors.white : Colors.grayMedium} />
-          <Text style={[styles.viewSwitcherLabel, activeView === 'itinerary' && styles.viewSwitcherLabelActive]}>Itinerary</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.viewSwitcherBtn, activeView === 'packing' && styles.viewSwitcherActive]}
-          onPress={() => setActiveView('packing')}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="bag-outline" size={s(14)} color={activeView === 'packing' ? Colors.white : Colors.grayMedium} />
-          <Text style={[styles.viewSwitcherLabel, activeView === 'packing' && styles.viewSwitcherLabelActive]}>Packing List</Text>
-          {packingItems.length > 0 && (
-            <View style={styles.packingBadge}>
-              <Text style={styles.packingBadgeText}>{packingItems.filter(i => !i.checked).length}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        <View style={styles.segmentTrack}>
+          {['itinerary', 'packing', 'memories'].map((view) => {
+            const active = activeView === view;
+            const label = view === 'itinerary' ? 'Itinerary' : view === 'packing' ? 'Packing' : 'Memories';
+            const icon  = view === 'itinerary' ? 'calendar-outline' : view === 'packing' ? 'bag-outline' : 'images-outline';
+            return (
+              <TouchableOpacity
+                key={view}
+                style={[styles.segmentBtn, active && styles.segmentBtnActive]}
+                onPress={() => setActiveView(view)}
+                activeOpacity={0.85}
+              >
+                <Ionicons name={icon} size={s(13)} color={active ? Colors.primary : 'rgba(255,255,255,0.75)'} />
+                <Text style={[styles.segmentLabel, active && styles.segmentLabelActive]}>{label}</Text>
+                {view === 'packing' && packingItems.filter(i => !i.checked).length > 0 && (
+                  <View style={styles.packingBadge}>
+                    <Text style={styles.packingBadgeText}>{packingItems.filter(i => !i.checked).length}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
 
       {activeView === 'itinerary' ? (
@@ -774,7 +928,7 @@ export default function TripDetailsScreen({ navigation, route }) {
             />
           )}
         </>
-      ) : (
+      ) : activeView === 'packing' ? (
         /* Packing List */
         <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.packingScroll}>
           {/* Add item row */}
@@ -813,25 +967,100 @@ export default function TripDetailsScreen({ navigation, route }) {
           ) : (
             <View style={styles.packingList}>
               {packingItems.map(item => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={styles.packingItem}
-                  onPress={() => handleTogglePackingItem(item)}
-                  onLongPress={() => handleDeletePackingItem(item.id)}
-                  activeOpacity={0.7}
+                <Swipeable
+                  key={`${item.id}-${item.checked}`}
+                  ref={r => { swipeableRefs.current[item.id] = r; }}
+                  overshootRight={false}
+                  overshootLeft={false}
+                  friction={2}
+                  onSwipeableWillOpen={(dir) => {
+                    if (dir === 'left') handleSwipeDone(item);
+                    else handleSwipeDelete(item);
+                  }}
+                  renderLeftActions={() => (
+                    <View style={styles.swipeActionDone}>
+                      <Ionicons name={item.checked ? 'close-circle' : 'checkmark-circle'} size={s(22)} color="#fff" />
+                      <Text style={styles.swipeActionText}>{item.checked ? 'Undo' : 'Done'}</Text>
+                    </View>
+                  )}
+                  renderRightActions={() => (
+                    <View style={styles.swipeActionDelete}>
+                      <Ionicons name="trash-outline" size={s(22)} color="#fff" />
+                      <Text style={styles.swipeActionText}>Delete</Text>
+                    </View>
+                  )}
                 >
-                  <View style={[styles.packingCheck, item.checked && styles.packingCheckDone]}>
-                    {!!item.checked && <Ionicons name="checkmark" size={s(12)} color={Colors.white} />}
-                  </View>
-                  <Text style={[styles.packingItemText, item.checked && styles.packingItemTextDone]}>
-                    {item.item}
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.packingItem}
+                    onPress={() => handleTogglePackingItem(item)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.packingCheck, item.checked && styles.packingCheckDone]}>
+                      {!!item.checked && <Ionicons name="checkmark" size={s(12)} color={Colors.white} />}
+                    </View>
+                    <Text style={[styles.packingItemText, item.checked && styles.packingItemTextDone]}>
+                      {item.item}
+                    </Text>
+                  </TouchableOpacity>
+                </Swipeable>
               ))}
             </View>
           )}
         </ScrollView>
-      )}
+      ) : null}
+
+      {activeView === 'memories' && (() => {
+        const allPhotos = allActivities.flatMap(a => {
+          const uris = (() => { try { return JSON.parse(a.photo_uri || '[]'); } catch { return []; } })();
+          return uris.map(uri => ({ uri, title: a.title, day: a.day }));
+        });
+
+        const GAP    = s(2);
+        const CELL   = Math.floor((width - s(32) - GAP * 2) / 3);
+        const CELL_H = Math.floor(CELL * 1.3);
+
+        return (
+          <ScrollView contentContainerStyle={{ paddingHorizontal: s(16), paddingTop: s(12), paddingBottom: s(40) }} showsVerticalScrollIndicator={false}>
+            {allPhotos.length === 0 ? (
+              <View style={mem.empty}>
+                <Ionicons name="images-outline" size={s(48)} color={Colors.grayMedium} />
+                <Text style={mem.emptyTitle}>No memories yet</Text>
+                <Text style={mem.emptyText}>Photos you attach to activities will appear here.</Text>
+                <TouchableOpacity style={mem.emptyHint} onPress={() => setActiveView('itinerary')}>
+                  <Ionicons name="calendar-outline" size={s(13)} color={Colors.primary} />
+                  <Text style={mem.emptyHintText}>Go to Itinerary to add photos</Text>
+                  <Ionicons name="arrow-forward" size={s(13)} color={Colors.primary} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <Text style={mem.count}>{allPhotos.length} photo{allPhotos.length !== 1 ? 's' : ''}</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {allPhotos.map((photo, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={{
+                        width: CELL, height: CELL_H,
+                        marginRight: (i % 3 === 2) ? 0 : GAP,
+                        marginBottom: GAP,
+                        borderRadius: s(6), overflow: 'hidden',
+                        backgroundColor: '#111',
+                      }}
+                      onPress={() => setViewingPhoto({ ...photo, index: i, allPhotos })}
+                      activeOpacity={0.85}
+                    >
+                      <Image source={{ uri: photo.uri }} style={{ width: CELL, height: CELL_H }} resizeMode="cover" />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </>
+            )}
+          </ScrollView>
+        );
+      })()}
+
+      {/* Full-screen photo viewer with autoplay + share */}
+      <MemoryViewer photo={viewingPhoto} onClose={() => setViewingPhoto(null)} />
 
       <AddActivityModal
         visible={showAddModal}
@@ -848,12 +1077,35 @@ export default function TripDetailsScreen({ navigation, route }) {
         onClose={() => setEditingActivity(null)}
         onSaved={handleSavedActivity}
       />
+
+      {/* Undo snackbar */}
+      {undoSnack && (
+        <View style={[styles.snackbar, { bottom: insets.bottom + s(16) }]}>
+          <Text style={styles.snackbarText}>{undoSnack.message}</Text>
+          <TouchableOpacity
+            onPress={() => { undoSnack.onUndo(); setUndoSnack(null); clearTimeout(undoTimerRef.current); }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.snackbarUndo}>Undo</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bgLight },
+  snackbar: {
+    position: 'absolute', left: s(16), right: s(16),
+    backgroundColor: '#1c1c1e', borderRadius: s(12),
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: s(16), paddingVertical: s(13),
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2, shadowRadius: 8, elevation: 8,
+  },
+  snackbarText: { fontSize: s(13), fontFamily: Fonts.medium, color: '#fff', flex: 1 },
+  snackbarUndo: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.accent, marginLeft: s(12) },
   header: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: Colors.primary,
@@ -868,7 +1120,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     paddingTop: s(10), paddingBottom: s(12),
     paddingHorizontal: s(16),
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Colors.border,
     gap: s(10),
   },
   summaryStatsRow: {
@@ -886,7 +1137,7 @@ const styles = StyleSheet.create({
     height: s(6), borderRadius: s(3), backgroundColor: Colors.primary,
   },
   progressBarComplete: { backgroundColor: '#22c55e' },
-  tabBar: { backgroundColor: Colors.white, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  tabBar: { backgroundColor: Colors.white },
   tabContent: { paddingHorizontal: s(12), paddingVertical: s(10), gap: s(8) },
   tab: {
     paddingHorizontal: s(18), paddingVertical: s(8),
@@ -899,7 +1150,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: s(6),
     paddingHorizontal: s(16), paddingVertical: s(10),
     backgroundColor: Colors.white,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Colors.border,
   },
   dayLabelText: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.primary, flex: 1 },
   dayLabelPlaceholder: { color: Colors.grayMedium, fontFamily: Fonts.regular },
@@ -929,6 +1179,12 @@ const styles = StyleSheet.create({
   },
 
   cardBody: { flex: 1 },
+  photoBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: s(3),
+    backgroundColor: Colors.primaryBg, borderRadius: s(8),
+    paddingHorizontal: s(6), paddingVertical: s(3),
+  },
+  photoBadgeText: { fontSize: s(10), fontFamily: Fonts.bold, color: Colors.primary },
   cardTitle: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.textPrimary },
   cardTitleDone: { color: Colors.textTertiary, textDecorationLine: 'line-through' },
   cardSub: { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textSecondary, marginTop: s(2) },
@@ -944,30 +1200,32 @@ const styles = StyleSheet.create({
     paddingVertical: s(6),
     alignSelf: 'flex-start',
   },
+  dragHandleActive: { opacity: 1 },
   dragHandleDisabled: { opacity: 0.35 },
   timeTextDone: { color: Colors.textTertiary },
   dotDone: { backgroundColor: Colors.textTertiary },
   doneBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: s(4),
-    paddingHorizontal: s(8), paddingVertical: s(3),
-    borderRadius: s(20),
+    flexDirection: 'row', alignItems: 'center', gap: s(3),
+    paddingHorizontal: s(6), paddingVertical: s(2),
+    borderRadius: s(20), alignSelf: 'flex-start',
     backgroundColor: Colors.bgLight,
-    borderWidth: 1.5, borderColor: Colors.border,
+    borderWidth: 1, borderColor: Colors.border,
     transform: [{ skewX: '-8deg' }],
+    marginBottom: s(6),
   },
   doneBtnActive: {
     backgroundColor: Colors.primaryBg,
     borderColor: Colors.primary,
   },
-  doneBtnLabel: { fontSize: s(10), fontFamily: Fonts.bold, color: Colors.grayMedium, transform: [{ skewX: '8deg' }] },
+  doneBtnLabel: { fontSize: s(9), fontFamily: Fonts.bold, color: Colors.grayMedium, transform: [{ skewX: '8deg' }] },
   doneBtnLabelActive: { color: Colors.primary },
   doneCircleEmpty: {
-    width: s(13), height: s(13), borderRadius: s(7),
+    width: s(11), height: s(11), borderRadius: s(6),
     borderWidth: 1.5, borderColor: '#C7C7CC',
     transform: [{ skewX: '8deg' }],
   },
   doneCircleFilled: {
-    width: s(13), height: s(13), borderRadius: s(7),
+    width: s(11), height: s(11), borderRadius: s(6),
     backgroundColor: Colors.primary,
     alignItems: 'center', justifyContent: 'center',
     transform: [{ skewX: '8deg' }],
@@ -1003,18 +1261,27 @@ const styles = StyleSheet.create({
   emptyAddBtn: { marginTop: s(4) },
   emptyAddBtnText: { fontSize: s(14), fontFamily: Fonts.bold, color: Colors.primary },
   viewSwitcher: {
-    flexDirection: 'row', backgroundColor: Colors.white,
-    paddingHorizontal: s(16), paddingVertical: s(10), gap: s(8),
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Colors.border,
+    backgroundColor: Colors.white,
+    paddingHorizontal: s(16), paddingVertical: s(10),
   },
-  viewSwitcherBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: s(6),
-    paddingHorizontal: s(14), paddingVertical: s(7),
-    borderRadius: s(20), backgroundColor: Colors.grayLight,
+  segmentTrack: {
+    flexDirection: 'row',
+    backgroundColor: Colors.primary,
+    borderRadius: s(10),
+    padding: s(3),
   },
-  viewSwitcherActive: { backgroundColor: Colors.primary },
-  viewSwitcherLabel: { fontSize: s(12), fontFamily: Fonts.bold, color: Colors.grayMedium },
-  viewSwitcherLabelActive: { color: Colors.white },
+  segmentBtn: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: s(4), paddingVertical: s(7),
+    borderRadius: s(8),
+  },
+  segmentBtnActive: {
+    backgroundColor: Colors.white,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1, shadowRadius: 3, elevation: 2,
+  },
+  segmentLabel: { fontSize: s(12), fontFamily: Fonts.bold, color: 'rgba(255,255,255,0.85)' },
+  segmentLabelActive: { color: Colors.primary },
   packingBadge: {
     minWidth: s(16), height: s(16), borderRadius: s(8),
     backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center', paddingHorizontal: s(3),
@@ -1045,6 +1312,17 @@ const styles = StyleSheet.create({
   packingEmptyText: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.textSecondary },
   packingEmptySubText: { fontSize: s(12), fontFamily: Fonts.regular, color: Colors.grayMedium, textAlign: 'center' },
   packingList: { gap: s(8) },
+  swipeActionDone: {
+    backgroundColor: Colors.primary, borderRadius: s(12),
+    justifyContent: 'center', alignItems: 'center',
+    paddingHorizontal: s(20), marginBottom: s(0), gap: s(4),
+  },
+  swipeActionDelete: {
+    backgroundColor: '#ef4444', borderRadius: s(12),
+    justifyContent: 'center', alignItems: 'center',
+    paddingHorizontal: s(20), gap: s(4),
+  },
+  swipeActionText: { fontSize: s(11), fontFamily: Fonts.bold, color: '#fff' },
   packingItem: {
     flexDirection: 'row', alignItems: 'center', gap: s(12),
     backgroundColor: Colors.white, borderRadius: s(12),
@@ -1094,6 +1372,10 @@ const styles = StyleSheet.create({
     gap: s(6),
     paddingBottom: s(2),
   },
+  cardActionRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    gap: s(4), marginBottom: s(6),
+  },
   cardMetaRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -1101,7 +1383,6 @@ const styles = StyleSheet.create({
     gap: s(8),
   },
   cardMetaLeft: { flex: 1, alignItems: 'flex-start' },
-  cardMetaActions: { flexDirection: 'row', alignItems: 'center', gap: s(6) },
   notesRow: {
     flexDirection: 'row', alignItems: 'flex-start', gap: s(6),
   },
@@ -1181,4 +1462,59 @@ const styles = StyleSheet.create({
   periodBtnActive: { backgroundColor: Colors.primary },
   periodText: { fontSize: s(14), fontFamily: Fonts.bold, color: Colors.textSecondary },
   periodTextActive: { color: Colors.white },
+});
+
+const mem = StyleSheet.create({
+  empty: {
+    alignItems: 'center', justifyContent: 'center',
+    paddingTop: s(80), gap: s(10),
+  },
+  emptyTitle: { fontSize: s(16), fontFamily: Fonts.bold, color: Colors.textPrimary },
+  emptyText: {
+    fontSize: s(13), fontFamily: Fonts.regular, color: Colors.textSecondary,
+    textAlign: 'center', maxWidth: s(240),
+  },
+  count: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.textSecondary, marginBottom: s(10) },
+  emptyHint: {
+    flexDirection: 'row', alignItems: 'center', gap: s(6),
+    marginTop: s(16), backgroundColor: Colors.primaryBg,
+    borderRadius: s(12), paddingHorizontal: s(14), paddingVertical: s(10),
+  },
+  emptyHintText: { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.primary },
+
+  // Full-screen viewer
+  viewer: { flex: 1, backgroundColor: '#000' },
+  viewerTopBar: {
+    position: 'absolute', top: s(52), left: 0, right: 0, zIndex: 10,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: s(16),
+  },
+  viewerIconBtn: {
+    width: s(38), height: s(38), borderRadius: s(19),
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  viewerCounter: { fontSize: s(13), fontFamily: Fonts.medium, color: 'rgba(255,255,255,0.8)' },
+  viewerImg: { width, height: width * 1.35 },
+  viewerCaption: { position: 'absolute', bottom: s(110), left: s(20), right: s(20) },
+  viewerTitle: { fontSize: s(16), fontFamily: Fonts.bold, color: '#fff', marginBottom: s(2) },
+  viewerDay: { fontSize: s(12), fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.65)' },
+  viewerControls: {
+    position: 'absolute', bottom: s(52), left: 0, right: 0,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  viewerPlayBtn: {
+    width: s(52), height: s(52), borderRadius: s(26),
+    backgroundColor: Colors.primary,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  dots: {
+    position: 'absolute', bottom: s(28),
+    flexDirection: 'row', gap: s(5), alignSelf: 'center',
+  },
+  dot: {
+    width: s(5), height: s(5), borderRadius: s(3),
+    backgroundColor: 'rgba(255,255,255,0.3)',
+  },
+  dotActive: { backgroundColor: '#fff', width: s(16) },
 });

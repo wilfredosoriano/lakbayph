@@ -13,6 +13,8 @@ import {
   PLACES_BY_DESTINATION, matchDestination,
 } from '../data/placesData';
 import { addTripActivity, addSavedLocation } from '../database/db';
+import CachedImage from '../components/CachedImage';
+import { PLACE_IMAGES } from '../data/placeImages';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
@@ -262,8 +264,18 @@ function PlaceCard({ place, savedIds, onAdd, onSave }) {
   const transportSummary = getTransportSummary(place);
   const [showDetails, setShowDetails] = useState(false);
 
+  const hasImage = PLACE_IMAGES[place.id] || place.image;
+
   return (
     <View style={styles.placeCard}>
+      {hasImage && (
+        <CachedImage
+          placeId={place.id}
+          uri={place.image}
+          style={styles.placeCardImage}
+          resizeMode="cover"
+        />
+      )}
       <View style={styles.placeCardHeader}>
         <View style={styles.placeTitleWrap}>
           <Text style={styles.placeName}>{place.name}</Text>
@@ -362,12 +374,23 @@ function PlaceCard({ place, savedIds, onAdd, onSave }) {
 
 function DestinationHero({ destKey, effectiveDestination, places }) {
   const mustVisitCount = places.filter((place) => place.mustVisit).length;
+  const heroPlace = places.find(p => p.mustVisit) || places[0];
+  const hasImage  = heroPlace && (PLACE_IMAGES[heroPlace.id] || heroPlace.image);
 
   return (
     <View style={styles.heroCard}>
-      <View style={[styles.heroImage, styles.heroFallback]}>
-        <Ionicons name="sparkles-outline" size={s(32)} color={Colors.primary} />
-      </View>
+      {hasImage ? (
+        <CachedImage
+          placeId={heroPlace.id}
+          uri={heroPlace.image}
+          style={styles.heroImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={[styles.heroImage, styles.heroFallback]}>
+          <Ionicons name="sparkles-outline" size={s(32)} color={Colors.primary} />
+        </View>
+      )}
       <View style={styles.heroOverlay} />
       <View style={styles.heroContent}>
         <Text style={styles.heroEyebrow}>Explore {destKey || effectiveDestination}</Text>

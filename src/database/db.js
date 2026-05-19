@@ -94,6 +94,16 @@ export async function initDB() {
     await db.execAsync(`ALTER TABLE trip_activities ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0`);
   } catch (_) { /* column already exists */ }
 
+  // Migrate: add cover_photo column to trips
+  try {
+    await db.execAsync(`ALTER TABLE trips ADD COLUMN cover_photo TEXT`);
+  } catch (_) { /* column already exists */ }
+
+  // Migrate: add people_count column to trips
+  try {
+    await db.execAsync(`ALTER TABLE trips ADD COLUMN people_count INTEGER NOT NULL DEFAULT 1`);
+  } catch (_) { /* column already exists */ }
+
   // Migrate: create day_labels table
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS day_labels (
@@ -268,6 +278,16 @@ export async function updateTrip(id, { name, destination, dates, days, emoji }) 
   );
 }
 
+export async function updateTripCoverPhoto(id, uri) {
+  const d = await initDB();
+  await d.runAsync(`UPDATE trips SET cover_photo = ? WHERE id = ?`, [uri, id]);
+}
+
+export async function updateTripPeopleCount(id, count) {
+  const d = await initDB();
+  await d.runAsync(`UPDATE trips SET people_count = ? WHERE id = ?`, [count, id]);
+}
+
 export async function duplicateTrip(tripId) {
   const d = await initDB();
   const trip = await d.getFirstAsync(`SELECT * FROM trips WHERE id = ?`, [tripId]);
@@ -427,11 +447,11 @@ export async function getPackingItems(tripId) {
   return await d.getAllAsync(`SELECT * FROM packing_items WHERE trip_id = ? ORDER BY created_at ASC`, [tripId]);
 }
 
-export async function addPackingItem(tripId, item) {
+export async function addPackingItem(tripId, item, checked = false) {
   const d = await initDB();
   await d.runAsync(
-    `INSERT INTO packing_items (trip_id, item, checked, created_at) VALUES (?, ?, 0, ?)`,
-    [tripId, item.trim(), new Date().toISOString()]
+    `INSERT INTO packing_items (trip_id, item, checked, created_at) VALUES (?, ?, ?, ?)`,
+    [tripId, item.trim(), checked ? 1 : 0, new Date().toISOString()]
   );
 }
 

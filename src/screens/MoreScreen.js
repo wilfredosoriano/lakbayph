@@ -186,18 +186,15 @@ export default function MoreScreen({ navigation }) {
           )}
 
           {/* Stats */}
-          <View style={styles.statsDivider} />
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{stats.trips}</Text>
               <Text style={styles.statLabel}>Trips</Text>
             </View>
-            <View style={styles.statSep} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{stats.places}</Text>
               <Text style={styles.statLabel}>Activities</Text>
             </View>
-            <View style={styles.statSep} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{stats.days}</Text>
               <Text style={styles.statLabel}>Days</Text>
@@ -221,7 +218,6 @@ export default function MoreScreen({ navigation }) {
                 <Text style={styles.menuLabel}>{item.label}</Text>
                 <Ionicons name="chevron-forward" size={s(18)} color={Colors.grayMedium} />
               </TouchableOpacity>
-              {i < MENU_ITEMS.length - 1 && <View style={styles.divider} />}
             </React.Fragment>
           ))}
         </View>

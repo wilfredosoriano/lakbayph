@@ -19,7 +19,6 @@ import MoreScreen from '../screens/MoreScreen';
 import TransportScreen from '../screens/TransportScreen';
 import AIAssistantScreen from '../screens/AIAssistantScreen'; // file rename not needed, just route name
 import PremiumScreen from '../screens/PremiumScreen';
-import PlaceDiscoveryScreen from '../screens/PlaceDiscoveryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TermsScreen from '../screens/TermsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
@@ -131,7 +130,6 @@ export default function AppNavigator() {
           <Stack.Screen name="Settings"    component={SettingsScreen} />
           <Stack.Screen name="TravelBuddy" component={AIAssistantScreen} />
           <Stack.Screen name="Premium"        component={PremiumScreen} />
-          <Stack.Screen name="PlaceDiscovery" component={PlaceDiscoveryScreen} />
           <Stack.Screen name="Terms"         component={TermsScreen} />
           <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
           <Stack.Screen name="Search"        component={SearchScreen} />

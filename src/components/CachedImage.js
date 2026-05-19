@@ -1,67 +1,42 @@
-/**
- * Drop-in replacement for <Image source={{ uri: place.image }} />
- * that resolves to the local cached file when available.
- *
- * Shows "Powered by Google" attribution when the source URL is a
- * Google Places photo, as required by Google's Terms of Service.
- *
- * Usage:
- *   <CachedImage placeId={place.id} uri={place.image} style={styles.img} />
- */
-
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { Image, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { getCachedUri, downloadAndCache } from '../utils/imageCache';
+import { PLACE_IMAGES } from '../data/placeImages';
 
-const isGooglePlacesUrl = (url) =>
-  typeof url === 'string' && url.includes('places.googleapis.com');
+export default function CachedImage({ placeId, uri, style, resizeMode = 'cover', resizeMethod = 'resize', placeholder }) {
+  const localAsset = placeId ? PLACE_IMAGES[placeId] : null;
 
-export default function CachedImage({ placeId, uri, style, resizeMode = 'cover', placeholder }) {
+  // Hooks must always be called — skip async work when a local asset exists
   const [resolvedUri, setResolvedUri] = useState(null);
-  const [loading, setLoading]         = useState(true);
+  const [loading, setLoading]         = useState(!localAsset);
   const [error, setError]             = useState(false);
 
   useEffect(() => {
+    if (localAsset) return; // bundled image — no network needed
+
     let cancelled = false;
 
     async function resolve() {
-      if (!uri || !placeId) {
-        setLoading(false);
-        return;
-      }
+      if (!uri || !placeId) { setLoading(false); return; }
 
-      // 1. Check local cache first (instant, works offline)
-      const local = await getCachedUri(placeId);
-      if (!cancelled && local) {
-        setResolvedUri(local);
-        setLoading(false);
-        return;
-      }
+      const cached = await getCachedUri(placeId);
+      if (!cancelled && cached) { setResolvedUri(cached); setLoading(false); return; }
 
-      // 2. Not cached / expired — try to download now (requires internet)
       const downloaded = await downloadAndCache(placeId, uri);
-      if (!cancelled) {
-        if (downloaded) {
-          setResolvedUri(downloaded);
-        } else {
-          // 3. Fallback: use remote URL directly (works if online, fails if offline)
-          setResolvedUri(uri);
-        }
-        setLoading(false);
-      }
+      if (!cancelled) { setResolvedUri(downloaded || uri); setLoading(false); }
     }
 
     resolve();
     return () => { cancelled = true; };
-  }, [placeId, uri]);
+  }, [placeId, uri, localAsset]);
 
-  if (!uri && !resolvedUri) {
-    return placeholder || null;
+  if (localAsset) {
+    return <Image source={localAsset} style={style} resizeMode={resizeMode} resizeMethod={resizeMethod} />;
   }
 
   if (loading) {
     return (
-      <View style={[style, styles.centered, { backgroundColor: '#e8e8e8' }]}>
+      <View style={[style, styles.centered]}>
         <ActivityIndicator size="small" color="#999" />
       </View>
     );
@@ -72,39 +47,16 @@ export default function CachedImage({ placeId, uri, style, resizeMode = 'cover',
   }
 
   return (
-    <View style={style}>
-      <Image
-        source={{ uri: resolvedUri }}
-        style={StyleSheet.absoluteFill}
-        resizeMode={resizeMode}
-        onError={() => setError(true)}
-      />
-      {isGooglePlacesUrl(uri) && (
-        <View style={styles.attribution}>
-          <Text style={styles.attributionText}>Powered by Google</Text>
-        </View>
-      )}
-    </View>
+    <Image
+      source={{ uri: resolvedUri }}
+      style={style}
+      resizeMode={resizeMode}
+      resizeMethod={resizeMethod}
+      onError={() => setError(true)}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  attribution: {
-    position: 'absolute',
-    bottom: 4,
-    right: 6,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderRadius: 3,
-  },
-  attributionText: {
-    color: '#fff',
-    fontSize: 9,
-    fontFamily: 'System',
-  },
+  centered: { backgroundColor: '#e8e8e8', justifyContent: 'center', alignItems: 'center' },
 });
