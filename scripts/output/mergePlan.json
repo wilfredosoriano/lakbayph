@@ -1,0 +1,2278 @@
+{
+  "Coron": {
+    "imageUpdates": [],
+    "newPlaces": [
+      {
+        "id": "coron-new-17",
+        "name": "Pass Island Beach",
+        "category": "landmark",
+        "description": "A popular landmark in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJc-TbUt_vuTMR8qx3Vev6ITs/photos/Ab43m-tmeSI2qeK-lNknCD1UbBCEZxFLNva1XTiQ4aouoSF1rDVsqidcBxf2jh4klAyxGJcyXD7M9AZJq5wkwyCW4b5iTX0ygITN6g06jB0clhp9GcL0F2cpMoNFFWTMu57kr-sGWRR-a92RggFlbpAiThOfQqIgf43JFRVEXXOASKCNb22DEUosXVnCZKlkgywpRRFYSVNidLoi-WKLzChYtXOmLnUCR9Ru233TkLJG7SqkyhIvknmBEItdJCDK8sXy8HESaP0T3tJLQky8o8ZzDXkXuyA7vdXUtB5WMaBb43Iul7WzqceSPgxRjw8aAZVGcelOW7CRcgRaH5jEB4J_yuUtI7lx4hWQpSZPhmUbcBuglS4QY1TWmWJXYJpzqLS9iwMidXTtGkA4_ocoM5Dle48p1vrXkhRJnaHRruxdHyyRwYFwpSNVpM7UpP2-y_-Y/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.9238795,
+          11.9910222
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJc-TbUt_vuTMR8qx3Vev6ITs",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.8,
+        "_ratingCount": 86
+      },
+      {
+        "id": "coron-new-16",
+        "name": "Duiklocatie Okikawa Maru",
+        "category": "landmark",
+        "description": "A popular landmark in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJiXovO4vvuTMRLelGMrf-hSA/photos/Ab43m-sonXfi8I6sgVSWh5oTbVXlNlipPtP6DAGW_8sSESgRvpEG7i7MqnwtFXDT92YMvzI2apFULfZj3evV-JEz9s-leoN2QajEuJMDSmgrtmES4Y-GYDBd1NU1ktXVh80t_xKIrD3Bc9sfVHvgDsh-esUyFrL8tBdK9zDBXje55Q_kyv2F9hmYPXjJol-T7a94bTAymS7UK1d6UOcNmqRWZ4gO86jmFLPyoyD1QqfN5saovJPk0B8EoVZGDAORfMMgRUOZn6DSXrXFlBnd9K6KHl3vYd27PE3ibXiNSqx8hdEIwtZkay-VHu2OHJZyBoL9h5-xHpWLRmfkVWEvx2ZE711woPfCYjt_pKkreaLMdIVx-vY_X-vNUqTOu69xiaUOu6UxrOTXYSLu5Lkm_iyCHXoKeoch2h0i94VfJHJzHzCycA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.96975499999999,
+          12.017788
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJiXovO4vvuTMRLelGMrf-hSA",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.9,
+        "_ratingCount": 23
+      },
+      {
+        "id": "coron-new-20",
+        "name": "Duiklocatie Akitsushima",
+        "category": "landmark",
+        "description": "A popular landmark in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJd_BJYpnvuTMR58s_hUFGajA/photos/Ab43m-umX6KQBCiJ-0nCDRcQFmAYyK3CRytPH32Limg3URTBEEI3hfp1e9LsNId5ATIRktZtFTJ9j390xokhvS0tB_15SITVfLyssu2w7XNgB2MqIltIBMvNxpaNtiUzsQyx6nJ56UI7Q6vp4ZZ2mTmjg_K1sSmokHbHioHp_p0dGUQpI6kb579QQqdXaMmHtkP_Mxjmk01BQLX8NNhsvra76Gt0UVGwegeXC3XGvklZfxt0u75NdJ-iG1sgHfCgMiYwigMhYMUbZUsQV0SNxojP6iwwT3rCXlAcAm4u9SXT5aVFPUy16x395fYcJ_TsG_hhqc3T329l0So7mIoUwOmy68JIkY59xcgyG5ZUqmDyKgqmx5UeYUlObM60QNKWB9jeI0qqbSgCjmp1YfR03L2pWJWn2Qhoi91cq86hkNJ8hJ21Ww/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.97368240000002,
+          11.9871342
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJd_BJYpnvuTMR58s_hUFGajA",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.7,
+        "_ratingCount": 22
+      },
+      {
+        "id": "coron-new-23",
+        "name": "Nagbinet Island",
+        "category": "beach",
+        "description": "A popular beach in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJKyoefvbruTMRFAuEqbFr00E/photos/Ab43m-slsUD2NiW9HxCyk-G_wlaNREVusl2gd7_4m8ydnAm9bJj3kbVfhdEkGE8YHtPXJJmP00EO-AQUWcJHp4eZ_GEGO6Qro801-duNJgfjJRHwa-fvK61f3MkqGiHOjDzAalVGJmv40Tkrl17AhSPOa_ynr7ughBJbXHSzM2DY90mXoY3SieQTdSAfXQRDYkg-Pv9D8AEk1T1NIHEzsqzw2ggb6lJhlXAuGoTdmbD-cKqjQ0Wd3iUh9YEHTWLjW32VYdOZzuhHrC58XCPS-AHJ_3usNnlT5X5VrRX0Ls1tT_tfljXIjK1IovtE16SLHl2Ztqpx3Ic-T0IwppLfUBCb6GmKscySGFuEs5nDPinBkhrPYqpVQjMYhjY32zpdV-FVT--d1JX0GY4AFAxVxLPWMmMHRn6Zu1tGrsQMTB2KKwussg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.8781793,
+          12.0573186
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJKyoefvbruTMRFAuEqbFr00E",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 16
+      },
+      {
+        "id": "coron-new-19",
+        "name": "Kiwit Flowing Pool",
+        "category": "landmark",
+        "description": "A popular landmark in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJv5UpBG_zuTMRwqfA7wABujY/photos/Ab43m-tSBA95fylVBe117RD2JteGlwE85AXodcDNOp7_bPh2_ul3hYwnwpePddPzF24pfqhvgK7A6F3m4rsVZZ80mpfBwlIYiDaC5WXgy5YrKDm6zncxDByU8TVoNIXUc86cm4RMgssC3EDFc2uZpo9DTnivRMUKYvbzIM5yDxNuEfLLQ4BLr2CHGeXnL3G-NGk8ZUJZZt3ez0_XLPk-sMHoCAZ_w0zTlW8meBcbKJRNa9eTlD7m5d9hufQdlgtf5NzOnGx9SZ4zaXVal-VjuPv5zf08yM_CGYZM1Are7wLLuirIfA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.96719680000001,
+          12.0832984
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJv5UpBG_zuTMRwqfA7wABujY",
+        "_types": [
+          "tourist_attraction",
+          "private_guest_room",
+          "guest_house",
+          "lodging",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.8,
+        "_ratingCount": 13
+      },
+      {
+        "id": "coron-new-3",
+        "name": "PETXINA Gigante",
+        "category": "nature",
+        "description": "A popular nature in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJSX1SQADtuTMR-08WAfHnl4c/photos/Ab43m-vZRZQgPbwqyn26jHLJTH0Uybk2XE7qQC9IgcPsgiaAdm_0GZPLzQC_GwtdRVXFByu0SU3a2PT_6w_wHL6uKkN7PvjpqNtbhKUg9ywHeMwFkwvYR2bUsgn90SSF0eBCwpeo-ARQbaxX2_12qLh2GXGtlzwVJSgVQrEpZrYUAri784s4L6H2c5BU8Rhrn9tC2XF-IBjcL7KTTu-sx9DiF3hGbI0Sns7z_-fJqkQVP0-MsVl8u9ebIHpD6tT-VnEpR0uFokt3O6P0NR8IidwS4YbGH-_crD_nsHQqMlHQ263e-YieCrF_y3LJlBsHiJrofvAi1Sz2T8wtob2OgfYS6gQm7tCj2QBxSKe3FFyuY6cghNrOLD42Ctyt7g9kWxzFgSeH6zXfv8m4A7AP3zf8CBCb2tpmfXcXgP9jdjcAFRu2tCEuAqjdz8X5N3cKOw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.934725,
+          12.085222499999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJSX1SQADtuTMR-08WAfHnl4c",
+        "_types": [
+          "nature_preserve",
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 5,
+        "_ratingCount": 5
+      },
+      {
+        "id": "coron-new-25",
+        "name": "Serenity Nature Park",
+        "category": "nature",
+        "description": "A popular nature in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJg8UDAWfjuTMRBok7NOEPCx8/photos/Ab43m-uIUaBOV67P-0T1cOyZi3nh-R6Z00OK6sd-9ACFf8QUw3DDAdOo-9auY7EzV3YJMqETC_0_iGC-8IwlxfM_QQpV1fEyuqRSoLGJ5c-qyEdZdQHKJEEr8Q7FLzu0UmbvvjG-ZvE6CPUOOs4O-4oGjZW3auZtJng0cPSkG5RKX6m1MtWsY1uqaiPPf-Bc3G5kcVhefG9P7ZK77vdKi3bWz_MvbCr-XaVV-vuSPOnOnZ2dM3L1zsyGOZeNC7Hcaj0AnLAQf9fLHw0WyiBuxQVA2cZT2sSiHX0XqllP_PEU61DCvg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.8921265,
+          11.8760687
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJg8UDAWfjuTMRBok7NOEPCx8",
+        "_types": [
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 6
+      },
+      {
+        "id": "coron-new-4",
+        "name": "Lamud Coral reefs",
+        "category": "landmark",
+        "description": "A popular landmark in Coron.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJWaCJDqjvuTMRJs6nMfLoe0Y/photos/Ab43m-uPikL5t9xWjp_iHSBYUt-qA9OTnnqtdCCiuCVERriTcS0hNvvMkMeBVnMKxbMZEGeIBgXjc0wdi2_LMhwZwmSAnltczPQqGEDF6SnzLxeFP8fz_deADBgxFjXKzT451uXnw6yeXZVw4RkUXQv6TJvQzF7NyDtFuApRpm6fPiSIEG7OaJKEvs6MJPWYi-TJivBCrbI8i62EPnv0WqsMa6CG8vD4XByem8D1TPGtdUR5iSMkXZHj8ILMSgZkuEqM4wqzU-kRtdGCms2eFcjWjQfb3IJaQHBd5Gs4QLr2HVKgLncC5aEzT8EEpXQBRurtDIBroCbOjAmIAiEnVKMYMJCe0DdeyBiRqdUjLN673dZDDMiV9GFzzl7gBg9Uq3x8rUyKYqALqKt92ENAdDJQiXZaoTv_Ir3B-9wmVtJlFM5_IEQd/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.94711410000001,
+          11.9822183
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJWaCJDqjvuTMRJs6nMfLoe0Y",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 5,
+        "_ratingCount": 4
+      }
+    ]
+  },
+  "El Nido": {
+    "imageUpdates": [
+      {
+        "existingName": "Big Lagoon",
+        "googleName": "Big Lagoon",
+        "image": "https://places.googleapis.com/v1/places/ChIJ3YGn549TtjMR1zwwo3u8A4k/photos/Ab43m-vcBNovHaQvezy1qILXySYe3ksx47XQcdiCrIWlgPjXjMxkD_fHDW6Gpmarc6YCwcjzvI0EiNTpaZFTamilfSxId9Pj99JHgRypYHBMReX04qtsLa4k4c71PjHQsI-fyXyv8X-rj8S6I-SbaeM764HLG_rlYfYWBP5XsXzeV-hbZ2-S9l_gQQzMSWg5-nLWN9zuxhwatWIEpPpPO4GppRZjAkEkuHewB3-swBzhqaYHcD1ftzI20QpiZ1V7TR57MPNrUBrKcrfpf_r1yEy2FPxFoUtqebj3kVvtSiW6rEgv1w8K8bY0gKK1GC0kWjdKDihw4DyTnLnaPsfMfJDYL7MPQwTpK_seC9FV899mC-zhjyh1Nzu1U1zZ-WYrYtx4ZVPGW1vvYqVj3u9osmTyL7OhEFwZ5vLva3b6EEDESdwfPMk/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Small Lagoon",
+        "googleName": "Small Lagoon",
+        "image": "https://places.googleapis.com/v1/places/ChIJQyNL44hTtjMRLmx3vHPd40Q/photos/Ab43m-tFuv-3uUZa8cpOMW47u1jGY9c7iqHJZI5DBde92Jo7QNOiVbg6Z2-s6tRnhKOn98I5uu0GtAD3TUzKQUYhtevn4vOlPOj10HIFJS1E_P7EGxCWn5l9-SE-86bua9_vHWMw-daf970aM_ZV6In9iuheD2k5WPep__kAJiwnLAVCi7pe7aVY4pOTyKxdavD2REbWTw7xHA913n-YNPqCwsaGvUNhZ_ylDRCRKdccfA2doFl4ZuQ4aUqEYwdIZaVZnrDk-LyA9LqeHZwIP0bfliMHCR83jSunUk7vdWo6H7TsrZI-yOdy5AeYVupB__lj8NYq327frTIImI0v2QFcofVAAzUEd2AUXyJw6fZxgKXCTwv4e58c_6qZf5nN_ZtW12jawuA3K9PU-4eJaH3WJn46J8jqr9uEoaPk_gu5wTiMMe_9/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Nacpan Beach",
+        "googleName": "Nacpan beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJa4gmfwAHtzMRla0v9engWoU/photos/Ab43m-tQW7YkEqKrGDtPlL7xbPH1aUft2yjIwrbKYlw75BFdjBB12xU0qdZX_sQqf4MJ7vTAPyspO0tb7KgHEfjCOD-4f53lfO9i736K_5FOzyZNwXp4Z70zmAwVj0fMowzDWIl0xY-dQo1-_KWHazfpMAiTMz9p7EENib3uAhkgpH2qw2DGWrgKfwArrfrr9x9LRigH0z6BsxsnZCPvF4vXxA9s4a2vTTewtNsHJReCRjdMAi6oaAuxij68zoGwY1PsO2s6fQD6uChmkHI5ti-Se4jvBxSf7SsYOowQqEUKWv7xqG6a9j2pqVOg2qky7EzPY7bo7A9Gaa1dNTzIxpSKnFbXnEmTR-NChIzRuNZwLJ0-FXK53jSO2A7A70pAAwQxSB4gTevUGgAlMA3er673qKbbAtcmMqgIDD7oygLVKVr-GffS/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Shimizu Island",
+        "googleName": "Big Lagoon to Shimizu Island",
+        "image": "https://places.googleapis.com/v1/places/ChIJd1r4ofVTtjMRhBhf_03aphU/photos/Ab43m-tr7CTvCjGSI5w8wD6hv1hDfpLPExGJmkjZwy-FK-ijLIQxVX6rX0XYm7TXbtxEmtVI6AiIlTdaPDhPune_F0jeqCLExIVB2KJai2AV5df2UtIWC6dJB_7nywy2l4a6ELqH6Og5YpVA0zGnisT_Lti7XWhN71nm4xM7ZQtWqZk4UbX0UH4275bJNbcXAg-UHBBpqzSwhesfD2Rnu8-q4HWcRX3-xgJ91TWt3ZRRxNy4USpuTgs11GG_NjbCc8BqEZ7KHrlB1idpR4O-WBYohYzp8zpDIGWow9Axq61v9_nWiKTP-qgZ1QumWbTVbESNlJnNfi_RdbHzbPplZAg4_9oVOMH98TOAlnLrHFUM1gI-ZMha_M0ViIqAPXBNIC6_m-kfZ8B-0gseO321Vs-hXKQBM_hCLYDB6UivItvZikI8aw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "7 Commandos Beach",
+        "googleName": "Seven Commandos Beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJxYHcOxtVtjMR-cXnckGR6d0/photos/Ab43m-stQilHy09c0YFEqFDSspml2fgQ5r8O6qKHOQNABGAKyPsrX_rIhLKA4InI7I2lMowcCu9423OvtgX_I9pZMNSXLBt8ZzxFasrsNlCMCLE66h0tvBH_wXqyjf2GOa3gOVtvaYRfSMEU67urvO6Wws1ayxuNqmyrGt59gLwERP1CkqmnTQhDYwJ2WbgdqYDqNMfP1wHkRvL0JUv5xXUH-yacqnEGV8aj-mvMGgXy1PEtOwtVwyaCyIQ8JD0fmvgw79M61lRenYwkPMjyKMWIzR9tGZF4nWtr7Ua2YcgEg2vcOv9tnqw6vfXetAqWdL1BIoMlK-F-bW9zeXf7fkOyjNJDEdTYsw4zIpdYGrpLaP63HO0nXuD1HOWpW67EbXjFRVU0ymjDF6nNneC-NFgZmergj9ITsqG9XQrhxkE_Xp-fRLo/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Cadlao Lagoon",
+        "googleName": "Cadlao Lagoon",
+        "image": "https://places.googleapis.com/v1/places/ChIJqy7XzyyrtzMRwEk1-ZdyXUk/photos/Ab43m-vxDDqojvQ1GrMKJtrn_jLxilwvZj3T2EP7wNSu6HnhecK86Al6wPmiiWVSu5Qy_-2GppNUt64SiByxFpA5C3GLi9vgv2V-TrIOYGq0oYbSaFxKCgx9WxtPNkNT6fVVnRwukhBOFOfh0wTRtDwHNsWb4HHrYmJN62xj-9LQUoLvqa2gOltuYRZWZcbVJN7fYvCO4wdNXm8OOfcNKErpiW7hmaiLnvd4KYw0OqeiMYood5TxlFyYrVOcbdugOUsBt2prNJ1xlgxiXS2sN2RtRLV80BP--cVtJqftwvws5I-QuCZep077tSafY2vqx4XHF3vyF9FIiUpL2XCQwe2nS5lLGVhfvozDV3oSuhtIc-6_HM2C_ZBIk7hI8b2E2MlgOY1NqdMyjWPdjdlJ-wGeQGfyGlGUfSGLtMl0FrfcZsAMgBo/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "elnido-new-26",
+        "name": "Lio Beach",
+        "category": "beach",
+        "description": "Picturesque, palm-fringed tropical beach featuring upscale resorts, surfing & water sports.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJR8KVaaiqtzMR8s5MnUdU9m4/photos/Ab43m-t8Ckinh603IH0II2J7rG3fGyEGaq2HDhFXAHYycX91-BeFZ1Y0Y0F4o3FiWgmi2pHusbk0VrOXfmBCeD9XMDlgO4LiVwON7bMkLvs9K_-saMiZAMJcNjWGTsm2lSJp8-zg9Ppc-ZfLmMMjPx9bzb9EGyBXKQ4QMNVkGGSYDRrENO0k5HNHd36x62W5YuUOKJY1m79XZfKdj0qeudA75Cb5Y9ouOKq47vqTz9-TtHCCPg76CZOVw1sf7qkeGOUTyVMQ0BpWnNTOW0FETfnnDKw76116Q2rch8vEzjk4GKei4xSH1vVpmCAjEdQFZcibCKVbxUc7yF0JS4cYLz425kqPWeXwiPsVR0SN_J9wzyRa77kd3G_ZAr6bJwqUGV_xSy16uye56PFYvZjIRvl4YKsbks3h9OQ3c8XA3nlqR1Vzcg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.4163346,
+          11.2086987
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJR8KVaaiqtzMR8s5MnUdU9m4",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 1701
+      },
+      {
+        "id": "elnido-new-18",
+        "name": "Lio Beach",
+        "category": "landmark",
+        "description": "Laid-back shopping area with restaurants & bars alongside small boutiques & local tour operators.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJPfMIQaiqtzMReXyLTrUj0f0/photos/Ab43m-tY5xRIihSsvJEVlpzYYY7LtEE2CawUuALDQyxyw6d5bih-CJx9z_moObGK6aRBAmodqBKx5TAMEe5Bb7ryOcr2qRF5NpwfYgiuAzJFEScbeQCXO0mBSydXaq-SIpG6010GLDdL-NKaxIMVggPLkPtq0CVnS-QuwMikjl6C65aKVshDdKBDyoLs1UePUICgRow52q_Kj0CnQG1XmET4T2TcUNHZJ4QDtrcwG1hgwX6KyTg6XaHwIqQ-2D0-v5JZ56UU6UqfO-QgoG2s7K3M_K4bl1vhb14-SJZFVBpBuN1t7JOCWyng5wCYgaP-xKf-0WLAOH42RoeysvBPSHgBZrqmSarhuypCQuNS2tqBmnoi0x4BlgG-BkQUG2JQb_axwtJDuWG6riGy_T2A_brqXQGMBHEcyOlxMqPP232eg-ilTw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.41624359999999,
+          11.208596
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJPfMIQaiqtzMReXyLTrUj0f0",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.7,
+        "_ratingCount": 1380
+      },
+      {
+        "id": "elnido-new-34",
+        "name": "Las Cabañas Beach",
+        "category": "beach",
+        "description": "Picturesque beach known for sunset viewing, also offering casual dining options & bars.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJld6ZHr5VtjMRxXad8eDfSjE/photos/Ab43m-tBGusCPXZnctd-nMuSs_fK6qQK4z9goNZHu_xDcO4ChRM3YppiFGM_2nEsMHZRAXKlIuktJxy2ga3k5rhyBWu2G6WLDYdwgV_laSyf7xm_PzszW6-BwNjddsWfiQKZCGrUZWDs3FUcAgB8EhoEM-Nv-WInt7V2YLn5CYBIcmnYhNg5QS4wc0sVZQVCFZX4pQn8tj6nEW9lR8pC3MPpLM9chLYGRXwMuJexKn-4C_CHP9gQDFPSZCG9PiTWs-ZJXU7aj_BERZ_apzFnc5l1SdlXvNzxpbxBrMxt3nKgkHNl5u8orC5w_jbOsCJ1-PnQNl_ZsmalcOWLaQOyMQCAY--DkoNguYFhNxGhgPzvfFroZBWWDmO7H4xV-MyrXr4R6XsSEvaEGZvzwSy3CS03Q2W9trT_7s3JfUX1jZNtzL2RxX8/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.39445730000001,
+          11.1448032
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJld6ZHr5VtjMRxXad8eDfSjE",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 1619
+      },
+      {
+        "id": "elnido-new-20",
+        "name": "Papaya Beach",
+        "category": "landmark",
+        "description": "A popular landmark in El Nido.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJIQgjiw9VtjMRHELciXa6loM/photos/Ab43m-tqubBibfR4XFxNy3Qh2O0Rjl5easavq-56Ut0pXPKbCKw-4Xt-ia9ff5oPJo7WLFoUvIFUF62a2hn_Wn1ioj2lsQZNwBplnzxOjFOZF9Ojl0jQxZ_IBKkXEHbz2HFmJrJyOxE4bGYVds4FNN_YnVGGU22w__8Z2Y4le_mRtecPmqwWurvx2GRuOaXUZnTs4-LvfPJq1HcUJCW5toWo64ZWTS7kNxw2HI-tlKrrsJ9sLafWytQ_qDjQT5V3iKBVUYYko7M652eJVdfKH628ASHzichSBvfoZ6z9xYyJc59H-ZiIbY8v-DQP-leJMH5n0eXzgP1Rqr8YCUIACgNHNOjlvV1A0gxOQRcXsrm6KRvnjY9dS-4y1_lti5ZWcpAZZPUg3HM2bZEVZZzTA98kwxh8F3s0CMc5fAwvBMUeXnH5Aonqa4SVcmFfDb-ZFaVo/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.38160149999999,
+          11.1730073
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJIQgjiw9VtjMRHELciXa6loM",
+        "_types": [
+          "scenic_spot",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.7,
+        "_ratingCount": 727
+      },
+      {
+        "id": "elnido-new-44",
+        "name": "El Nido Beach",
+        "category": "landmark",
+        "description": "A popular landmark in El Nido.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJEVE9jRBVtjMRKWJhAKZYkF4/photos/Ab43m-s144LePRiMtWhfoPtCBOloe4kQ-n1QefuNhtxn4WcAeAmIaHdloZ71tc4UKnf0VGy4xMXnSoKeXdDdgPz0casCXTALe4HAJVs_PdoNxVIwF96djWN_-iv58olQbpVwv-s1ElIh1Xj3PzuWc2MVTUVP2GL09_kiZ2EoBJrzK2x883Or228L8M92HNJLbPmMFCPfezEuXCugfKRUJ42xmm9R0B_kYJlBWD6xYOJ3kGqq6BAQMpu_y6eHxUf-YyD17ezqAmPssO5wLjnI4-CDZX2RQMLsrkDSNEOnMiVUH1AtyC9mBmkqJB3An66WXiQuLs6Ioxbdf5D1FfLbObFdYU4-7Z9gK2aXMH4bukHJDNbLhr5t0KqvhueWSgLkPLETJkWm7SLHBmJTWtG99qgrCTYGD-74NVuhl2CMYLLYGNtlRDcF4B79ZD8iS8Tr2Zas/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.39040019999997,
+          11.1811279
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJEVE9jRBVtjMRKWJhAKZYkF4",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 931
+      },
+      {
+        "id": "elnido-new-1",
+        "name": "The Philippine Experience",
+        "category": "landmark",
+        "description": "A popular landmark in El Nido.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJAysi13JVtjMRoS-sZbdH23A/photos/Ab43m-ua7ostX0DWL55Dxj1pfHwFc9_2JncJMO0lD6onhnGIKKGQnJsFPqqBvZe_oZ3LKywQh0wf6dOEEYc-RGNxw7C5xAq-rwFvB_243ox5niLSwHJlHa6l_14QBqD7_CMAQe3N7MgG4y0KfKIBHzUXPZCYE7N67yXGujvaXY2PaCj7ZSODxOAZU05UOaG-FnHQFizfzgepYWbOYZxjlxjzkoVNHUora3H3slRRHIVrKlT9ovjdUfQc-h09cwm9TQ3dv0CfBp925iDG9ssH9fC2TNEsZR0CLa5oTNGgr2ogfd_LQw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.40058789999999,
+          11.139527399999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJAysi13JVtjMRoS-sZbdH23A",
+        "_types": [
+          "tourist_attraction",
+          "association_or_organization",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 5,
+        "_ratingCount": 404
+      },
+      {
+        "id": "elnido-new-47",
+        "name": "El Nido Via Ferrata Canopy Walk",
+        "category": "landmark",
+        "description": "A popular landmark in El Nido.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJCUekFBRVtjMRBnaeP1FvCNg/photos/Ab43m-tAuDnbcxJltx5gjZLyxrteBGSiJcxDKyRt2U8QbntXNq1BjpluGSt56nNliZ6Zc_ntUy6VaMPDaj0ieZnZ0uyX9UvYqb4BtaYJneRLaoSZZWzenckuAxzdRObnt5Z1NMC0H46S7LzvKqB5DqPbS9p-N1BEmYxGnjrb6y2U7YelCEnzASXpqMxG-LazrjMPmqafcdplno_Llf1E2P9aWExnYcPSFI1cCao5t7E2OfMk-2Ll7Df91po-u9EDCuaAqOz70fhDn1Kuu40Kawke_yL5I6lnpMDS6AHJTa5SXSHRZ_nTVgiST59ZRIbAonjUiVNnYE7QHSb2l2AdvjtBgj0HqnFM0U48ijDtqKrSgFs18gR8OainfcZobvf99e3rXOgxmX2uU2fz0VzeeZ3uJONGyAqwLIRIylcuZ2WLBe8MZ4RgchCOtvueicVXzQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.3902714,
+          11.1775954
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJCUekFBRVtjMRBnaeP1FvCNg",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.2,
+        "_ratingCount": 1083
+      },
+      {
+        "id": "elnido-new-38",
+        "name": "Marimegmeg Beach",
+        "category": "beach",
+        "description": "Palm-fringed golden sands with beach shack bars & restaurants for sunset vistas.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJRc97QpZVtjMRVVr0cMqwIco/photos/Ab43m-uBhWPlO9ZUL4PwrAzlfPEb0BGljZWxHv0i3pSGA1gde4DERiseNPzNUbXc9ahRXQTAX4jpHtyiq6byyP_xRJ5CD4GBf_3guBg7rUgW8_qlHBPzvErQSBD-swhprODbUgrGFDsxHwD99U5mT1qZZ9j00mcVzmPyz1-MDOI-nvQHhB0mzquDE7ZXRokCY7OsXlds-O5Na6-ff8vqM6Xx7bKgpQysNSWDhO37KEF7lqrnlAhHmT0GZSzfcGGgY0KUxoqDd8VLUXZOZ6lxop13OiWa8nFRSWlr76B_N8iJ8c5GYyIbYDKK4jp8kOjjSNfHZdU9Wr35qiLkf8NtB8xhY9DazM8uXGHflcWXBprmBAMTPNyNSPZtN-FpEDrjJrX4O1tl-4ySrTLhS6PF6BNp6uzFahsdEvibrfHIy8Dn78dMP-c/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.39675430000001,
+          11.146773300000001
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJRc97QpZVtjMRVVr0cMqwIco",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 379
+      }
+    ]
+  },
+  "Siargao": {
+    "imageUpdates": [
+      {
+        "existingName": "Naked Island",
+        "googleName": "Naked Island",
+        "image": "https://places.googleapis.com/v1/places/ChIJTYaG5CX3AzMR_nUdyoAV7Q8/photos/Ab43m-sqD__CAS-Uv4y46yoIOmVTEOTHBSeJwFP5ENXkIv0DEp3VffCO3tENsun-6BUZZgP284sMAX23HqnpxQVOue6R7QcKWFt6gn2g8ExECJcsBbJGZSjYJ5bTdhE5KKb-W4Yx0pUBnqwACdge5clEwIcuqNvGLmEheoNdIqTd7r6ti8_pnHxPev-mP_sgOfrWrjZR5ZzfzJyOAq3w3J4U4S90jSB41Fhshd_XNchkB7x-9OHo7DrdY9gaEF88Wa3Q3jZNCqtnWTQquXcq13EnenPhFnJdo9clyFYvyCyJGD0JHzoqo6TdAuELS8T5n7xFbUcT4e86bPW3mkToLbrwFAocC0grjGKZVtV1yL8Ljqa8SO5xRoM-h2MzO7bBsT93l93LBpXUf_PXbsJi9ZytJCboQM6Q6TOaFZ-mOfvQw5Bwlw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Daku Island",
+        "googleName": "Daku Island Beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJS0C8PpX2AzMRF2xX83gLf0o/photos/Ab43m-ty3JmVuEdpfLxZalNns9uBlJzhgsHkFnpYjLckzA6NRXyNy6ppsOjM1Ie4dAy2Wvhv_jPVquMl9KLyqGhfWD9FDdzxTqlgXOoiekC2ss4Nuzrekvo-l0YyDb4H22dSQd6P7nOETaS9RLfvaRlFuXZWq4zeVH2eAeJeFdk-G1efjkpMYN4Jy7gUqBbUpR5YFgHsKSXW3JoNECqw6QImzsz5_XWRg9zCmrg3t8VKVocBhdPhT6FqlbBWWuj6PnpYAQQgx7Gxr49P8XQw9yDcybzPR0U9PeWZ--CviL9MJtzeuRv1Fm7qjjiQKLdWdrr6gWssMW2NTuZwthFT_5qI5CPK-EAqpj4o5zCmhPotuqMxpdDeLFfSTvPe0mgKH1t0U8Rd5vpdC-h0NQkqqEBEVCSjR5jugpcFAlWlbHbWR4HYnJie/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Maasin River",
+        "googleName": "Sapa sa Maasin River",
+        "image": "https://places.googleapis.com/v1/places/ChIJC6vmGb8HBDMRd7Q-qNxlH58/photos/Ab43m-t0VHFr514AdDL7Wd6QtQhcUUnvl-s550RFXTk-y1BBsCWEsK3sJIv-yXvLHZoVQSx5CPZLlAHG9SiB3N_TuuVRL9IrqpzscThVQozFrF7rGzshfhiJn6w2BEfMTW9PcLYeS4CqYdLw9x8ccMKBdkqurXMe1Y_RC1Q0bzJrvJctDcsz6aE6yWYZhpmJrxrVjrEfTDURGwSc2sqTU1hYhTwZy28XIU4BR2v_4gHKjpnugcT0_bCcsokSfMzRk6gOLjN0_WzNMnnioSDYRxU1lc3WAERuU2z6s7P5lViAFtfALJjO8uqJsHN_q8Lxjrs1qYk8-uTAJRh1AJgLv_gHze72nsGW6-i5SQ1kcbV6EG4L-nmLKo5ashnC1Ge0fKoDELSG5Q1XbkW8DVyRqtNdKK_lqHuKW3Xs33N0tKtOQ414yQpO78EygqQisQDfOACF/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Pacifico Beach",
+        "googleName": "Pacifico Beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJe7HPCgAPBDMRhlJsHlawWeE/photos/Ab43m-ts0iCz9HcSBJ16uMBDfMGZNWQArmblSeCO-flexW2P4CP9iL4PGoSyeBagQ6c4nF5f45h2bOX4-HHdBmElWlhk4IbK1fuCYF_2KR1Wy-s2rdmZs0oDrc0pchlnQuSa81me2Kn8yARrvPm0F_HCWIJZov4m0XV6hw1qUyDgqw9MMJgPel2O1cz4nGyPl8FUDwY4zg31IFRtUtJdZsQs8JkpFM5X6Oxht_f-GpbdkMbJkgb6qM1cS04PEiIxJlGYQTrZ884-x-8hNV544VKadUOw50SBa073eAiGCixGXTKO3RXbg8khy9ad3sGG5phA4gpFWVSm1wyfS_fV94MALCd0cHNeFdbZjhzo4ztg_1k7WXggznnqh42yrqljczzdpbOQhbEqIEcxDL4Ukrvm1T25n4LH5gVJtu-X_Ce855YPT7SY/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "siargao-new-18",
+        "name": "Cloud 9 Surfing Area",
+        "category": "landmark",
+        "description": "Surf spot with instructors & equipment rentals, also popular for chilling out at sunrise & sunset.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJPaM9Xu0JBDMRy9VmalHFu9I/photos/Ab43m-t8_Hcw3QH6_Pn6V8zKCQ_iJqeVfcwy6gzJqqs8EH5xRGu5y78odsm1m4ZFK9YLWq7pr0MdndDkiC_akYy2j1QR1Bo0m-dAPYtAOCbdMCJv8uaMVxRTMhcsDp34saLUbdbRr2UJE0FmdDA3tnMNOzkpP2aXaUryd8BdWE7NqgNCIHchqI_WUDO9RlLdD4eEq0I8W52gxDnlK-W0LBd44OquEe0csN3AQwFQOu9LKGQ7P8jf83lIu3f_yyDpwGuR3I7eer6kgthqnpRm3M0zDRXpBR8YgEjEV7Y8ZNIzu6PC1gZmXiDi417p7qS9fFB3wdqvRs5OKkAUjhFB3UJTmEZoo3RpFJwOvWTnaxGOlJAYiUEZzOIDWLoR1b5bauJrw6L60Rhx70wnH1d7IGqPdAOHAlwgP5w6FhAFzNcNZ_Qki-YG/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.1651406,
+          9.8136625
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJPaM9Xu0JBDMRy9VmalHFu9I",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 3307
+      },
+      {
+        "id": "siargao-new-20",
+        "name": "Magpopongko Rock Pools and Flats",
+        "category": "beach",
+        "description": "Clear water rock pools overlooking the sea for low-tide cliff diving & swimming.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ7_UsNM0IBDMRQZrwXJFk8vc/photos/Ab43m-tEz43eQwhf0UECMXuH5CqkaHi-7REN4ubbbj0sPLSGMk4GfCJgnFXzdUYCc7zjmxGqfEBqhqIvbNEZ-TQJG67OEbjtMNjVnkj7zxpL6ohF0X3ojywKfYaqyPdici-48rMAvL5ADrmsV19101UldwQ9WkE9EfxAVGGBT2NUpjFhu52Lk0HIv8ao5vay4nn5cH7ZBUe4zGj7jbjKQu12q_Z0XwWKGOHgvhjv84txsVIhqLh-fBWrx83lsFFeh6pPT_raldw-J_Oq-L0mrj0P_yWo_NsDiypKwnzHeDFlfqEyQGIIIU4VpBS03OZTP0a9NPSNa2L43JYKdYzRQTve7XGboAA2RV3cDun8u5ISYjC_AKwa8QnBDYXl-jEgYuieLNU7pfFzc86EL05HcXJoY-9qZcDWEgCuJajQsleaZvN9ow/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.12075879999999,
+          9.8766561
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ7_UsNM0IBDMRQZrwXJFk8vc",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 1465
+      },
+      {
+        "id": "siargao-new-21",
+        "name": "Coconut Plantation View Point",
+        "category": "landmark",
+        "description": "A popular landmark in Siargao.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJDyNf0lMHBDMR6DR70Aev9mk/photos/Ab43m-uJeEUZdh7lQIQlcnvFy13ajj6PjbzGM3a-LSuczk6-fZdHJvOiNdc_OIikXa9bZOB8-_QsmKEwEKZaAstWQznKpOLqmzoqnFar7RN9fMNUwZRuIcNHbn6zPs8-jGXajs2wcBScydMkivA3KwpPmEZIrMk76DUgZ2Y0bJLORb8VasaIdI88hE5xtfdfgx6PSixCgunapvcLA2mOABQ2TSk46mdssoF__X6EQ8CkfAvqhyIoTZ2rebIlOZAXXDL5DKcVLwSvlxKkthm0hNgP1BA2F9uuDe4tnR8O3lHr7St8irUcoKlKg2PK5wanWaBaT0ENjTWZOG0FyybcyFGRXC0JEI2dLoBbyERNCsOekAUIC4oBjlKMJ5tWQ8vWgPmS8ky5vVsbpi-MYu8vaTEaMAzAOE3lti14-P9SyY0JlIEIT--j/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.0596118,
+          9.8123234
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJDyNf0lMHBDMR6DR70Aev9mk",
+        "_types": [
+          "scenic_spot",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 1171
+      },
+      {
+        "id": "siargao-new-26",
+        "name": "Tayangban Cave Pool",
+        "category": "landmark",
+        "description": "Swimming, climbing & cliff jumping in & around a partially submerged grotto surrounded by mangroves.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ6zuLQkEGBDMRrP98XgrkqNs/photos/Ab43m-sHuOIHX3eA_ozZ6CDRmKh0lGNGcEOZ16rK3JpPwFFBsKNZalWYqUHAue7LV1FHRTcLEkr3qqEMJX_x0hi1438G7QyVosdLCaq7OCaGCTi6I7CLwYCgMTuwUSlnUH2pqXmojvq1xNtpSCEFb1VFhGkYXKSJwkpemzshd0g_JD8n_Kbi9Gz1EWIbJv0gRqZZ5WHto7R08HGYhIrYGNxb8Zv-AnxhE3auxxKq9a7g9TzOwbtSS4R_tA-0PGE0B0CXE-AVJavWr6ELxM3OdCn1KzyvmzEnKJHedeBVnFCot4ZqfgqDpWBMGbPGprCCHEyM0i43J6emDNc9K2b2ZzOJD9_LAoayKy4X791AARJBphEUOW5GqC-tZ4nrKanAc4GZyPgljGt2q8H0IZIp_wQz76ZOPdXMQCRBLNn-rQt9RwPdsw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.0629932,
+          9.861264
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ6zuLQkEGBDMRrP98XgrkqNs",
+        "_types": [
+          "nature_preserve",
+          "tourist_attraction",
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 497
+      },
+      {
+        "id": "siargao-new-41",
+        "name": "The Boardwalk @ The Boulevard",
+        "category": "landmark",
+        "description": "A popular landmark in Siargao.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ0wXmrhX2AzMR7Nqpagd5n6g/photos/Ab43m-t5IcEqiPRikZuaQLTY42m_SyrWqQyOyCEeX3doQR4qHB-mPSSB9g1dMtWMzloMcpZxT0aJE1rlVgopEys7DNHfkNckMCYmSCkr8WoXT_ZrJ8g_vIYBsFW-rlzB8TRCM660tnVGNrUa1cHetcOo1NbAKAozsr0miIyj7JSgZqJ9I1Q91DdhiaAL_1AsAg-hnw13Dom6rJcfcT8WHoekknklBIJ1aOSI1MS6sIeMGPMT4oxe6FR3cFcuXIK6KmonoMKX0DwmjHy8OWkFi3-fdkJcmEx3p8qZkIUKj6ZZe7rAf99mJLWVyu3LorR25cHysDgcrkg3CinyAPtKbP_uOHDBVRx2GeqqUdRbb7dRjt8EaqXIf7vmAWeQFo2axnZShJBvEnJWmFafoDc0y4b6VCx6GbdPKjyafZVUL_Xhnff1vw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.15678709999997,
+          9.7810734
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ0wXmrhX2AzMR7Nqpagd5n6g",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 474
+      },
+      {
+        "id": "siargao-new-27",
+        "name": "Magpopongko White Beach",
+        "category": "beach",
+        "description": "This majestic, white sand beach features tidal pools at low tide, giant sea stacks & water sports.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJhRA1i8wIBDMRd5pwubFfcJo/photos/Ab43m-vUIh1SYUpez3j1Qzl8YYRjYObYP1D0G91nOCvHoRiYxu9z8Ng-60jaLDFx6AXLIn3yZ1-3asYBzhQiZ5bGclfac1wscejEcAFjdIhQENJ-NxCV8EJgI0upTbNDpL8xMBWPnFpEkBGqrZwAZyJsTaiNzjXgGlQWxvEZWhXBlN-ZExCrR43D3z8sQFnlMtHuUyT3zeb1vYFa0Dx8ajJdkAsGH5e76DH0Je8rxlFVng9yFMe8s4iDtDbn0KDUcWJopym8KFdw9PFQC20iuDj_gAIMKdIH8oejLGdGJC19PUTNfdT7ew2GNBL3jkc9Q5Vxxc_AeEjQa9-s-ci4_x1SFgffQhvyfwlJen253wYmWXsLPOPeaWYLXnx3gOUPu4V1JnP-y8QzO2T9gszjeYLV-6zO6vnxCYl7xlcUSK8TmmFU7Q/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.1179572,
+          9.8747293
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJhRA1i8wIBDMRd5pwubFfcJo",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 408
+      },
+      {
+        "id": "siargao-new-28",
+        "name": "Magpupungko Tidal Pool",
+        "category": "landmark",
+        "description": "A popular landmark in Siargao.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ2XknngwJBDMRKhKtFliKFWs/photos/Ab43m-sRuudU2KSBxHgGd7nKTeNVNgoGbk7OYfnGGGpysJYr3jVt-Ck_oqQCsLFp5KioAqudH7F5_KQCypZ6bFN83K4BMzWo3CFjULn9jlPSM-dwPeAJI67_JPBQiDQEHxCbZdMCQpOyu59QLogsJTrHTzSqutE5PMLUZjJvY1t_XEJUEWuqhaTl_nZA6FdnRXENjANX8BOJI5q2Xn8AamonCW1NO3A-nCSHuDKi2WTvjsV2_sy2NtsqwKaJtoSTOdIn_VsUBLzTmUal_xptJEji0GNQwZ9kBAvdAvwh07V-jV1vaA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.11991609999998,
+          9.875508
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ2XknngwJBDMRKhKtFliKFWs",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 363
+      },
+      {
+        "id": "siargao-new-15",
+        "name": "Beto Cold Spring",
+        "category": "landmark",
+        "description": "A popular landmark in Siargao.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJX3oGLPAJBDMRHdJrYljf1aw/photos/Ab43m-vufBEynbel9ijMODPfXJe1H3XfBm6sdmqjslO7MbHmNigt5au1PLQPJUnEqVbB4iiDwx2KWBje0OSzVfGOYM701PVpY6xml5NdYpBdyUaaMlU8NZisgGTHDTmW9cAFHXGqcoP4ok40iOvMJ80zDaEuHXpmbVMtbUP7yqzfcyMD705j2DqifM2MRZfFx5EOZSg4VDBCr3xPGBG376TecsCzaXyCgm6DR0ERUZNEIP4KgShNgIUoZzRovFHQwMUE14AGtPA6qHyO_scyNpXTyuZdlmCfxP-J8UC1bLjt9tQzaE6V5_4wa3Uk-tmw7baCYp03oSp16RbBu3Ghv2r5SZucfQ5Sm3rXrG474tUiDlr-fm5VqQ4wxurHsSMW0OgLJrLOYe0qWHjG7jSWfyOILmAIvZe5tA6rG-9ARyVnUVdlEiRxBRNVw4AScoIBPFtX/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          126.09097129999998,
+          9.828927799999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJX3oGLPAJBDMRHdJrYljf1aw",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 210
+      }
+    ]
+  },
+  "Bohol": {
+    "imageUpdates": [
+      {
+        "existingName": "Philippine Tarsier Sanctuary",
+        "googleName": "Philippine Tarsier Sanctuary",
+        "image": "https://places.googleapis.com/v1/places/ChIJiygR7CVJqjMRN6KOwTPZm78/photos/Ab43m-trVgRXF2ey0AyG-D3SX4PYfNW6rCtzY0u76t4VZ273NAv7nWx0qR-mJW8di-Ud0xL_CR95QphFpW7cf5wxRLvml4YOninB-uK0K9HVJgUV5vu2vpRc3CkEQ5s1QMBooVFuVlZM_wnmKMpNp8CfuB4FlYMgarRbRCD9Mpsk1KUnTWNS8lzLRa5SE_CeVPB7nPvBCv8R_ars3X6cShHEtBG6n3Uiw4Xks9ldRecuv27wxeLjC-kiFNALIj2ZXqJofKzl4J4-lQ8QzY3hVjrswahf_Xf9goEwfKcVPk1gldD1Hw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Loboc River Cruise",
+        "googleName": "Loboc River Cruise",
+        "image": "https://places.googleapis.com/v1/places/ChIJmx0VqFBEqjMR-6rgBqOEo4A/photos/Ab43m-uqtyRBVHd3SWAFwzL6jIH_5I3-8CS9BooWsKj5UHNrSX6WMJxACkU7ss9Q5KTFxjyU9F-pcftSlKcZNO7OCECUeMw9CoGEMRdXdKKmdlMZeYe7ZnNhyXKkhT6Gp50ELq5DiWbCnen6KxS2VQa0Ib4XUDl5TOLholyxD0OJgKl4wDKbIp8-xAFBNmx9iiSWLFruo13P4UdmAxbGFMFuyXLpGlvCFvZWX6ytaJA2_W5lXZrZa4wO5wdluemQK8wA2TSJqM6APCH4uC9uuOiJfJV3XFrjKMqsZfp3Ijwsih0sY_kR2wb2B7h8MM03lN1vPlosVg8dK2w9Ra6C2mDmfgVB8rJWUk-3bjH9DbLKbaTy7MW7IW2nfeiSGyxOFqi0wwSG6fm_R8E94uG2gQNQ2ffWtoy5M7HXA1BWmyHaMbw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Alona Beach, Panglao",
+        "googleName": "Alona Beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJpXDEoKOsqzMRns_U8cNzu_U/photos/Ab43m-uuW9P6yL0m_6Bn0cz3rmXZBalLD8_g389XwnndzPayWdxuyo6PLWvwrzFCgtBvtY18w2PS81NQ_Rq8zU6ucvQCZqIGxX87iv6dyelZDyB1Fbhz7rh61LWF5JvaY-Is8fwP8vtdV18R0Uwzm3DJE95GrrqoNLbvjn7ptrk2dXd2o7G_Ru5YTiQ21KCO1ltGtGdU37D-cQwKGQBsiR7A8euVaQpkvc4usAWLo8SGkJdE13xdXZsNmIbjM_0fUri4_EX_X92sb5540sdnlvLaLiotRoTqfT5DhpDAPPSxwyTDrZcTYeimlqEV_p3r6foP0meZstDpIOdW0cQ7cwEYjjs9m-ujGT3_u9F-1IihemakQ-EEKAiCpS9NBzyg81qtWkYm2qJHsEQwyC7e20wVOMNUgHeVnSHXTXQ7tZE6yM2k8w/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Baclayon Church",
+        "googleName": "Baclayon Church",
+        "image": "https://places.googleapis.com/v1/places/ChIJw_CRaj9OqjMRSbQIIGXN6uI/photos/Ab43m-vkHaHSjzhtbpB8vmbKDJYaI_4Rtajj5PWxinPBxbLN5aHF9M_3KaY8-0qlMeuEI8kowTzinSn_48RPcXKSgFze9uIXQqXnuEdRokXdXQ40vgHXd3oCqm0W871kH_Cf1165JUnU5qZ8n7qxoTb_hMfvwz_yX4Qy-NCw85LOHFPnXgq01FWZGRqsVfYhopkEx5f8PZ1MsNyNxLszS2IBNtXpGZt5elDdcC-5ddwtvoTCr2kjULUoDHdOmXEv8UAwwV1rwKWVDB1xq2HNKVSJlKlDBoVaKnxzs0CAeQlT5mKmJSM_8RfMMTlDgw_MV0LPzArMzqfYkAY3P0Dg8LHOGxh1vfWquL_2rz_BzLFnFvd68dfiSYmnYwsZ8bLleD2TWU1pGEd1AtV9wq8UtcwT06oI53sxUlNAAYBGTH2lHYDgpA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Hinagdanan Cave",
+        "googleName": "Hinagdanan Cave",
+        "image": "https://places.googleapis.com/v1/places/ChIJNev-FVJNqjMRpk4oja6EHi4/photos/Ab43m-vOsknFuuCp_IVTC8EU--qHFqNqT7mBHb5_ZBMFQrSMohIv78uZ3G88BIjEgj5XRrArRHrVdvIGUFr78cH-fIGTJEtHqPua1oU9uL0898xSsyMXn0JQ0XnYMPamz_8nBCysTfL2ZN-HfzNmTiI1LhZ-FMnh3aBPgSRYCzXeed_Od_RPkqu6Mo8-l2prmbhuA4ctaVoAe91ZmN5ZVVK98bKWcno3CVcmfo76OYEVHTKnMGZ4NRTSj00MAzhu75hmuirDPkVDtLY4B6Ej5TIPZcwtC-Ko4SqbdTVtI-nRgkk7mUyjlkSx2_j1MLY1LqzM5bie-7EChh3mix1iIwqJG-kEXM2ziYYelpGdpbKOF3AWWOUSD95MZarWkWUozX41uRcwZ_-oAcRT4PIl4lNDnki0fzkbmhxup11MgZJX0tNj9bne/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Balicasag Island",
+        "googleName": "Balicasag Island Turtles Point",
+        "image": "https://places.googleapis.com/v1/places/ChIJnT7ffHWpqzMRDzkMGAIhboE/photos/Ab43m-sIGlxgLyKPKlliUyxgcgXmR3-FbpRyXjj8SyoH01f_hyJsWhWRdblsurZqnab0rGLUYRIr2yuNU73azGQN3oZEP_m4wqO9JXMcwkAlG6znMaicVXejHxR_wi0ln95x3kxkFRcq-WnJn534wv56_4M9NtKBc7ii5D1YMa2gHbu1S5WmoCanYq_5KXdgCaBeerX1LlyriUed-63hxHwbhpWBeDl7ZSWUcBVuzvMf81Ijty6wremJOyYcRAyJ_4vzJicpUU4tVM97N8uEKwapqgf3QY__ysfrTUcdI0GUzohZd-4lRRLE1CemF8ztBNlvYo3lcDbipmV8YF20NqE8mci52dZSQ-ft4v1u5ZF-LUv0DxQNq5_3T2ubS5BvDQIcS1JLFUf7W2EPe81qTq75uHE7xd_Xz5on9oA80W_yNjtX4KFCZbK0RWPMMh0DVzyP/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Blood Compact Shrine",
+        "googleName": "Blood Compact Shrine",
+        "image": "https://places.googleapis.com/v1/places/ChIJTS6i9t1NqjMRd2Zq2VhChxw/photos/Ab43m-uqepTFn7POaXLEeVS-BT11-kGW4a-qxTCzO_gYT4V3da1gUNyVRDiE_OfxwrFxUwUKtxA8UOPOXTV_HhH-BBaKzM38-Ibma483crorBtdYpNqL59-eUf9lWhs2igdVJyhVDVTIzXwJy_LquTb0nXe6iX2Ck5gu5F6ZvAOqgG445X7F8KEfXEIkbgCja0d-7YwWOwMxFeZXs32eNMlKAL99HBza-FOis8q5e1CWZNEpkuJLeeuGCzqJNeEzDlHrCcuMbfyI7Bko2ZTAaQBi1l-yljTjNU13ad7Tb_XtSaWZHGqSHu4GmZP83Z8NIfuDvuYdBy5vjI8GpTpLkRd9DvICqnSR04u59jbEM4GFZI2VqH55uelmmuncfl44-fq71qFettlMU5fWpNdAs-nmlfmdzCqoforHiDQnrNDdpahbvnAuf7suTJepBYO9qDMX/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Man-Made Forest",
+        "googleName": "Bilar Man-Made Forest",
+        "image": "https://places.googleapis.com/v1/places/ChIJV3MW-lhBqjMRYdXbTWLZk-8/photos/Ab43m-uQsg9j7iiP7V4cSTzNNzEiBRZCO27uXFWIEouYaD96BI91PAnQmsZX07AWUnngzcwfbLm2bBP2O7Wiq_wylH6Pf66vKi6Qsnyq8iqXhxTC5xOFCZ1l5yQcYrDyAgHGh-pDP8SbLXTBiaog90gBMiNq1Zt89IQuCFFeJQaLiyhjSQe1Kf1j5yQ3-pJDB5NARI_NmaftoY7IrDxqYyoSsHLys_T0UqLk2_PxjKtf44QaciVXOEPUr4uwbfuh-3IJZqYN-1m4RFcfHEj3XotDu8ehy0y3_Ur-bv8sCYP0b32HehHOCZ9943N7l8QM3maR1WYTKuNgX7l5uv5vb8IinDktt804vazcPPCDNSbCan8zCnHUJqgLF7gHpXtnCQQLEqzNe0-K9QjIbVrp58J2JBkuqgatiJv_45ipXWz1M2mGrdkJ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "bohol-new-61",
+        "name": "Bohol Tarsier Conservation Area",
+        "category": "nature",
+        "description": "Unique attraction featuring close-up views of tarsiers, with tours & a souvenir shop.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJORwIIvxDqjMREtkvm-C7978/photos/Ab43m-u4lCtah9rHYxIvu0KyaIrDFkeaGBevbGUvpK9OVS-JsdpTTQol_pqG9O1fqF0Fka63gS4K31cZo0ARoSEDi7_pFF2nd-0DSrZKVKXdjSoB6sMn8qQXDlKUaOdATIK8U6C8NgBrBOBezDzQ96mTvY6I8vi-FfaT2ydCYDvh044xhu8y-7TBkw9DXPYNBFtRoBSFh_lOVDnA4aO--IxigYzDB0E9lZ29PNCmjG-GNzTnCpOKaAVkAJLkGcWrWgE0PMlQmPCE3u4NTDSQSRdvPiVxa6sdUcAcApYQfYwKEvjg_6fw-nICVxkbtuj-DCnXNdFFjdpdv9oOa3dQHhhF8l5Rnu6qrd0axTCMC6FwV2Db82qOVH3ioUD9G3-K82NeZwuFdympE4mANGrqSYifaMv9TIAetrGRUujxZoPc6ZsbCQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          124.0911754,
+          9.6762175
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJORwIIvxDqjMREtkvm-C7978",
+        "_types": [
+          "zoo",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.1,
+        "_ratingCount": 7496
+      },
+      {
+        "id": "bohol-new-11",
+        "name": "Loboc Ecotourism Adventure Park",
+        "category": "nature",
+        "description": "Adventure park in a remote forest setting offering treetop zip-lining & river activities.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ0cDKVzFEqjMRrTcGYTsx9nQ/photos/Ab43m-tcA13LGoH21ZrBQVJTbPwvMFpcNoAZNKb5lzxiu2KBd5C3m8IEDSPoSRUtE0ADEUsWjiaWdkU8jHlDGEFVG7b3WV2KLjI8Gchv4N9JQWUzDmoHSnA6-lWjljsCBk47QZHjrRQIh4FjOIJqVXvHQfaEbPKeQ7RKjz4o-E2HzOYHUQlUtD4exgzLCwBKK7uZ_MkoZTDdG8_te1hwWbOFzmlfPtfYmM62kGX96V1ghr7w6DSX8mP_KegcCxVtglS5_QF9hrRlEC9o2B90VU9vhegQXj4LNEYnxylc4VofS0FDLTblnIcFyH4WsyPVkOIZOPFmHXiEjm1Xc2PqC6paJDHVTpUdOZqo34BCGx5YBxH5Su1ucoCpzPvhsMLiDcXfji5oBvEX-7u6mFCJtXv4dntpj7vjMm0T-jyt4HpK-sPufw4G/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          124.02380369999997,
+          9.656017199999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ0cDKVzFEqjMRrTcGYTsx9nQ",
+        "_types": [
+          "park",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 1428
+      },
+      {
+        "id": "bohol-new-30",
+        "name": "Sikatuna Mirror of The World",
+        "category": "nature",
+        "description": "A popular nature in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJey_2vdlHqjMRuTPDbgu_JFs/photos/Ab43m-tixQkFxTjJ5rsSqkhvB1Qp8LVv5ZYMdl0l_nnbwlBMgdFmYlaRO4A5-oN-u5KGKXnEI3bZ8YMPeZcSzI4g5a0onS_VLdQhpGdY8GMnyF9a7cf6Q0H3YFxjiRAzJBMtehZEfOsc9pMP0kkQlzE4RpG7gkIm7Shu_oNtQ035AX9fAumEsMRAADkKkdwlB6v-uAeg4xnAN7vUbyFI4PdOlyR3ZY4F5CSYnZH9l5dcXg8c3eNnDU7RR-Li--DhOfokPn5AHsTjK09DgAAkBlubZs9Ur-HxCEC39rr_QpIyyZK6Jr8mqgUSTXoa5bZQtnxkersdLNHyHXjqqfQVpLnziBaLfCOHEQsCHDQQhZMRz_b-URABnxfgXpJbRJmviJlrMvEAdz8NCldVinZcx7RnL3vP0Wz0X5sI2BYXl2X8zvLwBpAl/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          123.97551070000002,
+          9.6707229
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJey_2vdlHqjMRuTPDbgu_JFs",
+        "_types": [
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 1631
+      },
+      {
+        "id": "bohol-new-44",
+        "name": "Napaling Reef",
+        "category": "landmark",
+        "description": "A popular landmark in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ46B0-iytqzMRfFyd2J9lRv0/photos/Ab43m-trsReKAXs-xHsqqn9B8vO2v9BGa6F8sBpoON3URe-8TuMwopOuhueNzN7ZOK7dbXpGthvmFqc2NVEUVzzv-E9U9Hf_UoQinKdB4CozgpV-3VaRIBOiStAJm5hdr6ha9knBxEECt-4q16P-OhJY4Ne9K_7RbkSxKnGFZFOE5g2rseSekmhXwwN6mldrCRmMDv3DzPHgL7FFtQDAPPB1AQjAEgGoyd2A3gNge_M7BR1jC4FU1UfmHd23rkE6EE_9QfhfDRbfPlF9PKMxWMWqZxrFpYOUtsw1BslWJla4t0EDh3tUsYDVPZX2ARHvcKUjYZXFRRI_0l2tR0dDp6IoZx2z-GFiI3pTLw2wvL-ioVlHdgGrzuwsGMoVeAtVb1gTyFK0v6No29t_jJeXmRvNnctApVx5xd3GyvOesbvCyeOxzmlqLaADb5wdWWKNog/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          123.77394349999999,
+          9.6182155
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ46B0-iytqzMRfFyd2J9lRv0",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.3,
+        "_ratingCount": 1565
+      },
+      {
+        "id": "bohol-new-7",
+        "name": "St. Joseph the Worker Cathedral Shrine",
+        "category": "landmark",
+        "description": "A popular landmark in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJVVVV-W5MqjMRFnRuVlurxs4/photos/Ab43m-vfbnLII1_dv5sVR0O6xOp4OCoqxsm9P9B--9xjhKqwIr8YK8srOSCJGCdBt9UHtFykSBlgRFfpLCC8lhqbdTgAp81e1QdYb729zOag-95tu5O7xxwghEflrbLwIaAHv6flws_nmlnxawUme5HtF49oxhtOvx-G9qivXOUAJJlNN9V-UCA4inZbwKLcH6uM5DhxDplZWynpMJcSNR-Erg6H2nroMlmOsCa8wmBeWXHCUqGqN3Mxh6LS4rpRUDEJE3rifCHHYg2UIe0vfXf46crtxa-Ey-zCSQ6BulWAI6dEfzfoTbzrK5SpgB2lbhLhKekRTcSlCWR-Xeic8KQBgnaTDtijBTiXJPADjymhDkNDAh_ZtE7MtLRiTUDMKf7dnPLyJNMd6Zs12ZEAghrgM2YhSL8wVfnZkapha2FJDv1vtg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          123.8558799,
+          9.639506899999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJVVVV-W5MqjMRFnRuVlurxs4",
+        "_types": [
+          "tourist_attraction",
+          "church",
+          "place_of_worship",
+          "point_of_interest",
+          "association_or_organization",
+          "establishment"
+        ],
+        "_rating": 4.7,
+        "_ratingCount": 557
+      },
+      {
+        "id": "bohol-new-45",
+        "name": "Balicasag Marine Sanctuary",
+        "category": "landmark",
+        "description": "A popular landmark in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJsbxybwqpqzMRomjeU1lD6eQ/photos/Ab43m-sSs5CXBGDq7-qScsRjLnLnC61fan50ckYY5yQVP_QzpltIesQO0NtDgJ5J5ifJJxq27RiiPE25V5d_7UITqK-6VZE1Uy3m4TVNBWk6jGkdNv79yYu-KO99pWv4q74Ib6ADlOX2H14c77tqmrHbDevpbQAXyBREYVrzVHpA5h9pcyWjYpX-M1BAnb2p3C_giC5pSrhc9UrB3Jd0DCNKAsH8ghk-jK23U0DqSWGGKE2St0MLjleQKQeSKNt3x4_BmRJW2SU-ZOw7YldX6eGIYYObM436eXzS5P7e92WW00XqKKz0vMFMKJLLtxevN9Sc7OccImBaQvOMoMMp9iNqPK5Jc1N3GAN4wkSKy7gYZGSiDd8kc2seXv-NNHcO96Y5AqhpVdV2N9P08q9z9356sBwLXK0NeX1lKt2KVZEjbWKSfw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          123.68194629999999,
+          9.5153103
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJsbxybwqpqzMRomjeU1lD6eQ",
+        "_types": [
+          "wildlife_refuge",
+          "tourist_attraction",
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.3,
+        "_ratingCount": 977
+      },
+      {
+        "id": "bohol-new-13",
+        "name": "Pangas Falls",
+        "category": "landmark",
+        "description": "A popular landmark in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJDcrrrwk_qjMR0lgN0ZoRxMg/photos/Ab43m-vh0KuLHjGrsr3Oxti900utc--Hko2kKbpG9aUHIUo25kLfx_hM8-HXo_JRDUjIKRN7U-_Of0xdWFr-o0gcvHc9RLX2fXm-TsHRjq-Uf_u2-73gakpTIv8Fg2L7qTDUjHHXgq1a2L9BKVMAu0WTME8oVxfnnrCNYQor8GFoBKCmqHZ-uKZKxzpgD7miMPtrUu1fZebR1pvcS5Ugzd-4Qdb-ywiFlIiawHHdQdqtEFgm7x4LIgtGt1SJ0RSg2wz01l_IWY_r3luJ76VqselDeh6QPbpArmT9eHh-_amjsoUg6ppYeVcxezu7yTqE6YeGRxbYs6p1RnUMls672lrKwAvnqdN1eG28oL_Q-X6UZvGwVJx4JikPBoeN9t0qGpLLk0jL8RGF6YfA7qln3_k5EzpIXUg7xddjffetD2YK7VAbhCo/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          124.10652159999998,
+          9.761343199999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJDcrrrwk_qjMR0lgN0ZoRxMg",
+        "_types": [
+          "nature_preserve",
+          "tourist_attraction",
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 549
+      },
+      {
+        "id": "bohol-new-15",
+        "name": "Church of Our Lady of the Assumption (Dauis Church)",
+        "category": "landmark",
+        "description": "A popular landmark in Bohol.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJa3vXP7pSqjMRTyHiRAU4DWk/photos/Ab43m-tSjhHTV-P0ApFFZum_cQS7d6_uEayjmRkXyGIxcLt_t7G-C1oWqcSj1Q4F_uF0xnuuVYSeJKs8remD7xdeqak5POsg9exY-Yq-bUeSss6wZJVK15ibVRgX1c-KtRoLHcZav2Tu_oDW4mNbr91ojpuR_lLqDJXpocgRZCjiJHyA1iosR_wAXY4nzuuUqRgEOmrLRq2rd7K13puafQHESfhcryic-YlPV0T8qDEbAVcX75MYLY_NZ4nuI1EEdU4D_wg0GfJLfSNN_HpjirZWqwg57Ekt6jX8z3yEdZR-V1OMtb5Dtj9XmsVGDJ-RzjIAEKtdZwT3LTUH6esWIZ9iJb4Ye7iN5Y0uEhlqdtKerCwAi7sft58qmAu_r0wqYGUGkkGcq6ycyGCBECDgkN-AB92AfQD8hklSYDblG5_AOzrtbp0JECed6V4A28sq4w/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          123.86499699999999,
+          9.6257568
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJa3vXP7pSqjMRTyHiRAU4DWk",
+        "_types": [
+          "tourist_attraction",
+          "church",
+          "place_of_worship",
+          "association_or_organization",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 513
+      }
+    ]
+  },
+  "Baguio": {
+    "imageUpdates": [
+      {
+        "existingName": "Burnham Park",
+        "googleName": "Burnham Park",
+        "image": "https://places.googleapis.com/v1/places/ChIJiYLvmGmhkTMR8rwh5qkzitE/photos/Ab43m-vpZ-kRal4Uop9bzSXAM2xRS2v3vQ_NNU8xvy0LZbOr_nnS53cr__JGoyn96uN0uwgBH6cGqzQDOIM043gsjouKBMjaLM3F4r4MeOpBluaL9LgXxo9PWhY06MlbPAl1ldiEfNApC99PT7ds7_N1GlRcz39Xftu7slX1q7tBVAJLSij8IlsA9bBgMM2d7P9xzKfOMGntQLob5noUxMrGYRPE_SOTKHwR4gb9-OtmAcTvHT29gVWA_IWgsTmfOqnCAGDRzrTQHOklJip503pHIp5YuBBOwqzveEnXfbhdb5g6Iq_P3TfhJd9GVL_OBeTNDNmWx4ttUcYarA_zDi8vx428V93sumSmMjZRAiemX-4vRwJbWNQJwgYWABEXW75P6OhFWvoqODTnlCfmutv26jTacpWGG9QBs3P8HoiQK-34X775/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Baguio City Night Market",
+        "googleName": "Baguio City Market",
+        "image": "https://places.googleapis.com/v1/places/ChIJTc4JcGehkTMRJ-Q_xgjq4dM/photos/Ab43m-taSxltdjrpUw3eMn-ev8IgbwiRUJAgyoXvoMWW7KlPbiuXxHrIGiZ0112xJM7jEsCRoPJqlCU8rGstO7TulKMe6V6EUyGfGAXNrdQ9ELZoCpGxAjWNl4wF4ezJifYl2srEzsY-7iM0buVzPLCVFJQTjOG8grq3sg8swz021o0Pz7rcFIuo3D7CigvCU8acmT6Vj-XLR8rloMXEe-NCLWhC33KuKwae9HnbC08uPk26Kk_ZPc9YtbXVLDG2IESzyfu0v-H_j8yIdvSVkvYV9jFS_hefyjc7cJ_2bKokoOleafvsuK18ARumTrVRvaj-3iG3QnCVQxFyn77F84h1BHjiJ_EvD_i2dGB6tY-Ar6rTRqR2zCEe2XCdGib4aScy2pTkaM_qE3XjryAjdt4DZrXD9Ns6jaQi8DSSxK5075k/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Mines View Park",
+        "googleName": "Mines View Park",
+        "image": "https://places.googleapis.com/v1/places/ChIJs0hWPgKkkTMRoGuurDgtCrs/photos/Ab43m-v36Ni7Yy8oX9oeq30hHA_Ig5mYjA_r5eK0gcTTVRZ45m0fcuMb-QRIN1zyDOyq2UecjKegX5d4n1j24SEfYb97goOWbw6m2cf3CmEGkU_OqAuFr5bAB1H9H5CqDyHYkwGBS0AXzG-xemwkXrliT0UfZfvI8XEWZJFg0a5ZoPNFVYR1I9XhK19Sg8VKAkk2Akq7oLsFxIADb88g9o4VjLsWuuP3m59BthNd56pUrqxZJYctUyoMZptHKMwtIKcW_qy0yUXSWGG5NfoFk_R5kQFnDr5i7JELJm8pJC5eYK1-sRRJTthF0Wx9gs83-yp7wLadRwGeySV6tNR6PtMnbGAQOzDIbzWgu3GEji4KJjJue_RIdtJcHCe_iNBdTn0Ek0jpsle6DPK12Io8dlt9CxPijbSF-Pli-iSdK3zkmC4c-DfJ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Wright Park",
+        "googleName": "Wright Park Pond",
+        "image": "https://places.googleapis.com/v1/places/ChIJxeBpqqymkTMRM6Z_4OOxZk8/photos/Ab43m-vO4GzNliUYew6oG75hLSNljAd7w8toS-OxKK7INhz6wwTcMDI9RUB1U-dsSylSsRRvz0Ha9PAD23EugT6PxEZBwZlgj0xiKk5AFh6Fcr_svOkIcrC_N7KfJzsTUyICH8Y8Y1qgL3qhbQoTcq6-X_PFALj4unOS8zH6eLP-H6JVOYR_Aa4TkkVn-34MBSeYh5QFARHSmJ_iV_hS2WIQz3NurWNJ9TeNSRffcIRtKU6UnTIIECR2-oe8AuNEU3omASqHJij0406Ip0vcYXV9GlOW8Kv6zkvMCt2hvdbEpv3SI0M68lsE_8FkvIZVW-0nJ5bUmQeE9Pzk_8XCqDVRTOJxDUKwIJrot1PIQ5lHxKHQg4NUK3pL_MgehddLZgz4uSfNbga9asdDaunhmOsL7fvlMI2TfsEDqKvoUrgdyqYZ2eortsvq6JlnoWVsQTTq/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Baguio Cathedral",
+        "googleName": "Baguio Cathedral and Diocesan Shrine of Our Lady of the Atonement",
+        "image": "https://places.googleapis.com/v1/places/ChIJwblPOF2hkTMROOQiH9qxCwg/photos/Ab43m-vPCJB-opEktSh56VOPd68gbHV6cVaXjmVkZ6ACfZtUfk-AkS_cmHZjLdgoiupSXwlT-t1vc9I9rX7l0k6SHWVnR3vz0WHMI5bS_CWqRTw1127xCpTONwD7SfmbgJmy3lBW7uItVd6p-c-cYk6vllbQ0rtauKBDA0iuvdCEBKaXWWZ8hqmsjD6vs5N9Ggt412IsnNIV9R0VL5pmAsvmhui31UO2pDLCEEXufXomnFhQgA05PpkJ66-MbPDUuZG28fE3NQgwyAT4w_noig10S_MVXn2BcZWMuiDvzPjbeVN9wFfCGR2ZRcro52R86qwW70IvBwFiUGVq_UJ7dqnTBsWPuNpLJyE6qD4vU7lmU7FLYOYzBEF9Bma0UitpfGwdwf8CJJtgid9G_Tt0OzyEV-LOhVdJ_ZuGGoZ1cl2lCqdpPQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Camp John Hay",
+        "googleName": "Camp John Hay Park",
+        "image": "https://places.googleapis.com/v1/places/ChIJIZaHXBqhkTMR11L41gzuibs/photos/Ab43m-vLn-gWOXfZR4F1Y5OHBvzvTSKZT9okxAH6AU5BuEsiLWLItYTMtWl1680AMrs5-qdEDJqg9K886hYi_Hv0Vsz0sABGlFGynLg1IYKeGvz-n5mO1aKmEAFVGaMBCcUnWPmExdF1LjslLat8NjsWUYbCnxb8Dji8DUfGE-rwvf1o9dzymTBB_fcTwY7Wtl-BIUsHiS_FOj0Wwbjxiu_-QyyNPKmfbmQE9IHKuSKFuTjtgU180anSaNPme7_56XnmAe2o2pX23wvCXHhWDbsNOLlInCjcl8hK2duwkFzNkB-A4gr7it9jGmNx9UyJI5J23NtyPk4qQ3QcLx1w8zOOCtdnwQODgP5mtGwAiNIrXq0matnUS9x5OF1KF-QH-kUVTLVVDXT3xTdrThPbVQ8thMrHCmNP2-ptJhev4ZGKcQlhlMS1PykwBIaZc_4dRmh8/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Botanical Garden",
+        "googleName": "Baguio Botanical Garden",
+        "image": "https://places.googleapis.com/v1/places/ChIJJ3IMHFShkTMR0mgoul-AOmc/photos/Ab43m-voRmUqxHnGdSzDJ5pUP4BCunRf54voefbfZRY9V2nRRLIUISFVc8QJJzKRbQOI3gVBrk5qWl-P4GLeZ37v56bwFqW-WflnAkE1uSzsvtaVOOBDvhOWnI_hcBSuApQGO3njP_mnwtvn55MeZWRVNX49yUBRTYbO3xEeOCjUzgxiAZ4-Iwf5ttYaeRxHlZtLl7djbICm5RSBBIkDUFynhW-d9fEh9GMRPgu4h5v21WZZhRuDkpBQgA2yTx7jgo0ndgxIW52cq3LTQXn2qYoTOSB8zxVuxV6yYDAKIxDH5ffgpDUlrguZ_jKmSROPibHpCSFJGv9DFVeSdLNBJrfL96ELd6LQheyCzfgy9H4BLieve2Jbx7ZJ_ayEEbA7FrCf2Z8zXFNylag1uCo554elX6Lx8GDwgRiKQi8PjWDvv2uNhA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "BenCab Museum",
+        "googleName": "BenCab Museum",
+        "image": "https://places.googleapis.com/v1/places/ChIJR78RMcChkTMRyWGEria6N9c/photos/Ab43m-tWKSfYQaJkRXljHfvy1hkQQEBIhp_NQvmRfAt4cJoEvzUcX852XhXK6pPezllwlGZvaMHVQAKbrdSOLv3gK8sw5Ps7nqLxWIxWbQNLfGoj57rc4NKsM8oPr-vCiw7pb3Qz1UaieWVTR7Sb_42Wh2EhJjdELu-hQo6uAuI5DDLy9-_vq4-xdq1x3OZpo6FDdHVJSDC3n_2may7KMfxIMF_ui9QXLDGdy9dL0O0LJt-QV3v3W5Mo3fUoPy7r3VoHe4XYqfqGUlE0Ty-UEEvhPh3NCviArCfmYlFdQWj2dX51nrWLxkHqsYFwtPicFH8mU3zgv_GZEPNTbM-ostSWv5wjDoTnwcZmUiWWb7KCpMC6eFFps7Xlps3QMrAo1fx67JxGRrSFSMQorRoJpul4Q0HisUz7fS9DWKld1d8DLYuspg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Bell Church",
+        "googleName": "Bell Church",
+        "image": "https://places.googleapis.com/v1/places/ChIJo60Jv-ejkTMRxuo8z6gqlQk/photos/Ab43m-uvjvMDWtclDiq2kGRSLLT9otbmrTLKyV_3TbaSlBm7kx5LpsGSpsmH9E69YYu5gcGghxlwejdJRyTziO584ZCc1Nx6SZTYqokd5azB_OspvuABEMkrZ5323MIdCJ4-49E6ysBjfOawjRyoQ9lEdJxJnadDpijLaKvi88Gffgs25DXsawOlJmYErK-i1Fyh6AoNBji9I53yjjCK7nqa2tmf0w_BmNMOhfQtrHVvKHrMGy9HPLPukGJ0QNCQceijI4QeeJ-mZhHZNhTYmM18bY87IjTfAdbH9t2yAU4rducq_kFqhTUwPm4sXz4EXUw6AYJS3DOdxQD4hf8GNprxWq68QgaTEyV8kUZkwzWRYnmBXWQJ9in6OPudkR3LLfkYSTcwj1ux0d6xMATjEt0m6Z7N3VNjzqepdRWPz1Wnst2qS8Gl/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Baguio Public Market",
+        "googleName": "Baguio City Market",
+        "image": "https://places.googleapis.com/v1/places/ChIJTc4JcGehkTMRJ-Q_xgjq4dM/photos/Ab43m-taSxltdjrpUw3eMn-ev8IgbwiRUJAgyoXvoMWW7KlPbiuXxHrIGiZ0112xJM7jEsCRoPJqlCU8rGstO7TulKMe6V6EUyGfGAXNrdQ9ELZoCpGxAjWNl4wF4ezJifYl2srEzsY-7iM0buVzPLCVFJQTjOG8grq3sg8swz021o0Pz7rcFIuo3D7CigvCU8acmT6Vj-XLR8rloMXEe-NCLWhC33KuKwae9HnbC08uPk26Kk_ZPc9YtbXVLDG2IESzyfu0v-H_j8yIdvSVkvYV9jFS_hefyjc7cJ_2bKokoOleafvsuK18ARumTrVRvaj-3iG3QnCVQxFyn77F84h1BHjiJ_EvD_i2dGB6tY-Ar6rTRqR2zCEe2XCdGib4aScy2pTkaM_qE3XjryAjdt4DZrXD9Ns6jaQi8DSSxK5075k/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Valley of Colors",
+        "googleName": "Valley of Colors",
+        "image": "https://places.googleapis.com/v1/places/ChIJo7Bd_uejkTMRRTZ964PVlJs/photos/Ab43m-u5PoJq1zgZ_1qtE1mgDGldxkrqGTCM6NeTWDnRBRn3o3iM10dEbri-zFeXS6-hG3sbth68GU37XiyoBdhXNJc5JbhAOLpy27jP75AtD8oMUegJe-RXW79qg6XDlIm_SUwPYpLZiY_Oxum3h5zH7rDwedRMe2fKlDecCHB-r6_T3C_OUuyepfR-c1FQrYzvj4kJpWUKYC9Z_rWmPJt7ViQKq90GvkRjy6hW8LjN9veyQnGJGzc10u7Cyb7glCeYvz77GqMxv5YSsHyLkn1Hk2FrZjMTcUvzEOlWX132dFGBlzRsCBLsrKxbHkPq8PC9c6UDtSkCwD9hVKiT1u24ZJBqg_EO94yXbnQcPSh5uViAcvvdx23Nz7VvspZDr8Ei12hsr2UshQlKnpAXtKnQfdGuDlCp2t6bk9bqIve_xKClPQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "baguio-new-50",
+        "name": "Mines View Observation Deck",
+        "category": "landmark",
+        "description": "Busy spot with an observation deck for scenic views of town & abandoned gold & copper mines.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJVSABPwKkkTMRyyCzUZaCQPE/photos/Ab43m-uKsyZnSJr1udjjH6mipT8bHoxwNEftA-Ci2Igm-bI3sCwC2cl0rkoxfiL4BwR8DbxPAVN0RnFngUHDfhQGNey1vnKbeE2sp1E9ji0klcTchDdJW3-Oo_9pFHq0qWfQAsp9lMgd7NeKrxrdJ7vloPLxC9sgyYl7vsa4LlxAfpeVWEa2USMMzlC6fjFmrsmD_LI_IaKiwOvQNV6ROLRbzpVwdHrOvQWPKtgKVBxKHLe4AHP4t0F7aSWNQLQ82c9QfUzh6-krAcBQWNxLYC_K79z4YxwkfkfpGEtJPCOKQcPJnALjujl8ma3OrndQ7M6T5y2-aqpxvxf1dEiziSNWQPmq15f90SKDHjAuqnxGnSXiMz7L3JRKAm8lBcmeK0TDJZGfmBNomcVXH0A_8SRCdeN9-Tc2EgW_DfETA1M5Jk6MNCud/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.62785879999998,
+          16.4195651
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJVSABPwKkkTMRyyCzUZaCQPE",
+        "_types": [
+          "observation_deck",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.3,
+        "_ratingCount": 13961
+      },
+      {
+        "id": "baguio-new-26",
+        "name": "Lion’s Head",
+        "category": "landmark",
+        "description": "Landmark statue of a lion's head standing 40 ft. tall on the side of a mountain road.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJYdZEH8WgkTMR7cqKb3gr82A/photos/Ab43m-u2r6GT19T9wTDYK-ORQDnTZ71Xz4z1cLK33fr3MNnn50KfE8gwFEyVwnQ-yC1TZzd3aZ4NEF7jY-EM_mmXsMTKdkm3ZJQaT2mlRKfBcJ3IlGwj0LIJSZImLbZuPQGOul8DTx4mQr2g47-eFenZweNM4H5KNQv8qW9QdK5uiRYHVY8kCqkHa3QdZdFSVjUxIY9EI7juW7geArN6Nxi8gzi1R_GtlhcFMhxkb94vzQYiJ38Wg_N7jpzcwUZnfxAd4njvnHUec3QqDTEEDUUt6dwGeVIWSBo_xaxfZ45aG8iZRb-zAc6r6iX-yGi43JW93LuQ9-8bS6cmC_QmU5oO5KJwc630pIvTez2ksr5AhuToLof0Q4ItEhJFHlpgAaEi89ngYosU7Ro8B_fu6675d7nlfUYoabjOFAsrMqbWjTrMXg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.60600860000001,
+          16.3675066
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJYdZEH8WgkTMR7cqKb3gr82A",
+        "_types": [
+          "tourist_attraction",
+          "cultural_landmark",
+          "sculpture",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 5568
+      },
+      {
+        "id": "baguio-new-38",
+        "name": "Heritage Hill and Nature Park Garden (Old Diplomat Hotel)",
+        "category": "landmark",
+        "description": "Abandoned hotel, long considered haunted, with ghost-hunting tours & hilltop views.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJg-YHS22hkTMR5CR0EvfCV6g/photos/Ab43m-vS2uciMWcbw9JTB1SiOwsy65Mp0FQhvwcmjkNVTaVyiTcK_uQIIo3iWR2O42Olxzo8a50NnAax0AWMzRPDM8J7rnJEF--f6b6KQ_xEErsmhR39hsPrBBTRRX32_4SjSbCxLTpfiHTa1w-gJGaRxyFYmRVam0Jpmh3HpXHEQwxjaVCH6hBFJnShwbrq1HfK_drF9fH__d_OIiVJ-u9mSOQqWC4JG90Mib2mYYwWmIKv3o3ja8MdMOk6_Y2QJjMnsBodsdh8jzXrj8pJ2nYhfCjS9O1S3AmK8wtU9UvmxTr5poJH6bKQsPjjUhi6OD3htuxQeQ-TvrVsD4p45ofCxqGkHF7b7N9I5p66IQIQQD3yDaC0YW8rOHEQC_v25q2nPwxjM2WYDPrTQTieNk0jwfYJss4djQNOalNuNqozffw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.58665359999999,
+          16.4038789
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJg-YHS22hkTMR5CR0EvfCV6g",
+        "_types": [
+          "historical_place",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 3328
+      },
+      {
+        "id": "baguio-new-82",
+        "name": "Choco-laté de Batirol",
+        "category": "landmark",
+        "description": "Restaurant set in a rainforest garden, renowned for hot chocolate & traditional Filipino cuisine.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJJ0qNW0yhkTMR1RCPD4WCJI0/photos/Ab43m-s4YYTYTXnian0xg5b3hkbqC-JFND9s2lX53N5uf6CLsheb9pdzxc1AYAbCphsB7CTXJTlW7a3om2v3See09waIW1ElsmXcdaZCo4NGKyGuGkPqJYpJr1LaW7aQL0yccs14YVuaStNg75D8ZhiSWPl_ETrM-oSfX3l7AUcWPTOJ2t8l9kQVsItLSk_8COiJ1VQXZwFhGFr02GyK0yTBzU1j7EMMn2CttNEiq9-uk_P1h0jS2AJFgANEgO_uvgZaEbEYZFMDvo9CxWvM2p7sDf43WtZjDtE3gsq16iH_rzZt_JUoPLVPLCbojk0IGyC1BPZAjKYmgZkPyh_tuMdj6g9AyKKHIhekbMMFfRDNYbJtGIAE-5fUgV1lGcxYmztZt5-ALRvtFDVbSn5x3NmaZG4HEekPKt-IRp9YK_6og-rVwZg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.6165801,
+          16.4055894
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJJ0qNW0yhkTMR1RCPD4WCJI0",
+        "_types": [
+          "filipino_restaurant",
+          "tourist_attraction",
+          "coffee_shop",
+          "cafe",
+          "breakfast_restaurant",
+          "food_store",
+          "store",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.1,
+        "_ratingCount": 3770
+      },
+      {
+        "id": "baguio-new-11",
+        "name": "Mirador Heritage and Eco-Spirituality Park",
+        "category": "nature",
+        "description": "A popular nature in Baguio.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJrz2JZpehkTMRYLB-7LdJyGY/photos/Ab43m-tmeeIovXj7OFtjM8CRTo8gM8Byh6fOQjzQMQXh92wdu59NxV5ICC-_6g8tKIVA6D5tVZ0IXywz-BPwsTr_4DoEVC88PO0pASfpbOG19A7jTlpCTgwhfFNtDyp6c1bMWndOUFtTy9Tge9prD9aidxnVZ822no8_6tD_V_NQtBpFaBjIKYYmnFyYhrqixEkVy4LiJasv1KiOUJaWcG0MmL1ABYYBQ5NAVbiesu0VLcNf7BZPYpmc1jfGIn-C42u-DPPgVuDZeGwv1B5zvAtRHnNH-3qHtrSb6EoCA0Vcb-rVb1O4j6pdVMUHnCPav3L_PxY3qLPyXbS4lQ-nZahLFRjhUuhcVIekHnOQ9eKgheWUOGhryl20iuN8HJxAm3RKP9DuDgcoCMJNuThAe9RVD8SR8i2ta_OnOf4arhHvlcyVnpy4/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.57979259999999,
+          16.4100574
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJrz2JZpehkTMRYLB-7LdJyGY",
+        "_types": [
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 1478
+      }
+    ]
+  },
+  "Vigan": {
+    "imageUpdates": [
+      {
+        "existingName": "Calle Crisologo",
+        "googleName": "Calle Crisologo",
+        "image": "https://places.googleapis.com/v1/places/ChIJZ7K_CGNljjMR8wDg8QO3H8g/photos/Ab43m-v0KHbJ3E9BB_2yW7Ww3suCckKGJWOR19TMat5PPI8he3FpilBxRzW0GPd5L46wkUgo8sDIXpDuT0uMmrOoCXOAvz26GqCDTCyoIhjOv5Anowhm9tIxqyA79vTnvXK_-EQpODFHoEejHXZ99-Q2iA-5nPumepo0uhUAbh1G4uQrxSzedFTsU-JH0FDVRiGGw8XjvEBbANunI6CPN4-GHBdZDQjzkS2F9K-rhv-yRTy905Sfc6Y5xxH3_1BqUOjRnb6rtCuUvhVHOeQvO3YrpYXnEKNkBL7eLY-XNjeuXxSFnrnsxI5PAqeKw6U47Fcws4Q-Q4KtrL-GCGJUNPj9-Yt9wCv7WFpxq_2kN_MX3TGOG0JH0fjfEbIXiEwpdlaLP5q82mWye1_DbAyJ9roA-OjAJ0-bVR9GqJx1LB-kkl2fMw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Plaza Salcedo",
+        "googleName": "Plaza Salcedo",
+        "image": "https://places.googleapis.com/v1/places/ChIJubFdPHVljjMRVG8fTL1C-MU/photos/Ab43m-sYi6QTHa5n0PNNb9jLxvd1b_8YqhaMejDPyZMALAEfhYcXCDbKHzS7z7_ZO2XeNsavJlap8g-6gLjILjsaUUPVIfYFKa3qenKt1jDgf0ijylPyBs9ZnNWT5vm88jQ6W4bjmRpvzd810dCWQqGMC6KxGELsQpt7WBuHKjm_IUn9K-I5clSoFd5ajjf4Q-is8uyyzMUWtqWA4C3ww4kHc0N-9YG8-jqEXLeZ53ikLdFJ0HbEv7FCPzGH18XO593Zcp7iVxJ2RPxGt0W1HfRXdG6mT-OkplmvoSEvXDzyTCGXGjeWY3t3_yGfgbIFY9NOsLiqSGiKQ9n8ie-YcFGxIX2RCDkUA1J8kEvKOuFAve87ExgkM9C1sFYn-6l6MqYIZjGnOJtCeQTukO7m4805xx83OEAHLFg-eCMGSkSjsvRN7dhwV_A-4AH0AyaAPg5x/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Bantay Bell Tower",
+        "googleName": "Vigan Bell tower",
+        "image": "https://places.googleapis.com/v1/places/ChIJia3u8s5ljjMRzUeYCAxGkXs/photos/Ab43m-tNtCZvM5W3pVt6CTI9Vl-CCx-cYFOiII_TneryGosdMNqECv7aI0jGRCPfru3oTkXICUn0dUs46mPqVPDzF1g9LEs2gfWHCZr5aPmwHTRpL6DD3kQcGGrsQc-mK4wfLpc_Oo_dO_vg4wFA4y82cokdA7WWomSmQgAlmlc5K-R-jTuXY9EQAoTvg8tyYvIIICJiuL4YfcjVntDBNRFF3p7XXP0x1SjSEXrcd0cJEsY0Xea32Y64E7CacrZqRB2emB7NnzxYOmeUVfxupkejCVe37q-OxAxzBzx8ziXwXpZgj6KmTDQVpWq1ouaa-v4eRqVkxADRifaktx-C5e6xZoC8-Csp1cPv2pKPrwdYPvzpLsHvEruE0gyXQEYM5v8i1XTL5Ghi7C1OF6wj47jQsF9oMTRUu5jk-mMC1ytGLGc24g/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "St. Paul Metropolitan Cathedral",
+        "googleName": "Metropolitan Cathedral of the Conversion of St. Paul the Apostle",
+        "image": "https://places.googleapis.com/v1/places/ChIJ452daHVljjMR2xq3HBQxCjY/photos/Ab43m-vExwofN6L2TVEy1aMvm7lQTNseLwAr1whVBNXR-oQJAQ8uuGP7HeI-gvgTsrguOUaOp3ttwlg5g5qT3dBYkC3uJBWpJ6eMV2GYTrmzZvvdvwfGH_77mqZDJ2tXshb9kydwtDoVqdIb6UUgNDa922a9U32fIK6-EoLozU4Hdk1TtFCvV2DHTqTWzRURhvYI1vRbQVfl54v0eq-MHSJ6-irN53HCb71uFjsY4WK74JVZlAVrAKQvX11c_PDE-5PNV_wIg6lKAKXm_wq9UIex4WLlSDzhBTeKKMtmmUfdohawrI4AiWxdGDIRwRJnV8ZFQslvvcLZ-Pf3Fe-IKO4OA0xqsRF2S2VXMtyyPOpY3AyE2VnfPKD9grQg7moX96Vp27NaU3-vAA4PBIcvmcKzXNHXoI4jHeL9dVvnzObMKjA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Syquia Mansion Museum",
+        "googleName": "Syquia Mansion Museum",
+        "image": "https://places.googleapis.com/v1/places/ChIJVdRrAJ5ljjMRcR1fRem_-CY/photos/Ab43m-twYuvO3BTqw-EkJKu6EoMe9krLzxwOdl471WPpP_KgPZck9BC4Uo69BBemCoI1SN1gtqWHDOeMU6vaeQLR0A8RegtZ-GsQk0qmy90m9l_cuG2fV3uw33cBOEdS8xHqy3mrXgVg5rR8RxPJFwiSWo0AyXT96j10NEw6GR0sJf_YnVs8Aar_ym8Gg-1IiHHWJMcJGj4gcy9rB0F8Zi3O8JTWdi6q9u4rECFjJjp78uuAsLYdUYl58OAmoNUButHEVCm4LuaAKg5piPjOLut-WOY5t2o-wYFW8v8W6lMBpJyDb0MbVHpy7u2CGA6ZBpxijNMRGKqVMJKa2mIY3mForhHCGtwNDSvVAlJfSF9kA-AsBR_BXdAZDYN-4ctWK8_YiLSWr0GYfIKme-KdBi7Iqe20qlqP4EgUq1LoVPtcQctR2GS2kxQleMkpD58puw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Crisologo Museum",
+        "googleName": "Crisologo Museum",
+        "image": "https://places.googleapis.com/v1/places/ChIJO56KYXZljjMRx5G6ZKci9yM/photos/Ab43m-vYKy0Ai7gmOm5RA0Br0Sq5PJIHavogBkrztEbAa3QITDBDUCSH2Kn5ncF5Fge3yDzvyIE7pGpYGRWicC3ayPZucj3LOuurAJH6BVdf_67tr8SvWaRG5y-cCX31zDO_P3RtLyvO-EM59n1IGyedtTQ5WVSBkFA8gTh5Jh8ROUKLXmKaK2CQ_KNdlkRilXKueEP5isHtqh7xvpoT8ayHo1pTLPiIMNQ0k-mk2tPlgnOH75LbmPSk-uIF7wWVuNnfDFqpBSCrCdlxwlCnn9F4VQRM8GQKI4IoB337JU-Fm2KrGps9a4_uEdJE1Rf_Ll15CgCP_Z8jfyxXeUpCyHKXRb43fB1kWAfYZG-6vcVPD5zUGtmLAeWeZzpeDJxY90nQz-cH96AOccAs8K3pc10d0WM4EmGPKChO-DY2CRZa1R5Cz2aC/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "vigan-new-29",
+        "name": "Plaza Padre Jose Burgos",
+        "category": "landmark",
+        "description": "This bustling town plaza features a monument to Father Jose P. Burgos, plus food kiosks.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJycgZcXVljjMRUWImccIMQN4/photos/Ab43m-uiN4EGvrgh3_SkNn31nUd2N1wzJdvYkmdHik_LXV8DM7uxjP6jONPu1_wHRV1s8gN9am0FUx0PjhDVCRl-ZeoHKeNmXBmSbtpLggmX1JDs-6atDuGri8UJjFhzGzOtUcPjMfF3X-KO8SptfReZKVGCa9Hpn9NTn4pFjEZN2IxTqMQdlYqOp1psMAye3VUJ_UuxuDq2Hga69E9y_NO0L30MKjo21-mZuxGxRzfamhP3JaTv-e7YNmQpgkg_uOaPqoeB1xLQLZxjNQxdpD5lPvzcsFvPbDlwoki9qc4RuQtcwSqaA0e50p0IXdBJk4cO-1kDwtcfgfD_C4IL1yZ0XxvCZAc8lb3xvow0dcCepV3y5NPSeMI46CP93Mc7sQA_gvdeFxC_WYrAOQVEx3_3aeoNTQg0KbWuoP-zqMWU9gcGcXM/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.38876339999997,
+          17.5742759
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJycgZcXVljjMRUWImccIMQN4",
+        "_types": [
+          "tourist_attraction",
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 2081
+      },
+      {
+        "id": "vigan-new-45",
+        "name": "RG Jar Factory",
+        "category": "landmark",
+        "description": "Factory where visitors can buy handmade clay pots, or make their own to be fired in the kiln.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJweo1QnFljjMR5C817X2Skrw/photos/Ab43m-v2vrMYZLOLz4PlKZacWINcNRLe5Q8Q8KjOoDctB41f0pNq2UGo6gPd0_04U_2KVALe5fWwcb7kn7TgE-lCGfjUGuNo5vQq1xqsnrBcsfcXvR1Hi6sfTExVjiZVXeecFQdpGDVMAp-W82TTicK4J1y5t2kBDApXxM_JBSUB41gwUm3t_zW-BqCGWJTnaAN_zgcqeDUfbuv-v6SN_mWfeeASrtfChy1HgmAy6v6TcYGWj31vECa-MByzNY5aUYslgnvplymkidoVjLww1x1QgIx54IcmByx85eB2RUY90dWZDhjIzpLtncLrxfvLbr_hlbHqfESbEULeyMSVamKTUakOvPJB6nTunDXM6b71o8dStPpY38pzWQwAs73AQJbnAMzKt3dtIpQ_w1_X6vz6VMiPphR2gacOtXhI6tdDzkoV8g/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.38195159999998,
+          17.5709466
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJweo1QnFljjMR5C817X2Skrw",
+        "_types": [
+          "tourist_attraction",
+          "manufacturer",
+          "store",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.2,
+        "_ratingCount": 1152
+      },
+      {
+        "id": "vigan-new-24",
+        "name": "National Museum of the Philippines - Ilocos",
+        "category": "landmark",
+        "description": "A popular landmark in Vigan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJs3U8wnRljjMREpqGkfZcok8/photos/Ab43m-uFcWcJZKlbjfR-nQykqclR3WFkQt7XweA_6mKEl-YEB7G_FlKu4wFPm4Ot3wUpzQdKb2n7MfbjTIU26ZCyB2Qby40HCnRd0OuVRI6oO-cj3MGx63UXqfHymqRhhjh7dt0RMDL3wVx0jzJeRI60oMVr05uJ56_y0hGW3vm8vi1DLJcfaOaeObhlAq457cocwPpWWih1aRYB0fniKhyqMu1LWFvsw_2yLxGJRjjMJXkFLfz7Mvd7oNRCIpdElEfSHWKj_1JOo7RzS3iI1hOFtQ0_KGpjVTv55FW244C1NHfbuFTSwBDBR_8PQ8NURETNNRO4ge4AQBR3P5vlB8BM2bsii5PNSJGTgDQHiVEr_XmiQZQtkgBsBnvxDP1IEA_lE7dzt-UB9FlwBRXb3vYXsDajS0FQju3d_c_mtmwWNpz34Q/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.3857364,
+          17.5755706
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJs3U8wnRljjMREpqGkfZcok8",
+        "_types": [
+          "tourist_attraction",
+          "museum",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 453
+      },
+      {
+        "id": "vigan-new-19",
+        "name": "Parish of Saint Augustine of Hippo (Bantay Church)",
+        "category": "landmark",
+        "description": "Roman Catholic church founded in 1590 with a neo-Gothic facade & a hilltop bell tower.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJlao3UqZljjMRSplbZoZgo44/photos/Ab43m-tNpFRQEHRaJeVaO5_kI-73lMRzyyvr6BhIKUgdtUqZpBUQBbN7d2yAQ3FVMCituWsRwO8oj-fOPTA2McZnbS7EjzYqqVQ_KTIxF4lR3dwiUAI4kjNfTtmdhatFaAYGldASQcEVsKShxJIp6Jf3fG1wGDFbDo-r7JPOgpKndEU7cfx8dcbtrzfYlpgaFxH_ypuGyDI7GsOvykDLBOxl5uyw_RZWwZ6trcO0Dd-FKzl2Q34ZADXLNGgww6_RtoebKgBX31WGrsQYup-84HZrOzg0SV7A4QH1AVlIGvps1XxgL9xY5VBPRDkpTjkGQWygxK6ZoUicHZYAtKC2iqZYFtkBmWYdtcatXKJmqEIbU-HQiryMoih_YZVxLHx8Qsv6Q8ma6jm8Kdycm8fTDBgKbgKmrzptefaPsMJzO9q7dbRnlA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.3914596,
+          17.5811451
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJlao3UqZljjMRSplbZoZgo44",
+        "_types": [
+          "tourist_attraction",
+          "church",
+          "place_of_worship",
+          "association_or_organization",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 221
+      },
+      {
+        "id": "vigan-new-26",
+        "name": "Bicentennial Park",
+        "category": "nature",
+        "description": "A popular nature in Vigan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ4diTUE9ljjMRm9bbx3D_mWM/photos/Ab43m-up92hGwssPclVU-MXPeePiRr6qsZegDdASihaI0KOCvKMnKlMN4eGUERM54lLl8ZJQjwL_uX6PsSRkIcD7Zv4AnEU9mGI2aJac8zObqtI6oOsZRcSznQyYkrAt-VPclNkY96FWO_A-t_-2SzwOoSb0emnPA92f9IUIvP1ZqaWhJBzmLLwCkIGC15PGdloxWPxmnTl4Zmcu4hjPOrYP-VEZZdwtk3YjVGiblykD2oU6dFk_niYCpTUjwLVPj1HdREqvFd7fH3Qopi135EtNZcGEGRVJtxgJl262UIBZ9A0m-rv35lQDZQwk9Y2TNygYaENpFH-AxNwGAiucr5RE02SmBatL5beJp02OCYLskVj7EgvKzRx8wLynObgzx_P_BBYWx2WdT-FtgbSCTZHKpYu4agJIh9yZWmzlCMhfubMJb7o/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.3896183,
+          17.576408699999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ4diTUE9ljjMRm9bbx3D_mWM",
+        "_types": [
+          "park",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 146
+      }
+    ]
+  },
+  "Sagada": {
+    "imageUpdates": [
+      {
+        "existingName": "Sumaguing Cave",
+        "googleName": "Sumaguing Cave",
+        "image": "https://places.googleapis.com/v1/places/ChIJVQrA8y3TjzMRNzfzFuurbvY/photos/Ab43m-ubxqvQias5n5B7Tqt-mlWN5jsufOLiHAxJwLsn-Hf0GGA8hOoU9ju6YTlo0j7iY82JoWnBxq_nHzO35ohMwh96pemNjaoZiGoQF1qXO3eZD0r3gbfR88PYBNeCp7CDthz7rZIkc8q27BVlSQGI-T1x5AYQvUNulXLah31LSyw_pK6TuFOR2qm1-4TG140EIM9R-D3yoD06yuAbsX3sge39g4eG-7o0_0bsnhwQDFyYc7owLGHhxPRpFzjx7oaVXiSIvVLNyuVQ-SCjodi7jxEhj7w6Q_cshjt60ky03-O6pT3BfNhEbCq4Qgg9wS9_CgafrAaMKlop_sv7_1aUl6b6V5TqfdgDVRMtTKETNR35GOSb9DZUS380epR_EPALeqz8h7d7MqRSlQspZiOcJcISLoKW-Tu-7rWN_IyL6-hT1g/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Hanging Coffins of Echo Valley",
+        "googleName": "Echo Valley",
+        "image": "https://places.googleapis.com/v1/places/ChIJGebTLy_TjzMR-U72c3JjXvc/photos/Ab43m-tYFPz9T81TRGguntxTYR8ixylxp4V3uPb_GFMQ9_tXqYiUlvDpIt2LZX07U2L5LAkEvWtiHTq1w1Gb83YVGm8oLCKdahe8RcZO9aDSx0V8u50tApWMrqL3OiN4TyFjQBZEVJf8AexOq6_xIb9F9hYFWc69EzfJMowDvVis-wrBAwxqThirxmT8iM-zoJO4IVMTw8P_K0Jkg-d3xCd9s-S60Ps7X4R7duQYMyP1ITYSrjWZUjelSL87Z4tiUl-t1xkJ9BE8xxG83wXL-uqX6nckaHDu185nAy80TLeHg-fkTSsEdyOvYO-ZqQ9wZtQeqHP7VXKzWtufM5kOOfsHIlOH0AY2RCbcpBN0u-EXUqWb_26On-NB__Gzm_2KiSJm6Kr62uy_zG8w2eqJ55HteRlu5JFVs5LVyVHvAFmjXld1zkL6/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Bomod-ok Falls (Big Falls)",
+        "googleName": "Obwa Falls",
+        "image": "https://places.googleapis.com/v1/places/ChIJIRuIIwDTjzMRas9QFChDa-Q/photos/Ab43m-u6oCs80v-qLjwtyOyKg23fANVQ_nQNXAbKmvtWqxCnAbgXokSVbmW1nfX4pVU00ogQaKkW_X_2rxtupho6exMH3IlI9IRMPaqsntgtyefE6g9QaCW50wmuD2M_1NhyUyzdYFoALJpDoH6wJtmP4QaBqaKoeI2W5UDlHiwQHrMn2WXmdbR9K1Fdt9DaR_JDCjFR2FS8cCoHJaMoJTx-hsY1UN3MrN2t5AkpdYxG-uHNOt3nBUpsDuS0mrQtygTnr_pMPJMLq6zYMiSrzwZ62jl1KrxHJU1osGm5xnRrrbXzz_O8CsdgZ4YAyqJ1dSd2Spe_YON0ebBOzL1eY6neSKjRaroiUaRUCBHw5dP-ZGBH71w_FB2Nb3NpZBWrYkSbPYCK7uhrKqvmsPyrW991uBKaPWllTkfbvHQfwfTRQO3Pag/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Lumiang Cave",
+        "googleName": "Lumiang Cave",
+        "image": "https://places.googleapis.com/v1/places/ChIJFZSrRTbTjzMRaip6sF4zmLk/photos/Ab43m-sR5l1iVi7fScgSZ7z8od5C1ylgjE-hAKrLNGe5-sUjD1L1vLC2PFS1Dv_gQmovVWpInumVmmRQKxRgeEh4V7rs2pPVMs63O_ojxgGwHNLs6FyR8JWhaRrmGYXenJ4NCeFwQeT3toIRz7e3lWfBqpLKMN860PMynzUO64AOGH_kg-sast4yVwB62gWhptgtF00-E8kKejDgg_7lZug6QuaIhkvdNyVqSSHEWjt_QO0Nkl4EdmS1cbuvIL3ALtvYdExSQeH42NC3ihzHPCLwQ_za2cwGnMVlGPVJVW7szBGyRVOXiY5Zg4hJrqWDGMy484u1EsU_dNvjUhOgCNDDp9zEtcXk6SIVjT4IUXOfSxtquMzE6ZVZE-TY1oHJZbAa2xkFP_3WaRug6CV0_52CNFFzDnUlec75BcESX7WlHXs-3Q/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "St. Mary the Virgin Episcopal Church",
+        "googleName": "St. Mary's Episcopal Church",
+        "image": "https://places.googleapis.com/v1/places/ChIJZSxMUCnTjzMRNNHGKp6IUn4/photos/Ab43m-uoztmioEHqa4PJNIVm8Cxvwkrojp0YHzFJcH5dTGGip_M4wFmF8a2GJaEs45BHJSvmnGtcHUoTvxREbtwo77PMlZDhbWSkxUCfcRoMn0GnkSAnwy8WfJUsBdgdeMo_PJicZVipLjN3EdL4_mzyDhp8QmC6X5uxDxbEj3tgeP_Pm5f9zkqORoxTWBA9Z5tNZ9Olp9PyLNNuyQcb-QPSZF38Mat9gknbVwcXD_jM7v7-5x9HXsq92gockPdgb7hiMSxSTf4Uh7TpX-bC-7RefTNS926aUhoxxlxFm0SNO2hNmaLElqpwIpyA4MCMuJ0ydsxNxZWBkLgqQSB5Q-7Rn_LHf_Em0m8I5qJpVCxo4AizIFimllJ_mXAHtfNJRn72UOBrKcOMUXyiFxp7UMytIR4zh7_chOUU-JyhKbLtIYM/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "sagada-new-10",
+        "name": "Marlboro Hill",
+        "category": "landmark",
+        "description": "A popular landmark in Sagada.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ4yGWOhHTjzMRPjZCrwWCmU8/photos/Ab43m-viDRbbbrPiDb8kw8y1k2gdGitPgTPv_H7BrThp4JOzYpxWLiioSTyTwOcndHBRtfzpS5La4HLMz7N5lkb-abW7LtM5hkVV1mZpDlYJm_MUHdG1y4WK-t-m3_5G65JbnubCL8yy6GuTfCNf_omjdhhSSzJy8nsCdAAVJNtVXqqm2WmSvvA5gs1qX3N2BadarZGd57400sVmimGnpiTfuCTS9XyZoTHhgol63DWkZeeS14OTzhwROaYEYTNLt7EME26zRBMpcmsShp-IFUltFaxsID3BH0qug4-m0-srRdOzHWsRS6ZM3Rzvx0DgfsbcZzbOptvRC1PYPSA4Wbej9CLUpOfP1Zw-u-Y3Aj24zq4eZYX50q7vtr3jnW5fT3eS_01uOCPUyd8J5J7X7Ve8oY40DQb4aAsPLsE51PlRk81F_Q/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.92530060000001,
+          17.070676499999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ4yGWOhHTjzMRPjZCrwWCmU8",
+        "_types": [
+          "tourist_attraction",
+          "hiking_area",
+          "sports_activity_location",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.7,
+        "_ratingCount": 940
+      },
+      {
+        "id": "sagada-new-21",
+        "name": "Kiltepan View",
+        "category": "landmark",
+        "description": "Hilltop lookout point known for panoramic sunrise views over surrounding mountains & rice terraces.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJrxZ6PdzSjzMRX2M4EIY35vQ/photos/Ab43m-ty0TaBu9Me6zUxyjhm9EikDYwa8_HCNw3UJBLEdNWhqBt3sgDw6tJlJX7_c6vDLfoAaMRBZzpx8oWAlDtw_xhw7yf-0d2-I_7cQ7DtqDYN8PTztNQx3eMQpD9TF_mhLDMsCRZsbzZTwISzSDMAkyxHwXpGbeGdOsizx8lwjupe1eXU2V-LPKUjS0red2lSfbnzRmI4HJGPJ7cGXMVNO7_lGOEth-oZGdu76QCvRaPAuO6unx5CFScxUyZlLpD0eqbKSd65zWzT6iNoATophgeXwHanLL38xr9n4cGiu5Bs-Rz3rlFr9TjEVJlDjUtlgJsQESlkPVLRcWYK27rrmvCEOLbxJp8gDYRDOTJCXVLb3nbUbxm2mdII5diI6Uc4qL2of_6c-qrrDGj-Z887c773L1_67H01qFLIDsMO-Gw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.9135092,
+          17.093892399999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJrxZ6PdzSjzMRX2M4EIY35vQ",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 658
+      },
+      {
+        "id": "sagada-new-22",
+        "name": "Hanging Coffins of Sagada",
+        "category": "landmark",
+        "description": "A trail through tropical vegetation leads to dozens of wooden coffins secured to a sheer cliff face.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJdaGIRy_TjzMRC53BE6AgjvQ/photos/Ab43m-t11h8A8HZuybGQ1qTnOV2w00uZZt9iydY9inTXDUC7zgO0U4vE6GdQuPUC6G3K1waZZR1xS2BRRWs_9Y1BtImy5G9RxzeEAk-87zL1JBTKY5ZEiNjAHZ9_rAfWd-VdVKNyDklaq90QvJu9DvsWbdnGeb3R-SEO5pNs3MJOjwr4O_wWiCoUFQpm7-pAd1TyqUm2HfORjD4GNwsm-AocjQnp_N-5ZydGGVngI5OPLORJq_FYZYEkm8WQgMbNF0P5lJBDFJBiYhxxvR4KVhS8kUVWlrYHewcLEh2rBaGEpMVxELwEkZ5-NZjIZcN-bZTRs2AbTpXM6PPZhgI_zZtWqqElhql2l-xIv3TAONo6SmGF73oMmEeNdH3D4-2kEMg5xKgQqldg8DmX10z1uXFKb8va2ILYHGB-unnts-vWp5jDOAxw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.9057343,
+          17.080986499999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJdaGIRy_TjzMRC53BE6AgjvQ",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 468
+      },
+      {
+        "id": "sagada-new-17",
+        "name": "Blue Soil Hills",
+        "category": "landmark",
+        "description": "A popular landmark in Sagada.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJj0nKZ_rTjzMRjD5LyWOohvI/photos/Ab43m-u9YbNZPdDZH_XRS4BYZkoH5UjburTn357lydl3CukDB0krhCNT8b2HOWgVYy6w78PaZohphSVdFBiyDUgBriXPNsruma8C-kgN1e2ds1nnP4ApvxR4oqBVi-reJyKbEdzk_QqsKEgYMV8AiM4PJibZOFYWTRq04WZ4jPVUK29e9TWF3F53rw-FoOXtleHkI0d48kdsZed0oYM8J7n5biY9bopcGnlQTormhsid89p7KfC5rzKxETkwjgA58CeR7TMEhk-I1l1jo1kBqt61gv6R-hCmGQJ3P6weGMh8snCXvT-kiQvlUPWiv7vZM9aWPTS7HHfcNYoh5VaYQe89gWeH9KL1Qcq0nhxzp7nqpvfDB9hBBf24LU3W7k6XAQR6eL5nID493BXN8sosNZvXrWjyurnYk2ZxVzRdNaDNpDcnSA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.9223777,
+          17.0533447
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJj0nKZ_rTjzMRjD5LyWOohvI",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 335
+      },
+      {
+        "id": "sagada-new-23",
+        "name": "The Bontoc Museum",
+        "category": "landmark",
+        "description": "A popular landmark in Sagada.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJT6yUMTvSjzMR2PJxTZ1a9co/photos/Ab43m-vqstXxsirHzphe3zux7hpEvP2LyO4JXBFuUHtDXIyjiKMUqto0BtHhLbhI9GfuJ1GSCRY_yWwPpfoycM8pbATwexofxR9dCP2pff3uyNzY_bB5VdykPb8W9JuGmrFrpn7LwQH8MpZfdk59Fkhw-WGOI8iqWn9d_dpTsu34It2pnmLv3_TaWYiWF_KQ2S0UH8igDQVhjsE95rSTWEgRzddJR_mCw-fgmrnG5M23pbf03iPh798_GH531uS_PBTFKpwfaljUk34wYKkZdh1CFmUgxzBpZek4mI19NeCwo2Ho0PComQ74Tlag37vfcBCV7iOz09k38CD01sCfx9KTmzijme_P2KlS8osF68OLRkvgEXbBKD4seq4gmFAl5E-aaO60Rk-TiDQE4Xhk30adbtGQRNQWVC0QW6qDMGbGjWSO3Q/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.97559369999999,
+          17.089875799999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJT6yUMTvSjzMR2PJxTZ1a9co",
+        "_types": [
+          "museum",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 152
+      }
+    ]
+  },
+  "Banaue": {
+    "imageUpdates": [
+      {
+        "existingName": "Banaue Rice Terraces Viewpoint",
+        "googleName": "Banaue Rice Terraces",
+        "image": "https://places.googleapis.com/v1/places/ChIJw4l0JcwpkDMRvRrnP3aFdQY/photos/Ab43m-utgDm-XOpQFEkseZAza-kKFrS_BUJkG5HuVlxOIVOgaC6THNY-1j1IaoKScQJgYh5r2AaxkayJEEKti3oQnnn8CJhQhdqGiWYqhmSHtQHTxsFhx1iCEp7LaWHpOM5wZDghGpG0C8tAXm0QW8VN9mNC9wA56sKvqQV_1zKBmOXyzH8-SvD7-JOlU7F9-Ztk_s8_Z73VRHsRJ9gcDLtcMf7uVxvHo-klEmLdcexu-BIu1wpgFJ3PLX_qMiFMomWVhRMwZmTCOqCJiBnXSsYgH7i7NMnDo0TBsxw285W9vaTgF7IUSjKmIn1lg7MSz-xqY6Aywo9wcLCtRMS0Glpcycc0U_Apbpz2tJTYmvX99-xd2tAo403nQ5QSI4b76lW8D5ylv-57nxtzijMtg-AFQVag3uvYgWXSzDQ8NIvxQccWAA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Batad Rice Terraces",
+        "googleName": "Batad Rice Terraces",
+        "image": "https://places.googleapis.com/v1/places/ChIJU94yZT0okDMRXzcOhVSnOp4/photos/Ab43m-tPxvMsqFBFKdrjSx5OSg4u9EGXMhQsG0o4jLDC5yPO8uh2Q6XzWLnnuwLKcL6mgK3bb4Rf4kxV6BVyt0aS4h3XRwxV0WchDIpWH4uA0PJ6u3jvB_HlMzvDc9SSgVAkzNUkBvG_MxabmsAvX1tHF6yVGkEr5QbJCxsdL0PlIOcyisb22f0lTcuaLyoBb2JbDF3pRwrAuI3xtPaRQ87htxrp6PWpBMG2CC1UWpQPVYQj23GqyZ2Glkl-pl3pcyeIJsZUIxLgqdmJvcImH7mzc52GmljSOyhIVj3BXExfJahr6ohJwpQ3CpKpjyXqnrq__OA3SLp9AI_u9Tm3yeGeAqRUvnvjXTLwlE9r4UtfUhy27SElUnO_T69lmqfvIbaMxh7YlRyaTCgZ3sI7i5Fcz7dscKlYOvxXqXTf4C1_fkEUvQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Tappiyah Falls",
+        "googleName": "Tappiyah Falls",
+        "image": "https://places.googleapis.com/v1/places/ChIJCQwn9o3YjzMR2gjdNxP_WVc/photos/Ab43m-tsSxb7tMmoyhLHqSr6thTED8pdwbtC8Y69ApwwjioqJBLb4Tdoll3JczEZVKk5IZQ4XmEVjFoxaXuBTxHrET17ZkBfFQ-WtZyAJ5qmsL9u_qbGK2iMnVSFF_vWdqPgZfLf-1VereCSaOqBK0bT1e2VSki9rfrJsRtxb-ObVATm7onEe5JIoESOIvsK6JT3B4pGhwWbjoQuMio4IAnf_57LnlgDXNlYlW-xdgffTwGxfD1rggYHlfn8V15VqBF7Wv2eZDvaATEFPri8AJhtPDgX8_GBci8TPFZxIKPu8eT8OMOIZQU1gZ75LXpSiuEkT3uY3hjSHzLFhRLj5AiR1hlKGp2jIH513qBvZO2xH9WPsBdLZiSr6XhoGtoCcrhKmASuOYq2duniXqySSdEnADE5os98fnHFxHqEK2z1aGVTgw/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Banaue Museum",
+        "googleName": "Banaue Museum",
+        "image": "https://places.googleapis.com/v1/places/ChIJ9SV-GAApkDMRYDCHrAgGnZo/photos/Ab43m-scUkFUf2CVDdH_lJ9rD945ZeYyAR_glhT3qzN0skMDAR4hMp6lAXiouFcZEdntc_TNIjESz7nwwSVM0dp5xU4WH9PJRhyinHuXjgcrPg4-DrOrAM_LylIIpuIEUxGhwe_vh0YEoa1_ZOAYSgtrBryTnp4O5hFxbmtQqunbuYdnp8bSsKgtMnbtpisIIoOb3mwpnMT13MBstGpwWYpu47clDHxIqnoM140cQ5wcBXN3RiFxt78X88jqUlMZCIO-Lfk1ZZrj1NbxJFoddn_lno1J2oBNyoRu4IWi0EB7akWqzBuzKoLpaC8ebW25M-BwAeqtGH7Me-q1bF0NUpfOJ5lv0S9gvz72Y4Gacu32UQA8j_Yj5kPVvbq7Rn93uL6f52TSS__bXH-YL8fFQL8ezj_vId1IvgBJFUijR1w-UC-2JNRmXU932E5zjVF5Zg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Hapao Rice Terraces",
+        "googleName": "Batad Rice Terraces",
+        "image": "https://places.googleapis.com/v1/places/ChIJU94yZT0okDMRXzcOhVSnOp4/photos/Ab43m-tPxvMsqFBFKdrjSx5OSg4u9EGXMhQsG0o4jLDC5yPO8uh2Q6XzWLnnuwLKcL6mgK3bb4Rf4kxV6BVyt0aS4h3XRwxV0WchDIpWH4uA0PJ6u3jvB_HlMzvDc9SSgVAkzNUkBvG_MxabmsAvX1tHF6yVGkEr5QbJCxsdL0PlIOcyisb22f0lTcuaLyoBb2JbDF3pRwrAuI3xtPaRQ87htxrp6PWpBMG2CC1UWpQPVYQj23GqyZ2Glkl-pl3pcyeIJsZUIxLgqdmJvcImH7mzc52GmljSOyhIVj3BXExfJahr6ohJwpQ3CpKpjyXqnrq__OA3SLp9AI_u9Tm3yeGeAqRUvnvjXTLwlE9r4UtfUhy27SElUnO_T69lmqfvIbaMxh7YlRyaTCgZ3sI7i5Fcz7dscKlYOvxXqXTf4C1_fkEUvQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Pula Rice Terraces",
+        "googleName": "Batad Rice Terraces",
+        "image": "https://places.googleapis.com/v1/places/ChIJU94yZT0okDMRXzcOhVSnOp4/photos/Ab43m-tPxvMsqFBFKdrjSx5OSg4u9EGXMhQsG0o4jLDC5yPO8uh2Q6XzWLnnuwLKcL6mgK3bb4Rf4kxV6BVyt0aS4h3XRwxV0WchDIpWH4uA0PJ6u3jvB_HlMzvDc9SSgVAkzNUkBvG_MxabmsAvX1tHF6yVGkEr5QbJCxsdL0PlIOcyisb22f0lTcuaLyoBb2JbDF3pRwrAuI3xtPaRQ87htxrp6PWpBMG2CC1UWpQPVYQj23GqyZ2Glkl-pl3pcyeIJsZUIxLgqdmJvcImH7mzc52GmljSOyhIVj3BXExfJahr6ohJwpQ3CpKpjyXqnrq__OA3SLp9AI_u9Tm3yeGeAqRUvnvjXTLwlE9r4UtfUhy27SElUnO_T69lmqfvIbaMxh7YlRyaTCgZ3sI7i5Fcz7dscKlYOvxXqXTf4C1_fkEUvQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "banaue-new-29",
+        "name": "Aguian View Deck",
+        "category": "landmark",
+        "description": "A popular landmark in Banaue.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJKwvqjyEokDMR7XvnWCNttwQ/photos/Ab43m-vu2ROcAZI2Qufw87ldkT0NZ7qDegzwL9X7TtJYXRXKK__lc4NRcCGNSwET5_4z8AFcj1sf4AS2rcit5_BQ-iBhu9tHE_DJboL4iAmLwpxQKWcET2KhPiS5gdw3dw5k8NfMx-LePalfB1He7YS75jKWmio4w9LE0Ml28GHF12lccbJjhpktl6QVv-EOc3O50H7nYaetvGbGSQOfEgAnelM_5ZtXBoKirZPLCCFRgTISiSp2xZ3YEHbUPZEHIkxpMsy_ROgzupjcIdJhnXCJA-5IzOHcG_N7uFt9NSo0LNv0tUtnEwF26BsU3CaKn6GTs7nFNW30vh8dUL6cPselSzyPbmyVOv962PgeQnjfbl2aZiPotbyxrllBUMmeI5nMnbJ_HyqeozYRl5CpIARenX72HqC7gokdUXawlYXqI0i8S4zO/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          121.05438160000001,
+          16.9319964
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJKwvqjyEokDMR7XvnWCNttwQ",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 380
+      },
+      {
+        "id": "banaue-new-21",
+        "name": "Bangaan Ifugao Rice Terraces",
+        "category": "landmark",
+        "description": "A popular landmark in Banaue.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJQVEHOXYnkDMR57gBEf1Bebs/photos/Ab43m-vs-LJUciEogKigs4tvnaC4sY4n361JOMTb94Dt5It_TSL5JsYlvwbjpblpglL6Yrt1m2SJxiBxTyjXS8RE0E3BMNL072lrT2EaKCqFa_IadQwrDfC5P-VJ2-HpfR7R8dukB2l6gd-A7Y5gNB4wpqluVhgNYyTBdcPLzcyqsYkOVeaM0r7KdCrUFjiMsI23A5htahveDytUNDZ2iqcfzfBpSLd9YSy70eR7U9i4C75KXlrJSShSzbNFMsztXqLYa_TywnKh-zvHTprfgTsgHlk0NSqMzq1QCt-azV4Uh5b7RBwBtDMn5ScyMRUymzGr-fK2h-jjit2GunquLGaKUhKlHT_SM7F95Lst5vEwZXsjY046bB50FeqLesm8_1WgQc9oaVETno8I7K91EtwkVaSgYA7UUTiE-JRKizv81JQ/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          121.12644270000001,
+          16.9106049
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJQVEHOXYnkDMR57gBEf1Bebs",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 88
+      },
+      {
+        "id": "banaue-new-23",
+        "name": "Batad Saddle Point",
+        "category": "landmark",
+        "description": "A popular landmark in Banaue.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJe99Mvn8nkDMR_udgi93L47k/photos/Ab43m-uleeTd14vokOfRA8x_AXjvT5mVtoJhYguPar6qfpOOj6MJF7EhaxkkDAZ1m2PnqX0twlBndhQXmbzbM8sXSr69WOzJC8Y5w5tk_-2UtbTcJ62zwy7QGW0gvnew6sy0Bv6yc32nACbOzu_O0qUu77jCCEtwlxJi4scCyCzr9Oy4q35xqAyMEUodbIXOjF5a5smc7VW7fbzKOkgz9nN6jCOFuwT3fFa1pHfYDmNgbJZdNy2QJqGWCIkkc-9kchmzPHY4NKASVQm1VifJUOh-i1NgsDkL4qBvdQBhO8yQp0SWw5hqNtAzUTymtKPhz6LhwyreHDwQtL64r_mTNamFA4kDCZintv-fX93skc5E7yyulvNZ_ptABpSAQwXCISTot-DlFnoaFbKDzbuT44bmA40AhxquuoHLe6tfddn5qfskAg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          121.1267688,
+          16.9230189
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJe99Mvn8nkDMR_udgi93L47k",
+        "_types": [
+          "tourist_attraction",
+          "transportation_service",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 47
+      },
+      {
+        "id": "banaue-new-24",
+        "name": "Rice Terraces of the Philippine Cordilleras",
+        "category": "landmark",
+        "description": "Almost every inch of this scenic mountainside has been cut for rice paddies since ancient times.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ67o2apjZjzMRXV3LJ2OLOWY/photos/Ab43m-vCamspK8ht7VRHAKetqJAMBc_veGgekZlCaB-45lPd_V-9ZC_6ItBamu-M-v7nbnvJNj3wn3-BQKuq-I6KGRNOJ6tGWm2J-Y9H7LzR5nE7dah27cmHh5wLoie_sIzZ7mPcujDiDd9tJvFTwFjovb3blUC3nnIZQjn7pvO6hpbD-wtnjEd9SH3gDkrNOqTlV_3bvTvusyWlBpexXrM6fAlecmEvoOUGDyx2fIve-A24Yq4tita3oOHq8f2c1u4pbKnx6h7Z3p9rh-DqKljDZu97xwRUKtamdMyyLTwtAGSRr6JyAO1O8GPKjEArmi1D0gcx00OL9X5P6tyQto4Va1i_nez5Aw8cVIIHBVYEixiY1fSVm-FavTNVbDTYUS_Ujn4f2MP6U3yC-XnmNU2DCM6IotCvrvQI-vg1ENIcYY9MBYFu/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          121.13479459999998,
+          16.9353145
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ67o2apjZjzMRXV3LJ2OLOWY",
+        "_types": [
+          "museum",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 39
+      },
+      {
+        "id": "banaue-new-12",
+        "name": "Ducligan Snake River Viewpoint",
+        "category": "landmark",
+        "description": "A popular landmark in Banaue.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJTajrTF4nkDMRMi-dm--izmA/photos/Ab43m-uGnP0KHjBN8ilNn-p3tC-I2S6jsnrIFmL6LUf5v_w8xIRBCqaa3MTkNrQ7wR_xdHN82Oynw15bmOL18HJfmHnpbu4yyf3hugV1-60-znrPRxFTbFGib7544i6q4GBt1df91f2uL_MC9YW3YBO5Ohb851kGSwb_LyhZIhrJLdU5PaPHY5RVQVUAg2DKyJDmJMxGWPzsGaNGdtANQ8o7zMwQsI54xs1--wjPQSZ0AzLN2CGqwg9QuKDG3fPNcjdr-PM4ir81SJPC7MkeUfCWt6Y2UqQJXR8RA2A01b7MNTm2XuVGNGaZ-m0eqC0jkUIVl3GFyhoA1TfNMghTWmG85ZTK6OUliZkvs3-shvGN6wjKbZYDO2RyZlgGqwfA-c8LkEy5UIRbAMhRj67gUiGzRITFeDWTCYSL60emwzYdgoKmHA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          121.15635449999999,
+          16.905583
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJTajrTF4nkDMRMi-dm--izmA",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.8,
+        "_ratingCount": 13
+      }
+    ]
+  },
+  "Pangasinan": {
+    "imageUpdates": [
+      {
+        "existingName": "Hundred Islands National Park",
+        "googleName": "Lucap Park - Hundred Islands National Park Gateway",
+        "image": "https://places.googleapis.com/v1/places/ChIJR0CAE2_bkzMRoTSGY2rY8zE/photos/Ab43m-vywSIlp5Yxt_tFCyoQETEL-kKbLPhpXr5CGrwavqyrqpB1xc1y5JD7LrjzGmSoP7To0-RhuUjrPlgfuPwIwyscejA86IPGNIOAHkkQaQi-KzAI6f5lsvcjEv2EU1Maco8lkUUZYa9di2_m_7aFtJ8mQIr9xr5pIaZcfIc8uW2JPVOzVDNF2Rz-DJ-eOScewwd_NZEKywEdT79ZSzKr-GLyBhmU1gPoYC2QvVB2xvvhMUbAlOA9qPisMz64IoPSLmf_dV6jWaUktHOJKxc3W50MkVigcRgWp8YgpdA05MPO6g5Je2KcR0NgubD4nj8GOAp3z0tgM5PAvAveURt_gUfTzmO0vbaB3HDwRIZGCMjNGy4cZsLUDQnxaUohhQdkIWFFVM_ePY_3GSPL6PSUf5xSz2hBt5bbuiEaLDtBqRJeN3H9/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Quezon Island",
+        "googleName": "Quezon Island Beach",
+        "image": "https://places.googleapis.com/v1/places/ChIJHVmn-TbakzMRP9JyA9h--IM/photos/Ab43m-viBBK-QLRgVu5C_lFWsHFREm4DHAqEHsIoYlFjuWslYTQ7QDp23E3CnZK6ivhnEQotVzpHoZnlhkzIgL8VShdt5PbdIrnqgpGosLQnh5ErJfCWXJ8N33Y_baue2Td-F0FSAdiHG9DSCC7t-NA28c1-2B6bseN-Va6BcYjp_4Sp8NOoi_ys15lYOQ0gnkz6z9cm-cbqv1QHomQy6HCCFcLCFu3JXodNxDInaBkWy-WTJOEb6o0Y3OhcVTlEnbUkS7PjKB_x0N5cXwE_-3RDPNgvEm8V9tLzy0YEC7dFeNM6P3kmdUCZ9Pn7QH5-QArnPO6j0EWE5p8gH2RnIlpwN174GN503lh_L6qUG1dKccBqESz4c5ZY0LkaYMjXRl0RU30eYyAuc26aiBoMs1mZsf24cHPMDNwGHni9T7anuT4ygStO/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Bolinao Falls",
+        "googleName": "Bolinao Falls 3",
+        "image": "https://places.googleapis.com/v1/places/ChIJr4Ve2MfIkzMRdT0guPZouDw/photos/Ab43m-s_ixhiQiCwjndgONnoJUEuZARe33-io6grPrtoWiKmsDuLaq36KXhxMAUzkXXK3VdZluFFDL6ciCuk-pqf9YRXb4Wc2wdy2H6UOQ31rMypgZtPsn3cY3t5_d_iTX_q1awk0V5TJBE7lzUeU-oZhPv62zp4gO5j3hS1_3Fw8dHqwFuSenxhS_rCSYVzV9utp_UKie8XiKvPgnSxL3SFXr8IPYxRh6Y0_h1g2PQAgvK9hMAaiRdM6qK8339TXhd_WJSjf6r2FC7G4Rs6Fr0OU0TJ9U0JyxqLoPq4hviOtUH_c0uikgj9HpSr552Egk8XXKrPVx0m42U73j9LvY3lWaS0yk9WSR2gsGQzZL96yEdei-PgFD7vt7iWdnO4FWkKu-W9msZWYLeWr1x7OAYLGbwaVaqSoZdSq_SomLvRF53LaafU/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Enchanted Cave",
+        "googleName": "Enchanted Cave",
+        "image": "https://places.googleapis.com/v1/places/ChIJ_ym9jM7JkzMRAZX_F0m4ha8/photos/Ab43m-vUv2jFJa14JT7gDaOwPSOP0ojcKcFTQXPxaOQadPCZGUGPIEjKxegq_35VqxTFY2XWeX0SFFULfBeU2rSRSf4XoYc_abuswun-FgnWu15Qgj9qx4lh6yXKZcrDVbtIHromF07LTEu7SbtbWA1-aIDzD_QYnS7d3Aks70i03wR-MF8FGyo4dDBU1e8QFuKp5YKmu-HTmzlZMLD8FRavjujCGNFYoK98f7DXfSkYWw-NzdekXs9gpVV_CH2lHL0n0JDWh7ci_uz8lV_aSWwWzf9qC7Acvtbrkt5hjnL7XBkJzZdGJ4OqherRa92D-1mJ55nmYj9m_hk1Q0LlTOLddgE1yDU9sKV-yiRyxXxxYx3jTWcw3CCs5CPbL8wUkwM3_fFvUOFOJHL03QnoC5_inAYuHuDYp1jCH5nnW30xKZP4Cg/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      },
+      {
+        "existingName": "Governor's Island",
+        "googleName": "Governor's Island View Deck",
+        "image": "https://places.googleapis.com/v1/places/ChIJ0ZzmQw3bkzMR_qpYkcbksgk/photos/Ab43m-uXzC-XB0oxk0EsF6PpF0Vp-xU6WviYjcFIjy5QDdDgXU4MS_S4okD5tUkK7ZwDuK2AKJ7KMU-4LLjymYu5fL8AM4dSE0ZjsIO0q5Q_7Ne04k02KaXa5ZhZfZNQhv5W2HaMA3NoE1bFfY_twbIWluByET_HfTP_-ezbRI_MdN71YZVHNkAypGP3r8ejzkCvXtG-OTI5kvPAgxawGA3G11dJ0GBzmcq1r4bPD8Cdi0hrtkWKujgBOmE4qlcH6witnlZuIUr2Z-NFOpIm7DH0UieQOS881BOxlkqSlGg4cfyfv3yYqML6Tf7weklm6hGapMCWnJeUv4pnqI5OxlPy86bdRFOl2UueunZOqCVCAoLLJFTNVurxo476rfddsZnr1ACcq434n8pT7aTv77aH7IyO3O63tuYlSMJlHp6OPNI/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc"
+      }
+    ],
+    "newPlaces": [
+      {
+        "id": "pangasinan-new-22",
+        "name": "Patar White Sand Beach",
+        "category": "landmark",
+        "description": "A popular landmark in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJG5CKvi23kzMRhrjtc-3_EV4/photos/Ab43m-sViinl3pwjRPmNndih8nbvoEd11ds0IwHXVtxuWlRClA7PcMiWPBGyV8KWK6eSaokivBzf2eWAFDTxB9XYpNB_noarZ9CcQQnfgkMs2FF6_fm-7I-AZ7ncZGFXa2bxzIey4bo0WMpSAX1TYSAcDkv3tSEPEFUJ4aNsVQsAxskI5RDsenPm7D6frmuFdaldUwWfXGFmUjOkqDA4W4ZsDouKgMvBHf7rraHgCZNWfIAUdzspyuOXRbUnC9Bu_BQ3v_yap7y_X9dyXEVHAQ6FGOcDg8BlIsxY72N4MT27rEt7XjzG91ERxfHfJgpRMf7oMNQlsuPsP12LPLKjC_IlvRs7_oy-7hf6WNZXRI2czmVtALVbsHpoc37ID3a8hKZG7t1BEPZNkL7zIxuZMCviEtQkBdDVT7p7oxNebCh0oBq8RRnMcUdAYt-uXK8p3ySj/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.7806694,
+          16.3012248
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJG5CKvi23kzMRhrjtc-3_EV4",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 741
+      },
+      {
+        "id": "pangasinan-new-31",
+        "name": "Lucap Wharf",
+        "category": "landmark",
+        "description": "A popular landmark in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJgRg7K2_bkzMRdzUta_wHqEc/photos/Ab43m-s9T6c_Rd2pTgShDsukqwkNyvSWdZQApYyAgxTMHn1JZx502RfLWfmAgD1kdAA3Akax-S6Yc_7e5UFwL6GZmisw6lR26WI5lFMRq4ydhPyJ3l4VxKrly6sqfWu7Sy4wRSksBMfpgcoetA5OfvINXYMP2l8qhjIqByFJVdEotlQOMwoqU-1p_97pHouufJ3OPLm0s_7PZ4CHurHs24d72fgzZt6Fqyo7YA68OL2OOVNo9Zc6ZXPbhj9BTRwwTHqCLl4E9i2ItLxLeRNmWC9HU2dKefU1SNTA09QUdbnu6brFl05GucYDf3QiAxTRJqduDSJuOOvwf1h39nvZLB0KQslZaSwMJQUpWy9QD_DAWvUk67ve94BJBaVZ7i5P4D1WStlHgQHQYyIRJYA0k-oImnVpM7esLPANWo2_BL86gApgo7R4/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.00318139999999,
+          16.192432399999998
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJgRg7K2_bkzMRdzUta_wHqEc",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 608
+      },
+      {
+        "id": "pangasinan-new-41",
+        "name": "Tondol White Sand Beach",
+        "category": "beach",
+        "description": "A popular beach in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJ_bMWUq_RkzMRcyaiGEZ8yq0/photos/Ab43m-sjXUVOkmTzc7Y0LfXCxVQyh-5tax3VSIyGnX0_fYUvwa-GY1KWCmWohv4D_eW_7kAdBtMSnOXrqrXTRcYFXUK83fYpi6O8DKQqSS6d2j0gy7NSk67qAvNAlIMMKcDccAgz7OWQyTEB-XILRAFDQW08gBXa5sc02LrRnnGNVOjGSVDHW0oemB3HZsNVeWsphghvYx4p3qDGHXLu4yyRWSLCzzMWzugAfVi-m5TwgQeRlbEKHUnzPCqS66OC6ZSyRD2ucXzxZs6YQnBa8RYE0h7jrAGkqZ8jyy-3r40YlXTaH4qpSW-r_QD7d1h7b-hBq8CqEP2TalYIisJa7i78xQ4O3NL_QUsMobIYwD4S9FyEYXL2PwniG-Isva2a4KpJOIYJ8lqu4whm1tXX-IvLBX7g1-5HNrpbNeGTuD2TCML-lYc/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.0135655,
+          16.3148447
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJ_bMWUq_RkzMRcyaiGEZ8yq0",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.4,
+        "_ratingCount": 579
+      },
+      {
+        "id": "pangasinan-new-24",
+        "name": "Death/Depth Pool",
+        "category": "landmark",
+        "description": "A popular landmark in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJCTIHqeiSkzMRnnHag4QKbw4/photos/Ab43m-tP3RgBPVXC_EtZaVhZkQrGB6vYWr7wQ6eGVRhez4uOX760njI9QigpXxx3QnwxO2o7no2_VcuDbsMasD-TXorCrVMTHG6QwnXhW6AJss-LmdgAjRGHTvkJMMb7Wpd1la5vfAJw2lFWjHKCFIpDm2XASyWahk5QZ0eNlJBmgyuslDJQGIi-k2mukX9d2dvS58L33tIhfVWEhYRqCZ2NQtYIH654jsGbY1nwX3QLsJPuQgp1Enxiu5ny91wsyN9HizjFgPQZr8f7ahaJVeA0bdDHZMlYrbcn6LXMrsG8hxpdyFG5jmmI5qFo24hw8t0fXg17KWSRjA0FCSJNsSMZ9zqMQyUz92gQ25b6ZwnRzLhHCNVTN2uIaB9jFv_6smF63Pny2d93_eJGrPw9vO6H4QhnvJzwzWJHHYKQWjRkI2gZ2Xo/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.7604951,
+          15.994841399999999
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJCTIHqeiSkzMRnnHag4QKbw4",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.6,
+        "_ratingCount": 278
+      },
+      {
+        "id": "pangasinan-new-34",
+        "name": "Estanza Beach",
+        "category": "landmark",
+        "description": "A popular landmark in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJDVydEZxfkTMRmzDRGoe2lgM/photos/Ab43m-u7bBzq8s5CK_sKxD5-IUqBIX1rVEgffCErUPdTH3SYxgHwd1TKfySrNQmX3dvWrm1CWGpN0LunJVMJollYWE4IWS-a6jNBJ0DXbGMbhEUu_lSVNimv7s6fK9LWNlwudjqBEsu-NC-Wr5SXhZgPv_SoDEVvDN4diR365eQbTO8DIxrwTZJvUoGCmikJ2Phh9Zztl1MW-0-sjJqNRdDlvsYpHahbSLyKaGR9xhVw6137osTw8tWoducXZqBK43BOhYmoLpJackMFvObMw579gDA15oz4-vuadiTAv0xRkoBUuhs08GMjq7crWNIC379a-A1clhGMvOA3-OTu4-4AQGdon2Lh_8dV4wXqNezOF1traypK5r7jwLPMrh11ZyYJRS12RWAG_So0lL4LQHm-lbzyxrtbOGf7z-exkM20WJ1Wgd4/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.17109699999999,
+          16.0369791
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJDVydEZxfkTMRmzDRGoe2lgM",
+        "_types": [
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 263
+      },
+      {
+        "id": "pangasinan-new-50",
+        "name": "Bued Mangrove Park",
+        "category": "nature",
+        "description": "A popular nature in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJDSAEj4TckzMRPrdV9ZBhSIE/photos/Ab43m-sy5ALp3_LBlqIRktM8KLItgrmjjBg6gBY4OxOqXkkbthIvY1tOL3DUMh62tl3I8xbkXBwD7gPuAb0IatK3oEjfVZJ5PKSGde-dxTQcSyTWfBrE5pvQLjvs-2ccSVrvOCPFvV9WsMVPbI-LT2tOcKvG_EoOZOwgnFdj2QZ366_-bDN5JoagzUt3cui2JNfMLMSoc9brTvrkoGgQ0P9e5DA9moC9wAaHYvqSU3FXD0ywP4RG_jmGXD_dFiek5Pw4WqK04JlkYdDrAsQiEpjp9INHWSgV7jv2yndZiLX7ITAQjtwoTIyQnAa_SkKZOJs1vZGAadEyGEBNJyehZ7KIJYEztt6qgLzxKq_lWSSfS1wEeWVYUOR2nOoteq04_RRBZ3RROGGxV3-6fx5lLbGYnWcqrL_5cuB3R88dS5VXcxu8e-pH/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.0111094,
+          16.1721625
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJDSAEj4TckzMRPrdV9ZBhSIE",
+        "_types": [
+          "park",
+          "tourist_attraction",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.3,
+        "_ratingCount": 240
+      },
+      {
+        "id": "pangasinan-new-67",
+        "name": "Masamirey White Sand Beach",
+        "category": "beach",
+        "description": "A popular beach in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJpadqLufekzMRWzincHG8Epc/photos/Ab43m-sEXyy0D8S9wEyc9f_dO5BhUaGHdNOlEOjlu4zMLMLia4xSBDo4CDxKjItWW29cAsOxjCSLmu0wxeOnTE7eXrIsJJZkquuwjYEcNYxWVi0w23OqCKI-cHl-5f2cxv9muslf9-FfUvQb-5xtF18flVaEvBbfFVc8GNjRCTowlCh_yXP6vwY2lq4jUMv4VDeXW1miwLF8llCh5SROsmKn9BgTYZoeKlNzklRV8E8ALoDlDl05VtwHM2d7Eh8j2EUt3T3YjJhJuHvdPXEQaZuSUgpOhsSEd9CGTj3whqI_jtoCvZNreZtyLudbkhEh-i5bdY9IKWVjZ8UHilfLqFJZc4iAegh0tOC6u9e_vP6Vcr3BuHbgH2a9odL9wE8PPHGi8GBc9N4XQapxE6v1nCo1VuzEccLZ_QsQw_zn6fqxYmZY0PC0/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          120.1065087,
+          16.1403308
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJpadqLufekzMRWzincHG8Epc",
+        "_types": [
+          "beach",
+          "natural_feature",
+          "establishment"
+        ],
+        "_rating": 4.1,
+        "_ratingCount": 292
+      },
+      {
+        "id": "pangasinan-new-35",
+        "name": "Camp Puor",
+        "category": "nature",
+        "description": "A popular nature in Pangasinan.",
+        "mustVisit": false,
+        "entranceFee": null,
+        "visitLength": null,
+        "bestTimeToVisit": null,
+        "howToGetThere": null,
+        "itineraryTip": null,
+        "image": "https://places.googleapis.com/v1/places/ChIJt6z8csfJkzMRxJxYVo8QkB0/photos/Ab43m-uYzussEQDIdx3qHPBQ2BSMMb7kTzc50RJPnniw56KwCeyKRSoHeMYdGetxLZ2g_3QPTNYPRqtoo5TDtgFNDtl9raf_D1g70mRZrg55z8uUpEnLPjjdodYZcRNWxurmDgRK-c6Z52eXLdvVx8d9GfsHxdEhEjOA-b8Obl13B5tXFa0z4v338NC8WYBTNML_yhZsqU4zwmdii1ffyHPIdSZ8DcNHUI8BVjJhXxUu9NbPyXqlkERTNMIIlWS8saIS5DUw4JERE96CcnorFj8h-ORlHS9vs7X3HM5pKNSLROwg5AQMSbK5LaMeFXw4lPdpZJhHMbsuejmHBlSUUCvmcT3VpQxtyLnbBKZQn_ESDVB3SQ5_aeqXxV3_XsNoRIzjnQxKke0OjXsYLc1FzdgaCpa_aHWQ8gEMnn35rAwbXu2aCA/media?maxWidthPx=800&key=AIzaSyCR4JPNwQpfqCie4tJPbIc6Yjr_krx5mjc",
+        "coordinates": [
+          119.8692077,
+          16.3327626
+        ],
+        "travel": {
+          "walk": null,
+          "tricycle": null,
+          "jeepney": null,
+          "van": null,
+          "ferry": null
+        },
+        "_googleId": "ChIJt6z8csfJkzMRxJxYVo8QkB0",
+        "_types": [
+          "campground",
+          "tourist_attraction",
+          "lodging",
+          "point_of_interest",
+          "establishment"
+        ],
+        "_rating": 4.5,
+        "_ratingCount": 175
+      }
+    ]
+  }
+}

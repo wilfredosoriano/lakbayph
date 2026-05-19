@@ -4,26 +4,62 @@
     "slug": "lakbayph",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/brand/lakbayph-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/brand/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "backgroundColor": "#ffffff",
+        "image": "./assets/images/brand/splash-icon.png",
+        "resizeMode": "contain",
+        "dark": {
+          "backgroundColor": "#111111",
+          "image": "./assets/images/brand/splash-icon.png",
+          "resizeMode": "contain"
+        }
+      }
     },
     "android": {
+      "splash": {
+        "backgroundColor": "#ffffff",
+        "image": "./assets/images/brand/splash-icon.png",
+        "resizeMode": "contain",
+        "dark": {
+          "backgroundColor": "#111111",
+          "image": "./assets/images/brand/splash-icon.png",
+          "resizeMode": "contain"
+        }
+      },
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/brand/lakbayph-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.shadow882026.lakbayph"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "LakbayPH uses your photo library to let you attach photos to your trip activities."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0cc3e3fa-6845-457e-916c-581118b01217"
+      }
     }
   }
 }

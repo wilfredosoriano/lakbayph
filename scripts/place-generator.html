@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LakbayPH Place Generator</title>
+    <style>
+      :root {
+        --bg: #f5efe6;
+        --panel: rgba(255, 251, 245, 0.92);
+        --ink: #1f2937;
+        --muted: #667085;
+        --line: #dfd4c2;
+        --accent: #b45309;
+        --accent-strong: #8a3d06;
+        --accent-soft: #fff2e3;
+        --shadow: 0 18px 40px rgba(87, 57, 24, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 28%),
+          radial-gradient(circle at top right, rgba(180, 83, 9, 0.16), transparent 24%),
+          linear-gradient(180deg, #fffaf2 0%, var(--bg) 100%);
+        min-height: 100vh;
+      }
+
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+
+      .hero {
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 8px;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1;
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(320px, 460px) minmax(320px, 1fr);
+        gap: 20px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid rgba(223, 212, 194, 0.8);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .form-card {
+        padding: 22px;
+      }
+
+      .output-card {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        min-height: 720px;
+      }
+
+      .section-title {
+        margin: 0 0 16px;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: inherit;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      textarea {
+        min-height: 98px;
+        resize: vertical;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 2px solid rgba(180, 83, 9, 0.18);
+        border-color: var(--accent);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .travel-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .toggle input {
+        width: auto;
+        margin: 0;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 14px;
+        padding: 12px 16px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+        color: #fff;
+      }
+
+      .secondary {
+        background: #fff;
+        color: var(--accent);
+        border: 1px solid rgba(180, 83, 9, 0.18);
+      }
+
+      .secondary:disabled,
+      .primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .hint {
+        margin: 12px 0 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .status {
+        min-height: 22px;
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .status.ok {
+        color: #166534;
+      }
+
+      .status.error {
+        color: #b42318;
+      }
+
+      .output-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .meta-box {
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid var(--line);
+      }
+
+      .meta-label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .meta-value {
+        font-size: 14px;
+        font-weight: 700;
+        word-break: break-word;
+      }
+
+      pre {
+        flex: 1;
+        margin: 0;
+        padding: 18px;
+        border-radius: 18px;
+        background: #1d2430;
+        color: #ecf2ff;
+        overflow: auto;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .footer-note {
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .lookup-card {
+        margin-top: 10px;
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .lookup-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .lookup-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .lookup-sub {
+        margin: 4px 0 0;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .lookup-results {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .lookup-empty {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .lookup-result {
+        width: 100%;
+        text-align: left;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+      }
+
+      .lookup-result strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: var(--ink);
+      }
+
+      .lookup-result small {
+        display: block;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .lookup-result.selected {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .output-card {
+          min-height: 0;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .row,
+        .travel-grid,
+        .output-meta {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <span class="eyebrow">LakbayPH Tool</span>
+        <h1>Place Object Generator</h1>
+        <p>
+          Look up a place with Nominatim, select the best result, then generate a ready-to-paste
+          object for <code>placesData.js</code>. This is only for your local content workflow.
+        </p>
+      </div>
+
+      <div class="grid">
+        <section class="card form-card">
+          <h2 class="section-title">Place Details</h2>
+
+          <div class="field">
+            <label for="destination">Destination</label>
+            <input id="destination" value="Baguio" placeholder="Baguio">
+          </div>
+
+          <div class="field">
+            <label for="name">Place Name</label>
+            <input id="name" placeholder="Dragon Treasure Castle">
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="category">Category</label>
+              <select id="category">
+                <option value="landmark">landmark</option>
+                <option value="nature">nature</option>
+                <option value="food">food</option>
+                <option value="activity">activity</option>
+                <option value="shopping">shopping</option>
+                <option value="beach">beach</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fee">Entrance Fee</label>
+              <input id="fee" type="number" min="0" value="0">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" placeholder="Describe the place..."></textarea>
+          </div>
+
+          <div class="lookup-card">
+            <div class="lookup-head">
+              <div>
+                <p class="lookup-title">Coordinate Lookup</p>
+                <p class="lookup-sub">
+                  Use OSM Nominatim for a manual lookup first. Pick the best result, then generate the place object.
+                </p>
+              </div>
+              <button id="lookupBtn" class="secondary" type="button">Search Nominatim</button>
+            </div>
+            <p id="lookupStatus" class="status"></p>
+            <div id="lookupResults" class="lookup-results">
+              <div class="lookup-empty">No lookup yet. Search using the place name and destination above.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Flags</label>
+            <div class="toggle">
+              <input id="mustVisit" type="checkbox">
+              <span>Mark as must-visit</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="generateBtn" class="primary" type="button">Generate Object</button>
+            <button id="resetBtn" class="secondary" type="button">Clear</button>
+          </div>
+
+          <p class="hint">
+            Tip: use a deliberate, manual Nominatim search and choose the result that best matches
+            the actual attraction or entrance point you want to pin in the app.
+          </p>
+        </section>
+
+        <section class="card output-card">
+          <h2 class="section-title">Generated Output</h2>
+          <p id="status" class="status"></p>
+
+          <div class="output-meta">
+            <div class="meta-box">
+              <span class="meta-label">Suggested ID</span>
+              <span id="metaId" class="meta-value">-</span>
+            </div>
+            <div class="meta-box">
+              <span class="meta-label">Latitude</span>
+              <span id="metaLat" class="meta-value">-</span>
+            </div>
+            <div class="meta-box">
+              <span class="meta-label">Longitude</span>
+              <span id="metaLng" class="meta-value">-</span>
+            </div>
+            <div class="meta-box">
+              <span class="meta-label">Coordinate Source</span>
+              <span id="metaSource" class="meta-value">-</span>
+            </div>
+          </div>
+
+          <pre id="output">Click "Generate Object" after filling the form.</pre>
+
+          <div class="actions">
+            <button id="copyBtn" class="secondary" type="button" disabled>Copy Output</button>
+          </div>
+
+          <p class="footer-note">
+            Paste the generated object inside the correct destination array in
+            <code>src/data/placesData.js</code>.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const destinationInput = document.getElementById('destination');
+      const nameInput = document.getElementById('name');
+      const categoryInput = document.getElementById('category');
+      const descriptionInput = document.getElementById('description');
+      const feeInput = document.getElementById('fee');
+      const mustVisitInput = document.getElementById('mustVisit');
+      const outputEl = document.getElementById('output');
+      const statusEl = document.getElementById('status');
+      const copyBtn = document.getElementById('copyBtn');
+      const metaId = document.getElementById('metaId');
+      const metaLat = document.getElementById('metaLat');
+      const metaLng = document.getElementById('metaLng');
+      const metaSource = document.getElementById('metaSource');
+      const lookupBtn = document.getElementById('lookupBtn');
+      const lookupStatusEl = document.getElementById('lookupStatus');
+      const lookupResultsEl = document.getElementById('lookupResults');
+      let selectedLookup = null;
+      let lookupResults = [];
+
+      function slugify(value) {
+        return String(value || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      function compactPrefix(value) {
+        return slugify(value).replace(/-/g, '');
+      }
+
+      function setLookupStatus(message, type) {
+        lookupStatusEl.textContent = message || '';
+        lookupStatusEl.className = `status ${type || ''}`.trim();
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function renderLookupResults(results) {
+        lookupResults = results;
+        if (!results.length) {
+          lookupResultsEl.innerHTML = '<div class="lookup-empty">No matching places found.</div>';
+          return;
+        }
+
+        lookupResultsEl.innerHTML = results.map((item, index) => {
+          const isSelected = selectedLookup && selectedLookup.key === item.key;
+          return `
+            <button class="lookup-result ${isSelected ? 'selected' : ''}" type="button" data-lookup-index="${index}">
+              <strong>${escapeHtml(item.name)}</strong>
+              <small>${escapeHtml(item.displayName)}</small>
+              <small>Lat ${item.latitude} • Lng ${item.longitude}</small>
+            </button>
+          `;
+        }).join('');
+      }
+
+      function getNominatimQuery() {
+        const name = nameInput.value.trim();
+        const destination = destinationInput.value.trim();
+        if (!name) return '';
+        return [name, destination, 'Philippines'].filter(Boolean).join(', ');
+      }
+
+      async function lookupNominatim() {
+        const query = getNominatimQuery();
+        if (!query) {
+          setLookupStatus('Add the place name first before searching Nominatim.', 'error');
+          return;
+        }
+
+        selectedLookup = null;
+        renderLookupResults([]);
+        setLookupStatus('Searching Nominatim...', '');
+        lookupBtn.disabled = true;
+
+        try {
+          const params = new URLSearchParams({
+            format: 'jsonv2',
+            q: query,
+            countrycodes: 'ph',
+            limit: '5',
+            addressdetails: '1',
+          });
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`, {
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`Lookup failed with status ${response.status}`);
+          }
+
+          const raw = await response.json();
+          const results = raw
+            .filter((item) => item?.lat && item?.lon)
+            .map((item) => ({
+              key: `${item.place_id}-${item.lat}-${item.lon}`,
+              name: item.name || nameInput.value.trim() || 'Unnamed result',
+              displayName: item.display_name || item.name || '',
+              latitude: Number(item.lat),
+              longitude: Number(item.lon),
+              raw: item,
+            }));
+
+          if (!results.length) {
+            renderLookupResults([]);
+            setLookupStatus('No Nominatim results found. Try adjusting the place name or destination.', 'error');
+            return;
+          }
+
+          selectedLookup = results[0];
+          renderLookupResults(results);
+          setLookupStatus('Pick the result that best matches the actual place.', 'ok');
+        } catch (error) {
+          renderLookupResults([]);
+          setLookupStatus('Nominatim lookup failed. Please try again in a moment.', 'error');
+        } finally {
+          lookupBtn.disabled = false;
+        }
+      }
+
+      function escapeJsString(value) {
+        return String(value || '')
+          .replace(/\\/g, '\\\\')
+          .replace(/'/g, "\\'");
+      }
+
+      function setStatus(message, type) {
+        statusEl.textContent = message || '';
+        statusEl.className = `status ${type || ''}`.trim();
+      }
+
+      function resetForm() {
+        nameInput.value = '';
+        categoryInput.value = 'landmark';
+        descriptionInput.value = '';
+        feeInput.value = '0';
+        mustVisitInput.checked = false;
+        selectedLookup = null;
+        lookupResults = [];
+        outputEl.textContent = 'Click "Generate Object" after filling the form.';
+        metaId.textContent = '-';
+        metaLat.textContent = '-';
+        metaLng.textContent = '-';
+        metaSource.textContent = '-';
+        copyBtn.disabled = true;
+        setStatus('', '');
+        setLookupStatus('', '');
+        lookupResultsEl.innerHTML = '<div class="lookup-empty">No lookup yet. Search using the place name and destination above.</div>';
+      }
+
+      function generate() {
+        const destination = destinationInput.value.trim();
+        const name = nameInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const category = categoryInput.value;
+        const fee = Number(feeInput.value || 0);
+        const coordinates = selectedLookup
+          ? {
+              latitude: selectedLookup.latitude,
+              longitude: selectedLookup.longitude,
+              source: 'Nominatim / OpenStreetMap',
+            }
+            : null;
+
+        if (!destination) {
+          setStatus('Add a destination first.', 'error');
+          return;
+        }
+
+        if (!name) {
+          setStatus('Add the place name first.', 'error');
+          return;
+        }
+
+        if (!coordinates) {
+          setStatus('No coordinates selected yet. Search Nominatim first and choose a result.', 'error');
+          return;
+        }
+
+        const suggestedId = `${compactPrefix(destination)}-x`;
+        const objectText = [
+          '{',
+          `  id: '${suggestedId}',`,
+          `  name: '${escapeJsString(name)}',`,
+          `  category: '${category}',`,
+          `  description: '${escapeJsString(description || 'Add description here.')}',`,
+          `  mustVisit: ${mustVisitInput.checked ? 'true' : 'false'},`,
+          `  entranceFee: ${Number.isFinite(fee) ? fee : 0},`,
+          `  coordinates: [${coordinates.longitude}, ${coordinates.latitude}],`,
+          `  travel: {walk:null,tricycle:null,jeepney:null,van:null,ferry:null},`,
+          '}',
+        ].join('\n');
+
+        outputEl.textContent = objectText;
+        metaId.textContent = suggestedId;
+        metaLat.textContent = String(coordinates.latitude);
+        metaLng.textContent = String(coordinates.longitude);
+        metaSource.textContent = coordinates.source;
+        copyBtn.disabled = false;
+        setStatus('Object generated. Replace the placeholder ID with your next real sequence number before pasting.', 'ok');
+      }
+
+      async function copyOutput() {
+        try {
+          await navigator.clipboard.writeText(outputEl.textContent);
+          setStatus('Copied to clipboard.', 'ok');
+        } catch (error) {
+          setStatus('Copy failed. You can still select the generated text manually.', 'error');
+        }
+      }
+
+      document.getElementById('generateBtn').addEventListener('click', generate);
+      document.getElementById('resetBtn').addEventListener('click', resetForm);
+      document.getElementById('copyBtn').addEventListener('click', copyOutput);
+      lookupBtn.addEventListener('click', lookupNominatim);
+      lookupResultsEl.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-lookup-index]');
+        if (!button) return;
+        const index = Number(button.getAttribute('data-lookup-index'));
+        const chosen = lookupResults[index];
+        if (!chosen) return;
+        selectedLookup = chosen;
+        renderLookupResults(lookupResults);
+        setLookupStatus(`Selected coordinates from Nominatim for ${chosen.name}.`, 'ok');
+      });
+    </script>
+  </body>
+</html>
