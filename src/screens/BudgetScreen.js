@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   initDB, getBudgetSummary, getExpenses,
   addExpense, deleteExpense, getExpenseMonths,
-  getSetting, setSetting,
+  getSetting, setSetting, updateBudgetTotal,
   CATEGORIES, CATEGORY_META,
 } from '../database/db';
 import { getLakbayTip } from '../utils/budgetTips';

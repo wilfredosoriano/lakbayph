@@ -17,11 +17,11 @@ const SHEET_H      = height * 0.60;
 const MASCOT_COVER = MASCOT_SIZE * 0.26;
 
 const FEATURES = [
-  { icon: 'briefcase',   title: 'Unlimited Trips',             sub: 'No cap — plan as many adventures as you want.' },
-  { icon: 'restaurant',  title: 'More Must-Try Food Picks',    sub: 'Unlock richer dining suggestions for every destination.' },
-  { icon: 'location',    title: 'More Must-Visit Places',      sub: 'Unlock extended place suggestions for every region.' },
-  { icon: 'car',         title: 'Richer Local Transport Tips', sub: 'Get better ride advice, fare context, and travel know-how.' },
-  { icon: 'chatbubbles', title: 'Trip Assistant Unlocked',     sub: 'Chat with your personal travel planning assistant.' },
+  { icon: 'briefcase',   title: 'Unlimited Trips',     sub: 'Free plan is limited to 3 trips. Go unlimited with Premium.' },
+  { icon: 'chatbubbles', title: 'Lakbay Assistant',    sub: 'Your offline planning buddy — trips, budget, packing lists, and destinations.' },
+  { icon: 'images',      title: 'Memories Slideshow',  sub: 'Relive every trip with autoplay and easy sharing.' },
+  { icon: 'image',       title: 'Trip Cover Photos',   sub: 'Set a personal cover photo for each of your trips.' },
+  { icon: 'headset',     title: 'Priority Support',    sub: 'Get faster help whenever you need it.' },
 ];
 
 export default function PremiumScreen({ navigation }) {

@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '../context/UserContext';
 import { parseMessage } from '../utils/chatParser';
 import {
-  addExpense, getBudget, updateBudgetTotal, createTrip,
+  addExpense, getBudget, updateBudgetTotal, createTrip, addPackingItem,
 } from '../database/db';
 
 const { width } = require('react-native').Dimensions.get('window');
@@ -24,12 +24,13 @@ const fmt = (n) => '₱' + Number(n).toLocaleString();
 
 const QUICK_TIPS = [
   'Spent ₱200 on food',
-  'Add ₱1,000 to my budget',
-  'Plan a trip to Baguio for 3 days',
-  "How's my budget?",
   'Show my trips',
+  "How's my budget?",
+  'What to do in Baguio?',
+  'Must-visit in Pangasinan?',
+  'Add sunscreen to packing list',
+  'Plan a trip to Vigan for 3 days',
   'How do I ride a jeepney?',
-  'Tell me about Siargao',
 ];
 
 // ── Typing indicator ──────────────────────────────────────────────────────────
@@ -143,7 +144,7 @@ export default function AIAssistantScreen({ navigation }) {
       id: '1',
       sender: 'bot',
       type: 'message',
-      text: `Kumusta, ${userName}! 😊\n\nI can log your expenses, update your budget, create trips, and give travel tips — all offline. Just type naturally!\n\nTry: "Spent ₱200 on food" or "Plan a trip to Baguio for 3 days"`,
+      text: `Kumusta, ${userName}! 😊\n\nI'm your Lakbay planning buddy. I know your trips, budget, packing lists, and all the Philippine destinations in this app — no internet needed.\n\nTry asking:\n• "What to do in Baguio?"\n• "Add sunscreen to packing list"\n• "Spent ₱350 on food"`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ], [userName]);
@@ -282,6 +283,11 @@ export default function AIAssistantScreen({ navigation }) {
         addBotMessage(`✅ "${data.name}" created! Head to your Trips tab to start adding activities.`);
       }
 
+      else if (intent === 'ADD_PACKING_ITEM') {
+        await addPackingItem(data.tripId, data.item);
+        addBotMessage(`✅ "${data.item}" added to the packing list for "${data.tripName}"!`);
+      }
+
     } catch (_) {
       addBotMessage('Something went wrong. Please try again.');
     }
@@ -306,7 +312,7 @@ export default function AIAssistantScreen({ navigation }) {
           </TouchableOpacity>
           <View style={styles.headerInfo}>
             <Text style={styles.headerTitle}>Lakbay Assistant ✦</Text>
-            <Text style={styles.headerSub}>Offline · Always ready</Text>
+            <Text style={styles.headerSub}>Knows your trips, budget & destinations</Text>
           </View>
         </View>
 

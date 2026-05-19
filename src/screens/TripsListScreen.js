@@ -304,7 +304,13 @@ export default function TripsListScreen({ navigation }) {
     setTrips(prev => prev.map(t => t.id === updated.id ? { ...t, ...updated } : t));
   };
 
+  const FREE_TRIP_LIMIT = 3;
+
   const handleAddTrip = () => {
+    if (trips.length >= FREE_TRIP_LIMIT) {
+      navigation.navigate('Premium');
+      return;
+    }
     navigation.navigate('CreateTrip');
   };
 
@@ -320,6 +326,11 @@ export default function TripsListScreen({ navigation }) {
               <Text style={styles.headerPillText}>
                 {trips.length} trip{trips.length !== 1 ? 's' : ''} planned
               </Text>
+              {trips.length < FREE_TRIP_LIMIT && (
+                <Text style={styles.headerPillSub}>
+                  {FREE_TRIP_LIMIT - trips.length} free slot{FREE_TRIP_LIMIT - trips.length !== 1 ? 's' : ''} left
+                </Text>
+              )}
             </View>
           )}
         </View>
@@ -394,6 +405,9 @@ const styles = StyleSheet.create({
   },
   headerPillText: {
     fontSize: s(11), fontFamily: Fonts.medium, color: Colors.white,
+  },
+  headerPillSub: {
+    fontSize: s(10), fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.7)',
   },
   addBtn: {
     width: s(34), height: s(34), borderRadius: s(10),

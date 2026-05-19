@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { getTrips, getBudgetSummary, getAllTripActivities, getSetting } from '../database/db';
 import { PLACES_BY_DESTINATION, matchDestination } from '../data/placesData';
+import CachedImage from '../components/CachedImage';
 
 
 const { width, height } = Dimensions.get('window');
@@ -415,9 +416,11 @@ export default function DashboardScreen({ navigation }) {
             activeOpacity={0.9}
           >
             <View>
-              {/* Destination image */}
+              {/* Destination image — cover photo takes priority */}
               <View style={styles.tripImageWrap}>
-                {tripDestImg ? (
+                {trip.cover_photo ? (
+                  <Image source={{ uri: trip.cover_photo }} style={styles.tripImage} resizeMode="cover" />
+                ) : tripDestImg ? (
                   <CachedImage
                     placeId={tripDestImg.id}
                     uri={tripDestImg.uri}

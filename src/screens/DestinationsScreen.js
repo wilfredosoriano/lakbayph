@@ -30,6 +30,7 @@ const GRID_GAP  = s(10);
 const GRID_W    = (width - s(16) * 2 - GRID_GAP) / 2;
 const GRID_H    = GRID_W * 1.25;
 
+
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -44,6 +45,18 @@ const CATEGORY_EMOJI = {
 
 // Persists across tab remounts so cards never re-animate once revealed
 const _revealedCards = new Set();
+
+// Pre-shuffled at module load so places from all destinations are interleaved
+const _allPlaces = (() => {
+  const flat = Object.values(PLACES_BY_DESTINATION).flat();
+  let seed = 42;
+  for (let i = flat.length - 1; i > 0; i--) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const j = seed % (i + 1);
+    [flat[i], flat[j]] = [flat[j], flat[i]];
+  }
+  return flat;
+})();
 
 function seededShuffle(arr, seed) {
   const a = [...arr];
@@ -582,9 +595,7 @@ export default function DestinationsScreen({ navigation, route }) {
     getTrips().then(setTrips);
   }, []));
 
-  const allPlaces = useMemo(() =>
-    Object.values(PLACES_BY_DESTINATION).flat(),
-  []);
+  const allPlaces = _allPlaces;
 
   const FILTERS = [
     { key: 'all',      label: 'All',      emoji: '🗺️' },
@@ -628,7 +639,7 @@ export default function DestinationsScreen({ navigation, route }) {
       map[p.id] = new Animated.Value(_revealedCards.has(p.id) ? 1 : 0);
     });
     return map;
-  }, [allPlaces]);
+  }, [allPlaces]); // keep allPlaces so switching filters reuses existing anim values
 
   const scrollYRef    = useRef(0);
   const viewportH     = useRef(Dimensions.get('window').height);
@@ -648,16 +659,16 @@ export default function DestinationsScreen({ navigation, route }) {
 
   const checkAndAnimate = useCallback(() => {
     const visibleBottom = scrollYRef.current + viewportH.current;
-    allPlaces.forEach((place, index) => {
+    filteredPlaces.forEach((place, index) => {
       if (revealedSet.current.has(place.id)) return;
-      const relY   = cardYInGrid.current[place.id] ?? Infinity;
+      const relY    = cardYInGrid.current[place.id] ?? Infinity;
       const cardTop = gridOffsetY.current + relY;
       if (cardTop < visibleBottom + s(30)) {
         revealedSet.current.add(place.id);
         triggerCard(place.id, index % 2);
       }
     });
-  }, [allPlaces, triggerCard]);
+  }, [filteredPlaces, triggerCard]);
 
   const handleScroll = useCallback((e) => {
     scrollYRef.current = e.nativeEvent.contentOffset.y;
