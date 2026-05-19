@@ -316,18 +316,33 @@ export async function reorderActivities(orderedIds) {
 export async function getAllTripActivities(tripId) {
   const d = await initDB();
   return d.getAllAsync(
-    `SELECT * FROM trip_activities WHERE trip_id = ? ORDER BY day ASC, time ASC`,
+    `SELECT * FROM trip_activities WHERE trip_id = ? ORDER BY day ASC, sort_order ASC, time ASC, created_at ASC`,
     [tripId]
   );
 }
 
 export async function addTripActivity({ tripId, day, time, title, subtitle, category, cost, notes }) {
   const d = await initDB();
+  const lastSortRow = await d.getFirstAsync(
+    `SELECT COALESCE(MAX(sort_order), -1) as max_sort_order FROM trip_activities WHERE trip_id = ? AND day = ?`,
+    [tripId, day]
+  );
+  const nextSortOrder = (lastSortRow?.max_sort_order ?? -1) + 1;
   const result = await d.runAsync(
-    `INSERT INTO trip_activities (trip_id, day, time, title, subtitle, category, cost, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [tripId, day, time, title, subtitle || '', category, cost || 0, notes || '', new Date().toISOString()]
+    `INSERT INTO trip_activities (trip_id, day, time, title, subtitle, category, cost, notes, created_at, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [tripId, day, time, title, subtitle || '', category, cost || 0, notes || '', new Date().toISOString(), nextSortOrder]
   );
   return result.lastInsertRowId;
+}
+
+export async function updateTripActivity({ id, time, title, subtitle, category, notes }) {
+  const d = await initDB();
+  await d.runAsync(
+    `UPDATE trip_activities
+     SET time = ?, title = ?, subtitle = ?, category = ?, notes = ?
+     WHERE id = ?`,
+    [time, title, subtitle || '', category, notes || '', id]
+  );
 }
 
 export async function updateActivityNotes(id, notes) {

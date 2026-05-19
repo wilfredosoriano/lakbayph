@@ -5,18 +5,29 @@ import {
   Platform, Keyboard, Alert, Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { getTripActivities, getAllTripActivities, addTripActivity, deleteTripActivity, toggleActivityDone, updateActivityPhotos, updateActivityNotes, updateActivityLocation, getDayLabel, setDayLabel, getPackingItems, addPackingItem, togglePackingItem, deletePackingItem, reorderActivities } from '../database/db';
+import { getTripActivities, getAllTripActivities, addTripActivity, updateTripActivity, deleteTripActivity, toggleActivityDone, updateActivityPhotos, updateActivityNotes, updateActivityLocation, getDayLabel, setDayLabel, getPackingItems, addPackingItem, togglePackingItem, deletePackingItem, reorderActivities } from '../database/db';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
 const s = (n) => Math.round(n * scale);
 // list pad s(16)*2 + timeCol s(52) + timelineCol s(20) + card marginLeft s(10) + card pad s(10)*2 + container pad s(10)*2 + 2 gaps s(6)*2
 const PHOTO_SIZE = Math.floor((width - s(16)*2 - s(52) - s(20) - s(10) - s(10)*2 - s(10)*2 - s(6)*2) / 3);
+const isExpoGo = Constants.executionEnvironment === 'storeClient';
+
+let DraggableFlatList = null;
+let ScaleDecorator = null;
+
+if (!isExpoGo) {
+  const draggableModule = require('react-native-draggable-flatlist');
+  DraggableFlatList = draggableModule.default;
+  ScaleDecorator = draggableModule.ScaleDecorator;
+}
 
 
 const CATEGORY_EMOJI = {
@@ -50,7 +61,20 @@ function ActivityIconView({ category }) {
   );
 }
 
-function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
+function parseActivityTime(time = '') {
+  const match = String(time).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) {
+    return { hour: '', minute: '', period: 'AM' };
+  }
+
+  return {
+    hour: match[1],
+    minute: match[2],
+    period: match[3].toUpperCase(),
+  };
+}
+
+function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSaved }) {
   const insets = useSafeAreaInsets();
   const [hour, setHour]       = useState('');
   const [minute, setMinute]   = useState('');
@@ -61,6 +85,7 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
   const [category, setCategory] = useState('other');
   const [saving, setSaving]   = useState(false);
   const [kbHeight, setKbHeight] = useState(0);
+  const isEditing = !!activity;
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -69,6 +94,30 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
     const hide = Keyboard.addListener(hideEvent, () => setKbHeight(0));
     return () => { show.remove(); hide.remove(); };
   }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    if (activity) {
+      const parsed = parseActivityTime(activity.time);
+      setHour(parsed.hour);
+      setMinute(parsed.minute);
+      setPeriod(parsed.period);
+      setTitle(activity.title || '');
+      setSubtitle(activity.subtitle || '');
+      setNotes(activity.notes || '');
+      setCategory(activity.category || 'other');
+      return;
+    }
+
+    setHour('');
+    setMinute('');
+    setPeriod('AM');
+    setTitle('');
+    setSubtitle('');
+    setNotes('');
+    setCategory('other');
+  }, [visible, activity]);
 
   const reset = () => {
     setHour(''); setMinute(''); setPeriod('AM');
@@ -85,15 +134,26 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
     if (!title.trim()) { Alert.alert('Missing', 'Please enter an activity title.'); return; }
     if (!hour.trim())  { Alert.alert('Missing', 'Please enter the hour.'); return; }
     setSaving(true);
-    await addTripActivity({
-      tripId, day,
-      time: buildTime(),
-      title: title.trim(),
-      subtitle: subtitle.trim(),
-      notes: notes.trim(),
-      category,
-      cost: 0,
-    });
+    if (activity?.id) {
+      await updateTripActivity({
+        id: activity.id,
+        time: buildTime(),
+        title: title.trim(),
+        subtitle: subtitle.trim(),
+        notes: notes.trim(),
+        category,
+      });
+    } else {
+      await addTripActivity({
+        tripId, day,
+        time: buildTime(),
+        title: title.trim(),
+        subtitle: subtitle.trim(),
+        notes: notes.trim(),
+        category,
+        cost: 0,
+      });
+    }
     setSaving(false);
     reset();
     onSaved();
@@ -109,7 +169,7 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
           marginBottom: kbHeight > 0 ? kbHeight + s(12) : 0,
         }]}>
           <View style={styles.modalHandle} />
-          <Text style={styles.modalTitle}>Add Activity</Text>
+          <Text style={styles.modalTitle}>{isEditing ? 'Edit Activity' : 'Add Activity'}</Text>
 
           <Text style={styles.fieldLabel}>Category</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: s(14) }}
@@ -186,7 +246,7 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
           />
 
           <TouchableOpacity style={[styles.saveBtn, saving && { opacity: 0.7 }]} onPress={handleSave} disabled={saving}>
-            <Text style={styles.saveBtnText}>{saving ? 'Saving...' : 'Add Activity'}</Text>
+            <Text style={styles.saveBtnText}>{saving ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Activity'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -196,7 +256,7 @@ function AddActivityModal({ visible, tripId, day, onClose, onSaved }) {
 
 const MAX_PHOTOS = 3;
 
-function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggleDone, onPhotoUpdate, onNotesUpdate, onLocationUpdate, onMoveUp, onMoveDown }) {
+function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhotoUpdate, onNotesUpdate, onLocationUpdate, drag, isActive, dragEnabled }) {
   const done = !!activity.done;
   const photos = (() => {
     try { return JSON.parse(activity.photo_uri || '[]'); } catch { return []; }
@@ -237,8 +297,8 @@ function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggl
     ]);
   };
 
-  return (
-    <View style={styles.activityRow}>
+  const cardContent = (
+    <View style={[styles.activityRow, isActive && styles.activityRowActive]}>
       <View style={styles.timeCol}>
         <Text style={[styles.timeText, done && styles.timeTextDone]}>{activity.time.replace(' ', '\n')}</Text>
       </View>
@@ -246,16 +306,8 @@ function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggl
         <View style={[styles.dot, done && styles.dotDone]} />
         {!isLast && <View style={styles.line} />}
       </View>
-      <View style={[styles.card, done && styles.cardDone]}>
-        {/* Top row: icon + title + done circle + drag handle */}
-        <TouchableOpacity
-          style={styles.cardTopRow}
-          onLongPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Delete', style: 'destructive', onPress: onDelete },
-          ])}
-          activeOpacity={0.85}
-        >
+      <View style={[styles.card, done && styles.cardDone, isActive && styles.cardDragging]}>
+        <View style={styles.cardTopRow}>
           <ActivityIconView category={activity.category} />
           <View style={styles.cardBody}>
             <Text style={[styles.cardTitle, done && styles.cardTitleDone]}>{activity.title}</Text>
@@ -273,15 +325,16 @@ function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggl
               {done ? 'Done' : 'Mark done'}
             </Text>
           </TouchableOpacity>
-          <View style={styles.reorderBtns}>
-            <TouchableOpacity onPress={onMoveUp} disabled={isFirst} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-              <Ionicons name="chevron-up" size={s(16)} color={isFirst ? Colors.grayLight : Colors.grayMedium} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onMoveDown} disabled={isLastCard} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-              <Ionicons name="chevron-down" size={s(16)} color={isLastCard ? Colors.grayLight : Colors.grayMedium} />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onLongPress={dragEnabled ? drag : undefined}
+            delayLongPress={150}
+            style={[styles.dragHandle, !dragEnabled && styles.dragHandleDisabled]}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            disabled={!dragEnabled}
+          >
+            <Ionicons name="menu-outline" size={s(18)} color={Colors.grayMedium} />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.cardBottomContainer}>
           {/* Photo row */}
@@ -300,7 +353,6 @@ function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggl
           </View>
 
           <View style={styles.cardFooter}>
-            {/* Notes row */}
             <TouchableOpacity
               onPress={() => { setNotesText(activity.notes || ''); setEditingNotes(true); }}
               activeOpacity={0.7}
@@ -310,80 +362,112 @@ function ActivityCard({ activity, isLast, isFirst, isLastCard, onDelete, onToggl
               </Text>
             </TouchableOpacity>
 
-            {/* Location label */}
-            <TouchableOpacity
-              style={[styles.locationLabel, locationText && styles.locationLabelFilled]}
-              onPress={() => { setLocationText(activity.location || ''); setEditingLocation(true); }}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="location-outline" size={s(11)} color={locationText ? Colors.primary : Colors.grayMedium} />
-              <Text style={[styles.locationLabelText, locationText && styles.locationLabelTextFilled]} numberOfLines={1}>
-                {locationText || 'Add location'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.cardMetaRow}>
+              <View style={styles.cardMetaLeft}>
+                <TouchableOpacity
+                  style={[styles.locationLabel, locationText && styles.locationLabelFilled]}
+                  onPress={() => { setLocationText(activity.location || ''); setEditingLocation(true); }}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="location-outline" size={s(11)} color={locationText ? Colors.primary : Colors.grayMedium} />
+                  <Text style={[styles.locationLabelText, locationText && styles.locationLabelTextFilled]} numberOfLines={1}>
+                    {locationText || 'Add location'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.cardMetaActions}>
+                <TouchableOpacity
+                  style={styles.editChip}
+                  onPress={onEdit}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="create-outline" size={s(11)} color={Colors.primary} />
+                  <Text style={styles.editChipText}>Edit</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteChip}
+                  onPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Delete', style: 'destructive', onPress: onDelete },
+                  ])}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="trash-outline" size={s(11)} color="#b91c1c" />
+                  <Text style={styles.deleteChipText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </View>
-
-      {/* Notes edit modal */}
-      <Modal visible={editingNotes} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingNotes(false)}>
-        <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingNotes(false)}>
-          <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
-            <Text style={styles.notesModalTitle}>Notes</Text>
-            <TextInput
-              style={styles.notesModalInput}
-              value={notesText}
-              onChangeText={setNotesText}
-              placeholder="e.g. Bring printed tickets, confirm booking ahead"
-              placeholderTextColor={Colors.grayMedium}
-              multiline
-              autoFocus
-              maxLength={300}
-            />
-            <View style={styles.notesModalActions}>
-              <TouchableOpacity onPress={() => setEditingNotes(false)} style={styles.notesCancelBtn}>
-                <Text style={styles.notesCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.notesSaveBtn}
-                onPress={() => { onNotesUpdate(notesText.trim()); setEditingNotes(false); }}
-              >
-                <Text style={styles.notesSaveText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </Modal>
-
-      {/* Location edit modal */}
-      <Modal visible={editingLocation} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingLocation(false)}>
-        <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingLocation(false)}>
-          <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
-            <Text style={styles.notesModalTitle}>Location</Text>
-            <TextInput
-              style={styles.notesModalInput}
-              value={locationText}
-              onChangeText={setLocationText}
-              placeholder="e.g. Coron Town Port, Palawan"
-              placeholderTextColor={Colors.grayMedium}
-              autoFocus
-              maxLength={120}
-            />
-            <View style={styles.notesModalActions}>
-              <TouchableOpacity onPress={() => setEditingLocation(false)} style={styles.notesCancelBtn}>
-                <Text style={styles.notesCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.notesSaveBtn}
-                onPress={() => { onLocationUpdate(locationText.trim()); setEditingLocation(false); }}
-              >
-                <Text style={styles.notesSaveText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </Modal>
     </View>
+  );
+
+  return (
+    <>
+      {dragEnabled && ScaleDecorator ? <ScaleDecorator activeScale={1.02}>{cardContent}</ScaleDecorator> : cardContent}
+
+        {/* Notes edit modal */}
+        <Modal visible={editingNotes} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingNotes(false)}>
+          <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingNotes(false)}>
+            <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
+              <Text style={styles.notesModalTitle}>Notes</Text>
+              <TextInput
+                style={styles.notesModalInput}
+                value={notesText}
+                onChangeText={setNotesText}
+                placeholder="e.g. Bring printed tickets, confirm booking ahead"
+                placeholderTextColor={Colors.grayMedium}
+                multiline
+                autoFocus
+                maxLength={300}
+              />
+              <View style={styles.notesModalActions}>
+                <TouchableOpacity onPress={() => setEditingNotes(false)} style={styles.notesCancelBtn}>
+                  <Text style={styles.notesCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.notesSaveBtn}
+                  onPress={() => { onNotesUpdate(notesText.trim()); setEditingNotes(false); }}
+                >
+                  <Text style={styles.notesSaveText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
+
+        {/* Location edit modal */}
+        <Modal visible={editingLocation} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingLocation(false)}>
+          <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingLocation(false)}>
+            <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
+              <Text style={styles.notesModalTitle}>Location</Text>
+              <TextInput
+                style={styles.notesModalInput}
+                value={locationText}
+                onChangeText={setLocationText}
+                placeholder="e.g. Coron Town Port, Palawan"
+                placeholderTextColor={Colors.grayMedium}
+                autoFocus
+                maxLength={120}
+              />
+              <View style={styles.notesModalActions}>
+                <TouchableOpacity onPress={() => setEditingLocation(false)} style={styles.notesCancelBtn}>
+                  <Text style={styles.notesCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.notesSaveBtn}
+                  onPress={() => { onLocationUpdate(locationText.trim()); setEditingLocation(false); }}
+                >
+                  <Text style={styles.notesSaveText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
+    </>
   );
 }
 
@@ -401,6 +485,7 @@ export default function TripDetailsScreen({ navigation, route }) {
   const [packingItems, setPackingItems] = useState([]);
   const [newPackingItem, setNewPackingItem] = useState('');
   const [addingPackingItem, setAddingPackingItem] = useState(false);
+  const [editingActivity, setEditingActivity] = useState(null);
 
   const days = trip?.days || 1;
   const dayNumbers = Array.from({ length: days }, (_, i) => i + 1);
@@ -467,13 +552,9 @@ export default function TripDetailsScreen({ navigation, route }) {
     loadAllActivities();
   };
 
-  const handleMoveActivity = async (index, direction) => {
-    const newActivities = [...activities];
-    const swapIndex = direction === 'up' ? index - 1 : index + 1;
-    if (swapIndex < 0 || swapIndex >= newActivities.length) return;
-    [newActivities[index], newActivities[swapIndex]] = [newActivities[swapIndex], newActivities[index]];
-    setActivities(newActivities);
-    await reorderActivities(newActivities.map(a => a.id));
+  const handleDragEnd = async ({ data }) => {
+    setActivities(data);
+    await reorderActivities(data.map((item) => item.id));
   };
 
 
@@ -496,6 +577,12 @@ export default function TripDetailsScreen({ navigation, route }) {
   const handleLocationUpdate = async (id, location) => {
     await updateActivityLocation(id, location);
     loadActivities();
+  };
+
+  const handleSavedActivity = () => {
+    setEditingActivity(null);
+    loadActivities();
+    loadAllActivities();
   };
 
 
@@ -641,25 +728,50 @@ export default function TripDetailsScreen({ navigation, route }) {
                 <Text style={styles.emptyAddBtnText}>+ Add Activity</Text>
               </TouchableOpacity>
             </View>
-          ) : (
+          ) : isExpoGo || !DraggableFlatList ? (
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.activitiesList, { paddingBottom: s(20) }]}>
               {activities.map((activity, i) => (
                 <ActivityCard
                   key={activity.id}
                   activity={activity}
                   isLast={i === activities.length - 1}
-                  isFirst={i === 0}
-                  isLastCard={i === activities.length - 1}
+                  onEdit={() => setEditingActivity(activity)}
                   onDelete={() => handleDeleteActivity(activity.id)}
                   onToggleDone={() => handleToggleDone(activity)}
                   onPhotoUpdate={(uris) => handlePhotoUpdate(activity.id, uris)}
                   onNotesUpdate={(notes) => handleNotesUpdate(activity.id, notes)}
                   onLocationUpdate={(loc) => handleLocationUpdate(activity.id, loc)}
-                  onMoveUp={() => handleMoveActivity(i, 'up')}
-                  onMoveDown={() => handleMoveActivity(i, 'down')}
+                  dragEnabled={false}
                 />
               ))}
             </ScrollView>
+          ) : (
+            <DraggableFlatList
+              data={activities}
+              keyExtractor={(item) => String(item.id)}
+              onDragEnd={handleDragEnd}
+              renderItem={({ item, drag, isActive, getIndex }) => (
+                <ActivityCard
+                  activity={item}
+                  isLast={(getIndex?.() ?? 0) === activities.length - 1}
+                  onEdit={() => setEditingActivity(item)}
+                  onDelete={() => handleDeleteActivity(item.id)}
+                  onToggleDone={() => handleToggleDone(item)}
+                  onPhotoUpdate={(uris) => handlePhotoUpdate(item.id, uris)}
+                  onNotesUpdate={(notes) => handleNotesUpdate(item.id, notes)}
+                  onLocationUpdate={(loc) => handleLocationUpdate(item.id, loc)}
+                  drag={drag}
+                  isActive={isActive}
+                  dragEnabled
+                />
+              )}
+              activationDistance={12}
+              autoscrollThreshold={60}
+              containerStyle={styles.activitiesDraggableList}
+              contentContainerStyle={[styles.activitiesList, { paddingBottom: s(20) }]}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            />
           )}
         </>
       ) : (
@@ -728,6 +840,14 @@ export default function TripDetailsScreen({ navigation, route }) {
         onClose={() => setShowAddModal(false)}
         onSaved={() => { loadActivities(); loadAllActivities(); }}
       />
+      <AddActivityModal
+        visible={!!editingActivity}
+        tripId={trip?.id}
+        day={selectedDay + 1}
+        activity={editingActivity}
+        onClose={() => setEditingActivity(null)}
+        onSaved={handleSavedActivity}
+      />
     </View>
   );
 }
@@ -784,8 +904,10 @@ const styles = StyleSheet.create({
   dayLabelText: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.primary, flex: 1 },
   dayLabelPlaceholder: { color: Colors.grayMedium, fontFamily: Fonts.regular },
   scrollContent: {},
+  activitiesDraggableList: { flex: 1 },
   activitiesList: { paddingHorizontal: s(16), paddingTop: s(16) },
   activityRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: s(10) },
+  activityRowActive: { zIndex: 2 },
   timeCol: { width: s(52), paddingTop: s(10) },
   timeText: { fontSize: s(10), fontFamily: Fonts.medium, color: Colors.textSecondary, lineHeight: s(14) },
   timelineCol: { width: s(20), alignItems: 'center', paddingTop: s(13) },
@@ -812,7 +934,17 @@ const styles = StyleSheet.create({
   cardSub: { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textSecondary, marginTop: s(2) },
   cardSubDone: { color: Colors.textTertiary },
   cardDone: { opacity: 0.7 },
-  reorderBtns: { flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: s(2), paddingLeft: s(4) },
+  cardDragging: {
+    shadowOpacity: 0.12,
+    shadowRadius: s(10),
+    elevation: 6,
+  },
+  dragHandle: {
+    paddingLeft: s(6),
+    paddingVertical: s(6),
+    alignSelf: 'flex-start',
+  },
+  dragHandleDisabled: { opacity: 0.35 },
   timeTextDone: { color: Colors.textTertiary },
   dotDone: { backgroundColor: Colors.textTertiary },
   doneBtn: {
@@ -962,6 +1094,14 @@ const styles = StyleSheet.create({
     gap: s(6),
     paddingBottom: s(2),
   },
+  cardMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: s(8),
+  },
+  cardMetaLeft: { flex: 1, alignItems: 'flex-start' },
+  cardMetaActions: { flexDirection: 'row', alignItems: 'center', gap: s(6) },
   notesRow: {
     flexDirection: 'row', alignItems: 'flex-start', gap: s(6),
   },
@@ -976,6 +1116,20 @@ const styles = StyleSheet.create({
   locationLabelFilled: { borderColor: Colors.primary, backgroundColor: Colors.primaryBg },
   locationLabelText: { fontSize: s(10), fontFamily: Fonts.medium, color: Colors.grayMedium },
   locationLabelTextFilled: { color: Colors.primary, fontFamily: Fonts.bold },
+  editChip: {
+    alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: s(4),
+    paddingHorizontal: s(8), paddingVertical: s(3),
+    borderRadius: s(20), borderWidth: 1, borderColor: Colors.primary,
+    backgroundColor: Colors.primaryBg,
+  },
+  editChipText: { fontSize: s(10), fontFamily: Fonts.bold, color: Colors.primary },
+  deleteChip: {
+    alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: s(4),
+    paddingHorizontal: s(8), paddingVertical: s(3),
+    borderRadius: s(20), borderWidth: 1, borderColor: '#fecaca',
+    backgroundColor: '#fef2f2',
+  },
+  deleteChipText: { fontSize: s(10), fontFamily: Fonts.bold, color: '#b91c1c' },
   notesOverlay: {
     flex: 1, backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center', paddingHorizontal: s(24),
