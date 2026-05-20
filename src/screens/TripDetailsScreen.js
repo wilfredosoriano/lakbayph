@@ -790,27 +790,15 @@ export default function TripDetailsScreen({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-      {/* Trip summary */}
-      <View style={styles.summaryBar}>
-        <View style={styles.summaryStatsRow}>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>{days}</Text>
-            <Text style={styles.summaryLabel}>Days</Text>
-          </View>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>{totalActivities}</Text>
-            <Text style={styles.summaryLabel}>Activities</Text>
-          </View>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>{doneActivities}/{totalActivities}</Text>
-            <Text style={styles.summaryLabel}>Done</Text>
-          </View>
-          <View style={styles.summaryItem}>
-            <Text style={[styles.summaryValue, completionPct === 100 && { color: Colors.primary }]}>{completionPct}%</Text>
-            <Text style={styles.summaryLabel}>Complete</Text>
-          </View>
+      <View style={styles.progressStrip}>
+        <View style={styles.progressStripHeader}>
+          <Text style={styles.progressStripLabel}>
+            Day {selectedDay + 1} {activeView === 'itinerary' ? 'itinerary' : activeView}
+          </Text>
+          <Text style={[styles.progressStripValue, completionPct === 100 && styles.progressStripValueComplete]}>
+            {doneActivities} of {totalActivities} done
+          </Text>
         </View>
-        {/* Progress bar */}
         <View style={styles.progressBarTrack}>
           <View style={[styles.progressBarFill, { width: `${completionPct}%` }, completionPct === 100 && styles.progressBarComplete]} />
         </View>
@@ -1187,20 +1175,34 @@ const styles = StyleSheet.create({
   headerCenter: { flex: 1, alignItems: 'center' },
   headerTitle: { fontSize: s(17), fontFamily: Fonts.bold, color: Colors.white },
   headerSub: { fontSize: s(11), fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.75)', marginTop: s(2) },
-  summaryBar: {
-    flexDirection: 'column',
+  progressStrip: {
     backgroundColor: Colors.white,
-    paddingTop: s(10), paddingBottom: s(12),
+    paddingTop: s(10),
+    paddingBottom: s(12),
     paddingHorizontal: s(16),
-    gap: s(10),
+    gap: s(8),
   },
-  summaryStatsRow: {
-    flexDirection: 'row', alignItems: 'center',
+  progressStripHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: s(12),
   },
-  summaryItem: { flex: 1, alignItems: 'center' },
-  summaryValue: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.textPrimary },
-  summaryLabel: { fontSize: s(10), fontFamily: Fonts.regular, color: Colors.grayMedium, marginTop: s(1) },
-  summaryDivider: { width: 1, height: s(28), backgroundColor: Colors.border },
+  progressStripLabel: {
+    flex: 1,
+    fontSize: s(12),
+    fontFamily: Fonts.medium,
+    color: Colors.textSecondary,
+    textTransform: 'capitalize',
+  },
+  progressStripValue: {
+    fontSize: s(12),
+    fontFamily: Fonts.bold,
+    color: Colors.textPrimary,
+  },
+  progressStripValueComplete: {
+    color: '#22c55e',
+  },
   progressBarTrack: {
     width: '100%', height: s(6), borderRadius: s(3),
     backgroundColor: Colors.grayLight, overflow: 'hidden',
