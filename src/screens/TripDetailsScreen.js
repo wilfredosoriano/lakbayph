@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity,
   Dimensions, Image, StatusBar, Modal, TextInput,
@@ -614,6 +614,8 @@ export default function TripDetailsScreen({ navigation, route }) {
   const [newPackingItem, setNewPackingItem] = useState('');
   const [addingPackingItem, setAddingPackingItem] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
+  const [memoryHeroIndex, setMemoryHeroIndex] = useState(0);
+  const [memoryAutoPlay, setMemoryAutoPlay] = useState(true);
 
   const days = trip?.days || 1;
   const dayNumbers = Array.from({ length: days }, (_, i) => i + 1);
@@ -621,6 +623,10 @@ export default function TripDetailsScreen({ navigation, route }) {
   const totalActivities = allActivities.length;
   const doneActivities = allActivities.filter(a => a.done).length;
   const completionPct = totalActivities > 0 ? Math.round((doneActivities / totalActivities) * 100) : 0;
+  const allPhotos = useMemo(() => allActivities.flatMap((a) => {
+    const uris = (() => { try { return JSON.parse(a.photo_uri || '[]'); } catch { return []; } })();
+    return uris.map((uri) => ({ uri, title: a.title, day: a.day }));
+  }), [allActivities]);
 
   const loadActivities = useCallback(async () => {
     if (!trip?.id) return;
@@ -739,6 +745,27 @@ export default function TripDetailsScreen({ navigation, route }) {
     loadActivities();
     loadAllActivities();
   };
+
+  useEffect(() => {
+    if (allPhotos.length === 0) {
+      setMemoryHeroIndex(0);
+      return;
+    }
+
+    if (memoryHeroIndex > allPhotos.length - 1) {
+      setMemoryHeroIndex(0);
+    }
+  }, [allPhotos, memoryHeroIndex]);
+
+  useEffect(() => {
+    if (activeView !== 'memories' || !memoryAutoPlay || allPhotos.length <= 1) return undefined;
+
+    const timer = setInterval(() => {
+      setMemoryHeroIndex((current) => (current + 1) % allPhotos.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [activeView, memoryAutoPlay, allPhotos.length]);
 
 
   return (
@@ -1010,17 +1037,10 @@ export default function TripDetailsScreen({ navigation, route }) {
       ) : null}
 
       {activeView === 'memories' && (() => {
-        const allPhotos = allActivities.flatMap(a => {
-          const uris = (() => { try { return JSON.parse(a.photo_uri || '[]'); } catch { return []; } })();
-          return uris.map(uri => ({ uri, title: a.title, day: a.day }));
-        });
-
-        const GAP    = s(2);
-        const CELL   = Math.floor((width - s(32) - GAP * 2) / 3);
-        const CELL_H = Math.floor(CELL * 1.3);
+        const heroPhoto = allPhotos[memoryHeroIndex] || null;
 
         return (
-          <ScrollView contentContainerStyle={{ paddingHorizontal: s(16), paddingTop: s(12), paddingBottom: s(40) }} showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={mem.scrollContent} showsVerticalScrollIndicator={false}>
             {allPhotos.length === 0 ? (
               <View style={mem.empty}>
                 <Ionicons name="images-outline" size={s(48)} color={Colors.grayMedium} />
@@ -1034,22 +1054,74 @@ export default function TripDetailsScreen({ navigation, route }) {
               </View>
             ) : (
               <>
-                <Text style={mem.count}>{allPhotos.length} photo{allPhotos.length !== 1 ? 's' : ''}</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                <View style={mem.headerRow}>
+                  <View>
+                    <Text style={mem.eyebrow}>Trip Memories</Text>
+                    <Text style={mem.count}>{allPhotos.length} photo{allPhotos.length !== 1 ? 's' : ''}</Text>
+                  </View>
+                  {allPhotos.length > 1 && (
+                    <TouchableOpacity
+                      style={[mem.autoPlayChip, !memoryAutoPlay && mem.autoPlayChipPaused]}
+                      onPress={() => setMemoryAutoPlay((prev) => !prev)}
+                      activeOpacity={0.85}
+                    >
+                      <Ionicons
+                        name={memoryAutoPlay ? 'pause-outline' : 'play-outline'}
+                        size={s(12)}
+                        color={memoryAutoPlay ? Colors.primary : Colors.grayMedium}
+                      />
+                      <Text style={[mem.autoPlayChipText, !memoryAutoPlay && mem.autoPlayChipTextPaused]}>
+                        {memoryAutoPlay ? 'Auto' : 'Paused'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                {heroPhoto && (
+                  <TouchableOpacity
+                    style={mem.heroCard}
+                    activeOpacity={0.92}
+                    onPress={() => setViewingPhoto({ ...heroPhoto, index: memoryHeroIndex, allPhotos })}
+                    onLongPress={() => setMemoryAutoPlay(false)}
+                  >
+                    <Image source={{ uri: heroPhoto.uri }} style={mem.heroImage} resizeMode="cover" />
+                    <View style={mem.heroOverlay} />
+                    <View style={mem.heroContent}>
+                      <Text style={mem.heroLabel}>Memory spotlight</Text>
+                      <Text style={mem.heroTitle} numberOfLines={2}>{heroPhoto.title}</Text>
+                      <Text style={mem.heroMeta}>Day {heroPhoto.day}</Text>
+                    </View>
+                    {allPhotos.length > 1 && (
+                      <View style={mem.heroDots}>
+                        {allPhotos.map((_, index) => (
+                          <View key={index} style={[mem.heroDot, index === memoryHeroIndex && mem.heroDotActive]} />
+                        ))}
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+
+                <View style={mem.gridHeader}>
+                  <Text style={mem.gridTitle}>More moments</Text>
+                  <Text style={mem.gridHint}>Tap a photo to feature it above</Text>
+                </View>
+
+                <View style={mem.grid}>
                   {allPhotos.map((photo, i) => (
                     <TouchableOpacity
                       key={i}
-                      style={{
-                        width: CELL, height: CELL_H,
-                        marginRight: (i % 3 === 2) ? 0 : GAP,
-                        marginBottom: GAP,
-                        borderRadius: s(6), overflow: 'hidden',
-                        backgroundColor: '#111',
+                      style={mem.thumbCard}
+                      onPress={() => {
+                        setMemoryHeroIndex(i);
+                        setMemoryAutoPlay(false);
                       }}
-                      onPress={() => setViewingPhoto({ ...photo, index: i, allPhotos })}
-                      activeOpacity={0.85}
+                      onLongPress={() => setViewingPhoto({ ...photo, index: i, allPhotos })}
+                      activeOpacity={0.88}
                     >
-                      <Image source={{ uri: photo.uri }} style={{ width: CELL, height: CELL_H }} resizeMode="cover" />
+                      <Image source={{ uri: photo.uri }} style={mem.thumbImage} resizeMode="cover" />
+                      <View style={mem.thumbOverlay} />
+                      {i === memoryHeroIndex && <View style={mem.thumbActiveRing} />}
+                      <Text style={mem.thumbDay}>Day {photo.day}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -1465,6 +1537,26 @@ const styles = StyleSheet.create({
 });
 
 const mem = StyleSheet.create({
+  scrollContent: {
+    paddingHorizontal: s(16),
+    paddingTop: s(12),
+    paddingBottom: s(40),
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: s(12),
+    gap: s(12),
+  },
+  eyebrow: {
+    fontSize: s(11),
+    fontFamily: Fonts.bold,
+    color: Colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: s(3),
+  },
   empty: {
     alignItems: 'center', justifyContent: 'center',
     paddingTop: s(80), gap: s(10),
@@ -1474,13 +1566,152 @@ const mem = StyleSheet.create({
     fontSize: s(13), fontFamily: Fonts.regular, color: Colors.textSecondary,
     textAlign: 'center', maxWidth: s(240),
   },
-  count: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.textSecondary, marginBottom: s(10) },
+  count: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.textSecondary },
   emptyHint: {
     flexDirection: 'row', alignItems: 'center', gap: s(6),
     marginTop: s(16), backgroundColor: Colors.primaryBg,
     borderRadius: s(12), paddingHorizontal: s(14), paddingVertical: s(10),
   },
   emptyHintText: { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.primary },
+  autoPlayChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: s(4),
+    paddingHorizontal: s(10),
+    paddingVertical: s(6),
+    borderRadius: s(999),
+    backgroundColor: Colors.primaryBg,
+    borderWidth: 1,
+    borderColor: 'rgba(15,118,110,0.16)',
+  },
+  autoPlayChipPaused: {
+    backgroundColor: Colors.white,
+    borderColor: Colors.border,
+  },
+  autoPlayChipText: {
+    fontSize: s(11),
+    fontFamily: Fonts.bold,
+    color: Colors.primary,
+  },
+  autoPlayChipTextPaused: {
+    color: Colors.grayMedium,
+  },
+  heroCard: {
+    height: Math.floor(width * 0.86),
+    borderRadius: s(20),
+    overflow: 'hidden',
+    backgroundColor: '#111',
+    marginBottom: s(14),
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.28)',
+  },
+  heroContent: {
+    position: 'absolute',
+    left: s(16),
+    right: s(16),
+    bottom: s(16),
+  },
+  heroLabel: {
+    fontSize: s(11),
+    fontFamily: Fonts.bold,
+    color: 'rgba(255,255,255,0.82)',
+    marginBottom: s(6),
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  heroTitle: {
+    fontSize: s(22),
+    lineHeight: s(28),
+    fontFamily: Fonts.bold,
+    color: Colors.white,
+  },
+  heroMeta: {
+    fontSize: s(12),
+    fontFamily: Fonts.medium,
+    color: 'rgba(255,255,255,0.88)',
+    marginTop: s(6),
+  },
+  heroDots: {
+    position: 'absolute',
+    bottom: s(14),
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: s(5),
+    backgroundColor: 'rgba(0,0,0,0.18)',
+    borderRadius: s(999),
+    paddingHorizontal: s(8),
+    paddingVertical: s(6),
+  },
+  heroDot: {
+    width: s(7),
+    height: s(7),
+    borderRadius: s(4),
+    backgroundColor: 'rgba(255,255,255,0.45)',
+  },
+  heroDotActive: {
+    width: s(20),
+    backgroundColor: Colors.white,
+  },
+  gridHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    marginBottom: s(10),
+    gap: s(12),
+  },
+  gridTitle: {
+    fontSize: s(15),
+    fontFamily: Fonts.bold,
+    color: Colors.textPrimary,
+  },
+  gridHint: {
+    flex: 1,
+    textAlign: 'right',
+    fontSize: s(11),
+    fontFamily: Fonts.regular,
+    color: Colors.grayMedium,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: s(6),
+  },
+  thumbCard: {
+    width: '31.8%',
+    aspectRatio: 0.84,
+    borderRadius: s(10),
+    overflow: 'hidden',
+    backgroundColor: '#111',
+  },
+  thumbImage: {
+    width: '100%',
+    height: '100%',
+  },
+  thumbOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+  },
+  thumbActiveRing: {
+    ...StyleSheet.absoluteFillObject,
+    borderWidth: 2,
+    borderColor: Colors.primary,
+    borderRadius: s(10),
+  },
+  thumbDay: {
+    position: 'absolute',
+    left: s(8),
+    bottom: s(8),
+    fontSize: s(10),
+    fontFamily: Fonts.bold,
+    color: Colors.white,
+  },
 
   // Full-screen viewer
   viewer: { flex: 1, backgroundColor: '#000' },
