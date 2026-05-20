@@ -154,18 +154,24 @@ function findTripByName(trips, query) {
 // ── Destination key mapping ────────────────────────────────────────────────────
 
 const DEST_KEYS = {
-  baguio: 'baguio', benguet: 'baguio', 'la trinidad': 'baguio',
-  vigan: 'vigan', 'ilocos sur': 'vigan',
-  pangasinan: 'pangasinan', bolinao: 'pangasinan', alaminos: 'pangasinan',
-  'hundred islands': 'pangasinan', lingayen: 'pangasinan',
-  tagaytay: 'Tagaytay', 'taal': 'Tagaytay',
+  baguio: 'Baguio', benguet: 'Baguio', 'la trinidad': 'Baguio',
+  vigan: 'Vigan', 'ilocos sur': 'Vigan',
+  pangasinan: 'Pangasinan', bolinao: 'Pangasinan', alaminos: 'Pangasinan',
+  'hundred islands': 'Pangasinan', lingayen: 'Pangasinan',
+  tagaytay: 'Tagaytay', taal: 'Tagaytay',
   'ilocos norte': 'Ilocos Norte', laoag: 'Ilocos Norte', paoay: 'Ilocos Norte',
   pagudpud: 'Ilocos Norte', bangui: 'Ilocos Norte',
   batanes: 'Batanes', batan: 'Batanes', sabtang: 'Batanes', basco: 'Batanes',
   bohol: 'Bohol', panglao: 'Bohol', tagbilaran: 'Bohol',
-  cebu: 'Cebu', oslob: 'Cebu', kawasan: 'Cebu',
+  cebu: 'Cebu', oslob: 'Cebu', kawasan: 'Cebu', moalboal: 'Cebu', badian: 'Cebu',
   siargao: 'Siargao', 'general luna': 'Siargao', 'cloud 9': 'Siargao',
-  davao: 'Davao',
+  boracay: 'Boracay', aklan: 'Boracay', 'white beach': 'Boracay',
+  'el nido': 'El Nido', elnido: 'El Nido', nacpan: 'El Nido',
+  coron: 'Coron', busuanga: 'Coron', kayangan: 'Coron',
+  'puerto princesa': 'Puerto Princesa', palawan: 'Puerto Princesa', 'underground river': 'Puerto Princesa',
+  davao: 'Davao', samal: 'Davao',
+  camiguin: 'Camiguin', mambajao: 'Camiguin', 'white island': 'Camiguin',
+  bukidnon: 'Bukidnon', malaybalay: 'Bukidnon', dahilayan: 'Bukidnon',
 };
 
 function findDestKey(text) {
