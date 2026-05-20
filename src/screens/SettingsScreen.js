@@ -290,6 +290,7 @@ export default function SettingsScreen({ navigation }) {
             onPress={() => Linking.openURL('https://wilfredosoriano.github.io/lakbayph-legal/privacy.html')}
             right={<Ionicons name="chevron-forward" size={s(18)} color={Colors.grayMedium} />}
           />
+
         </Section>
 
       </ScrollView>

@@ -16,6 +16,15 @@ import { addTripActivity, addSavedLocation } from '../database/db';
 import CachedImage from '../components/CachedImage';
 import { PLACE_IMAGES } from '../data/placeImages';
 
+const CATEGORY_PLACEHOLDER = {
+  beach:    { bg: '#D6EEF8', emoji: '🏖️' },
+  nature:   { bg: '#D6EDF0', emoji: '🌿' },
+  food:     { bg: '#FDE8D0', emoji: '🍜' },
+  landmark: { bg: '#EDE0F5', emoji: '🏛️' },
+  activity: { bg: '#FDDDE0', emoji: '🎯' },
+  shopping: { bg: '#DCE8FB', emoji: '🛍️' },
+};
+
 const { width } = Dimensions.get('window');
 const scale = width / 390;
 const s = (n) => Math.round(n * scale);
@@ -255,7 +264,7 @@ function AddToTripModal({ visible, place, trip, destKey, onClose, onDone }) {
 
 // ── Place Card ───────────────────────────────────────────────────────────────
 
-function PlaceCard({ place, savedIds, onAdd, onSave }) {
+function PlaceCard({ place, savedIds, onAdd, onSave, canAddToTrip }) {
   const isSaved = savedIds.has(place.id);
   const travelModes = Object.entries(place.travel).filter(([, v]) => v !== null);
   const visitLength = getVisitLength(place);
@@ -265,16 +274,22 @@ function PlaceCard({ place, savedIds, onAdd, onSave }) {
   const [showDetails, setShowDetails] = useState(false);
 
   const hasImage = PLACE_IMAGES[place.id] || place.image;
+  const ph = CATEGORY_PLACEHOLDER[place.category] || { bg: '#EEF0F2', emoji: '🗺️' };
 
   return (
     <View style={styles.placeCard}>
-      {hasImage && (
+      {hasImage ? (
         <CachedImage
           placeId={place.id}
           uri={place.image}
           style={styles.placeCardImage}
           resizeMode="cover"
         />
+      ) : (
+        <View style={[styles.placeCardImage, styles.placeCardPlaceholder, { backgroundColor: ph.bg }]}>
+          <Text style={styles.placeholderEmoji}>{ph.emoji}</Text>
+          <Text style={styles.placeholderText}>Photo coming soon</Text>
+        </View>
       )}
       <View style={styles.placeCardHeader}>
         <View style={styles.placeTitleWrap}>
@@ -361,12 +376,14 @@ function PlaceCard({ place, savedIds, onAdd, onSave }) {
           </>
         ) : null}
 
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.addPrimaryBtn} onPress={() => onAdd(place)}>
-            <Ionicons name="add" size={s(16)} color={Colors.white} />
-            <Text style={styles.addPrimaryBtnText}>Add to Trip</Text>
-          </TouchableOpacity>
-        </View>
+        {canAddToTrip && (
+          <View style={styles.actionRow}>
+            <TouchableOpacity style={styles.addPrimaryBtn} onPress={() => onAdd(place)}>
+              <Ionicons name="add" size={s(16)} color={Colors.white} />
+              <Text style={styles.addPrimaryBtnText}>Add to Trip</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -444,13 +461,6 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
   };
 
   const handleAddPress = (place) => {
-    if (!canAddToTrip) {
-      navigation.navigate('CreateTrip', {
-        initialDestination: effectiveDestination,
-        initialName: `${effectiveDestination} Adventure`,
-      });
-      return;
-    }
     setAddTarget(place);
     setShowAddModal(true);
   };
@@ -467,40 +477,9 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
         <Text style={styles.headerTitle}>
           {destKey ? `Explore ${destKey}` : `Explore ${effectiveDestination || 'Places'}`}
         </Text>
-        {canAddToTrip ? (
-          <View style={{ width: s(36) }} />
-        ) : (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CreateTrip', {
-              initialDestination: effectiveDestination,
-              initialName: `${effectiveDestination} Adventure`,
-            })}
-            style={styles.headerActionBtn}
-          >
-            <Ionicons name="add" size={s(20)} color={Colors.white} />
-          </TouchableOpacity>
-        )}
+        <View style={{ width: s(36) }} />
       </View>
 
-      {!canAddToTrip && effectiveDestination ? (
-        <View style={styles.exploreBanner}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.exploreBannerTitle}>Explore {destKey || effectiveDestination}</Text>
-            <Text style={styles.exploreBannerSub}>
-              Browse must-visit places, local food spots, and activity ideas before you build your itinerary.
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.exploreBannerBtn}
-            onPress={() => navigation.navigate('CreateTrip', {
-              initialDestination: effectiveDestination,
-              initialName: `${effectiveDestination} Adventure`,
-            })}
-          >
-            <Text style={styles.exploreBannerBtnText}>Set Trip</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
 
       {/* Search bar */}
       <View style={styles.searchWrap}>
@@ -554,7 +533,7 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
             <Text style={{ fontSize: s(52) }}>🗺️</Text>
             <Text style={styles.noDestTitle}>No places found</Text>
             <Text style={styles.noDestSub}>
-              We don't have data for "{effectiveDestination}" yet.{'\n'}Try Coron, El Nido, Siargao, Bohol, Baguio, Vigan, Sagada, or Banaue.
+              We don't have data for "{effectiveDestination}" yet.{'\n'}Try Banaue, Sagada, Siargao, Camiguin, Siquijor, Puerto Princesa, or Rizal.
             </Text>
           </View>
         ) : (
@@ -579,6 +558,7 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
                   savedIds={savedIds}
                   onAdd={handleAddPress}
                   onSave={handleSave}
+                  canAddToTrip={canAddToTrip}
                 />
               ))
             )}
@@ -610,47 +590,6 @@ const styles = StyleSheet.create({
   },
   headerBtn: { width: s(36), height: s(36), alignItems: 'center', justifyContent: 'center' },
   headerTitle: { flex: 1, textAlign: 'center', fontSize: s(17), fontFamily: Fonts.bold, color: Colors.white },
-  headerActionBtn: {
-    width: s(36), height: s(36),
-    alignItems: 'center', justifyContent: 'center',
-  },
-
-  exploreBanner: {
-    marginHorizontal: s(16),
-    marginTop: s(14),
-    backgroundColor: Colors.white,
-    borderRadius: s(16),
-    padding: s(14),
-    borderWidth: 1.5,
-    borderColor: Colors.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: s(10),
-  },
-  exploreBannerTitle: {
-    fontSize: s(14),
-    fontFamily: Fonts.bold,
-    color: Colors.textPrimary,
-  },
-  exploreBannerSub: {
-    marginTop: s(4),
-    fontSize: s(12),
-    fontFamily: Fonts.regular,
-    color: Colors.textSecondary,
-    lineHeight: s(18),
-  },
-  exploreBannerBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: s(10),
-    paddingHorizontal: s(12),
-    paddingVertical: s(10),
-  },
-  exploreBannerBtnText: {
-    fontSize: s(12),
-    fontFamily: Fonts.bold,
-    color: Colors.white,
-  },
-
   searchWrap: {
     flexDirection: 'row', alignItems: 'center', gap: s(8),
     backgroundColor: Colors.white, marginHorizontal: s(16), marginTop: s(12),
@@ -777,6 +716,20 @@ const styles = StyleSheet.create({
   placeCardImage: {
     width: '100%',
     height: s(160),
+  },
+  placeCardPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: s(6),
+  },
+  placeholderEmoji: {
+    fontSize: s(40),
+  },
+  placeholderText: {
+    fontSize: s(11),
+    fontFamily: Fonts.medium,
+    color: Colors.textSecondary,
+    letterSpacing: 0.3,
   },
   placeCardHeader: {
     flexDirection: 'row',

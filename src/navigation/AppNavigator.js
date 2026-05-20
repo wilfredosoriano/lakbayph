@@ -131,7 +131,7 @@ export default function AppNavigator() {
           <Stack.Screen name="TravelBuddy" component={AIAssistantScreen} />
           <Stack.Screen name="Premium"        component={PremiumScreen} />
           <Stack.Screen name="Terms"         component={TermsScreen} />
-          <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+          <Stack.Screen name="PrivacyPolicy"  component={PrivacyPolicyScreen} />
           <Stack.Screen name="Search"        component={SearchScreen} />
         </Stack.Navigator>
       </NavigationContainer>

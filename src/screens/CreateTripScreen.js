@@ -190,16 +190,6 @@ export default function CreateTripScreen({ navigation, route }) {
     }
   }, [route?.params?.initialDestination, route?.params?.initialName]);
 
-  const handleBrowseDestinations = () => {
-    navigation.navigate('Main', {
-      screen: 'Discover',
-      params: {
-        fromCreateTrip: true,
-        draftName: name,
-      },
-    });
-  };
-
   const handleCreate = async () => {
     if (!name.trim())        { Alert.alert('Missing Info', 'Please enter a trip name.'); return; }
     if (!destination.trim()) { Alert.alert('Missing Info', 'Please enter a destination.'); return; }
@@ -232,29 +222,10 @@ export default function CreateTripScreen({ navigation, route }) {
           <Ionicons name="arrow-back" size={s(22)} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>New Trip</Text>
-        <TouchableOpacity onPress={handleBrowseDestinations} style={styles.headerLinkBtn}>
-          <Ionicons name="sparkles-outline" size={s(18)} color={Colors.white} />
-        </TouchableOpacity>
+        <View style={{ width: s(36) }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.form} showsVerticalScrollIndicator={false}>
-
-        <TouchableOpacity
-          style={styles.discoveryCallout}
-          activeOpacity={0.85}
-          onPress={handleBrowseDestinations}
-        >
-          <View style={styles.discoveryIconBg}>
-            <Ionicons name="sparkles-outline" size={s(16)} color={Colors.primary} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.discoveryTitle}>Browse supported destinations</Text>
-            <Text style={styles.discoverySub}>
-              Explore ready-made regions first, then come back here with a destination in mind.
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={s(18)} color={Colors.primary} />
-        </TouchableOpacity>
 
         {/* Emoji preview + picker */}
         <View style={styles.emojiPreviewRow}>
@@ -341,32 +312,7 @@ const styles = StyleSheet.create({
   },
   backBtn: { width: s(36), height: s(36), alignItems: 'center', justifyContent: 'center' },
   headerTitle: { flex: 1, textAlign: 'center', fontSize: s(18), fontFamily: Fonts.bold, color: Colors.white },
-  headerLinkBtn: { width: s(36), height: s(36), alignItems: 'center', justifyContent: 'center' },
   form: { padding: s(20), gap: s(6), paddingBottom: s(40) },
-  discoveryCallout: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: s(10),
-    backgroundColor: '#FFF8F3',
-    borderRadius: s(16),
-    padding: s(14),
-    borderWidth: 1,
-    borderColor: '#F4D7BE',
-    marginBottom: s(16),
-  },
-  discoveryIconBg: {
-    width: s(34), height: s(34), borderRadius: s(10),
-    backgroundColor: Colors.white,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  discoveryTitle: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.textPrimary },
-  discoverySub: {
-    marginTop: s(4),
-    fontSize: s(11),
-    lineHeight: s(16),
-    fontFamily: Fonts.regular,
-    color: Colors.textSecondary,
-  },
 
   emojiPreviewRow: { flexDirection: 'row', alignItems: 'center', gap: s(14), marginBottom: s(12), marginTop: s(6) },
   emojiPreview: {

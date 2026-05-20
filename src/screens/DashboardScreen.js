@@ -434,6 +434,10 @@ export default function DashboardScreen({ navigation }) {
                 ) : (
                   <View style={[styles.tripImage, styles.tripImageFallback]}>
                     <Text style={{ fontSize: s(44) }}>{trip.emoji ?? '✈️'}</Text>
+                    <View style={styles.coverHint}>
+                      <Ionicons name="camera-outline" size={s(11)} color="rgba(255,255,255,0.85)" />
+                      <Text style={styles.coverHintText}>Add cover · hold trip card in Trips tab</Text>
+                    </View>
                   </View>
                 )}
                 <View style={styles.tripImageOverlay} />
@@ -644,6 +648,16 @@ const styles = StyleSheet.create({
   tripImage: { width: '100%', height: s(148) },
   tripImageFallback: {
     backgroundColor: Colors.primaryBg, alignItems: 'center', justifyContent: 'center',
+  },
+  coverHint: {
+    position: 'absolute', bottom: s(8),
+    flexDirection: 'row', alignItems: 'center', gap: s(4),
+    backgroundColor: 'rgba(0,0,0,0.38)',
+    borderRadius: s(20), paddingHorizontal: s(10), paddingVertical: s(4),
+  },
+  coverHintText: {
+    fontSize: s(10), fontFamily: Fonts.medium,
+    color: 'rgba(255,255,255,0.85)',
   },
   tripImageOverlay: {
     ...StyleSheet.absoluteFillObject,

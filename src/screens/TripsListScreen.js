@@ -1,14 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform, RefreshControl, Animated, PanResponder,
+  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform, RefreshControl, Animated, PanResponder, Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { getTrips, deleteTrip, updateTrip, duplicateTrip } from '../database/db';
+import { getTrips, deleteTrip, updateTrip, updateTripCoverPhoto, duplicateTrip } from '../database/db';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
@@ -27,8 +28,9 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
   const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [destination, setDestination] = useState('');
-  const [emoji, setEmoji] = useState('✈️');
-  const [kbHeight, setKbHeight] = useState(0);
+  const [emoji, setEmoji]           = useState('✈️');
+  const [coverPhoto, setCoverPhoto] = useState(null);
+  const [kbHeight, setKbHeight]     = useState(0);
   const sheetTranslateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -36,8 +38,34 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
       setName(trip.name);
       setDestination(trip.destination);
       setEmoji(trip.emoji || '✈️');
+      setCoverPhoto(trip.cover_photo || null);
     }
   }, [trip]);
+
+  const handlePickCoverPhoto = () => {
+    Alert.alert('Cover Photo', 'Choose a source', [
+      {
+        text: 'Camera',
+        onPress: async () => {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') { Alert.alert('Permission needed', 'Allow camera access to take a photo.'); return; }
+          const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect: [16, 9], quality: 0.85 });
+          if (!result.canceled) setCoverPhoto(result.assets[0].uri);
+        },
+      },
+      {
+        text: 'Photo Library',
+        onPress: async () => {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') { Alert.alert('Permission needed', 'Allow photo access to pick an image.'); return; }
+          const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [16, 9], quality: 0.85 });
+          if (!result.canceled) setCoverPhoto(result.assets[0].uri);
+        },
+      },
+      coverPhoto ? { text: 'Remove Photo', style: 'destructive', onPress: () => setCoverPhoto(null) } : null,
+      { text: 'Cancel', style: 'cancel' },
+    ].filter(Boolean));
+  };
 
   useEffect(() => {
     const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -103,7 +131,8 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
       days: trip.days,
       emoji,
     });
-    onSaved({ ...trip, name: name.trim(), destination: destination.trim(), emoji });
+    await updateTripCoverPhoto(trip.id, coverPhoto);
+    onSaved({ ...trip, name: name.trim(), destination: destination.trim(), emoji, cover_photo: coverPhoto });
     onClose();
   };
 
@@ -123,6 +152,21 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
             <View style={modal.handle} />
           </View>
           <Text style={modal.title}>Edit Trip</Text>
+
+          {/* Cover photo */}
+          <TouchableOpacity style={modal.coverWrap} onPress={handlePickCoverPhoto} activeOpacity={0.85}>
+            {coverPhoto ? (
+              <Image source={{ uri: coverPhoto }} style={modal.coverImg} resizeMode="cover" />
+            ) : (
+              <View style={modal.coverPlaceholder}>
+                <Ionicons name="camera-outline" size={s(24)} color={Colors.grayMedium} />
+                <Text style={modal.coverPlaceholderText}>Add Cover Photo</Text>
+              </View>
+            )}
+            <View style={modal.coverEditBadge}>
+              <Ionicons name="camera" size={s(12)} color={Colors.white} />
+            </View>
+          </TouchableOpacity>
 
           <View style={modal.emojiPreviewRow}>
             <View style={modal.emojiPreview}>
@@ -186,9 +230,13 @@ function TripCard({ trip, onPress, onLongPress }) {
       delayLongPress={400}
     >
       <View style={styles.card}>
-        <View style={styles.emojiBox}>
-          <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
-        </View>
+        {trip.cover_photo ? (
+          <Image source={{ uri: trip.cover_photo }} style={styles.coverThumb} resizeMode="cover" />
+        ) : (
+          <View style={styles.emojiBox}>
+            <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
+          </View>
+        )}
 
         <View style={styles.info}>
           <Text style={styles.tripName} numberOfLines={1}>{trip.name}</Text>
@@ -459,6 +507,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden', gap: s(12), paddingHorizontal: s(12),
     borderWidth: 1, borderColor: Colors.border + '60',
   },
+  coverThumb: {
+    width: s(64), height: s(64), borderRadius: s(14),
+    marginVertical: s(10),
+  },
   emojiBox: {
     width: s(54), height: s(54), borderRadius: s(14),
     backgroundColor: Colors.primaryBg,
@@ -513,7 +565,27 @@ const modal = StyleSheet.create({
     paddingBottom: s(10),
     marginBottom: s(8),
   },
-  title: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(16) },
+  title: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(14) },
+
+  coverWrap: {
+    width: '100%', height: s(130), borderRadius: s(14),
+    overflow: 'hidden', marginBottom: s(14),
+    backgroundColor: Colors.bgLight,
+    borderWidth: 1.5, borderColor: Colors.border,
+  },
+  coverImg: { width: '100%', height: '100%' },
+  coverPlaceholder: {
+    flex: 1, alignItems: 'center', justifyContent: 'center', gap: s(6),
+  },
+  coverPlaceholderText: {
+    fontSize: s(13), fontFamily: Fonts.medium, color: Colors.grayMedium,
+  },
+  coverEditBadge: {
+    position: 'absolute', bottom: s(8), right: s(8),
+    width: s(26), height: s(26), borderRadius: s(13),
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center', justifyContent: 'center',
+  },
 
   emojiPreviewRow: { flexDirection: 'row', alignItems: 'center', gap: s(12), marginBottom: s(10) },
   emojiPreview: {

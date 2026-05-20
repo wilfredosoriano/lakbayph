@@ -339,7 +339,7 @@ function PlaceDetailModal({ visible, place, trips, onClose }) {
     <Modal visible={visible} animationType="none" transparent statusBarTranslucent onRequestClose={dismiss}>
       <Animated.View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.55)', opacity: translateY.interpolate({ inputRange: [0, 600], outputRange: [1, 0], extrapolate: 'clamp' }) }}>
         <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={dismiss} />
-        <Animated.View style={[detail.sheet, { paddingBottom: insets.bottom + s(16), transform: [{ translateY }] }]}>
+        <Animated.View style={[detail.sheet, { transform: [{ translateY }] }]}>
           {/* Hero — fills to the top so it clips to the sheet's rounded corners */}
           <View style={detail.heroWrap}>
             {PLACE_IMAGES[place.id] || place.image ? (
@@ -372,7 +372,7 @@ function PlaceDetailModal({ visible, place, trips, onClose }) {
             </View>
           </View>
 
-          <ScrollView style={detail.body} showsVerticalScrollIndicator={false}>
+          <ScrollView style={detail.body} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + s(16) }}>
             {/* Quick chips */}
             <ScrollView horizontal showsHorizontalScrollIndicator={false}
               contentContainerStyle={detail.chipsRow}>
