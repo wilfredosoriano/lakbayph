@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import {
   View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity,
   Dimensions, Image, StatusBar, Modal, TextInput,
-  Platform, Keyboard, Alert, Pressable, Share, Animated,
+  Platform, Keyboard, Alert, Pressable, Share, Animated, PanResponder,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
@@ -88,6 +88,7 @@ function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSa
   const [saving, setSaving]   = useState(false);
   const [kbHeight, setKbHeight] = useState(0);
   const isEditing = !!activity;
+  const translateY = useRef(new Animated.Value(600)).current;
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -126,6 +127,44 @@ function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSa
     setTitle(''); setSubtitle(''); setNotes(''); setCategory('other');
   };
 
+  const dismiss = useCallback(() => {
+    Animated.timing(translateY, {
+      toValue: 700,
+      duration: 260,
+      useNativeDriver: true,
+    }).start(() => {
+      reset();
+      onClose();
+    });
+  }, [onClose, translateY]);
+
+  useEffect(() => {
+    if (visible) {
+      translateY.setValue(600);
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 65,
+        friction: 11,
+      }).start();
+    }
+  }, [visible, translateY]);
+
+  const panResponder = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (_, { dy }) => dy > 4,
+    onPanResponderMove: (_, { dy }) => {
+      if (dy > 0) translateY.setValue(dy);
+    },
+    onPanResponderRelease: (_, { dy, vy }) => {
+      if (dy > 80 || vy > 0.8) {
+        dismiss();
+      } else {
+        Animated.spring(translateY, { toValue: 0, useNativeDriver: true }).start();
+      }
+    },
+  })).current;
+
   const buildTime = () => {
     const h = hour.padStart(2, '0');
     const m = (minute || '00').padStart(2, '0');
@@ -163,14 +202,17 @@ function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSa
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent onRequestClose={() => { reset(); onClose(); }}>
-      <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => { reset(); onClose(); }} />
-        <View style={[styles.modalSheet, {
+    <Modal visible={visible} animationType="none" transparent statusBarTranslucent onRequestClose={dismiss}>
+      <Animated.View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)', opacity: translateY.interpolate({ inputRange: [0, 600], outputRange: [1, 0], extrapolate: 'clamp' }) }}>
+        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={dismiss} />
+        <Animated.View style={[styles.modalSheet, {
           paddingBottom: kbHeight > 0 ? s(32) : insets.bottom + s(16),
           marginBottom: kbHeight > 0 ? kbHeight + s(12) : 0,
+          transform: [{ translateY }],
         }]}>
-          <View style={styles.modalHandle} />
+          <View style={styles.modalHandleTouch} {...panResponder.panHandlers}>
+            <View style={styles.modalHandle} />
+          </View>
           <Text style={styles.modalTitle}>{isEditing ? 'Edit Activity' : 'Add Activity'}</Text>
 
           <Text style={styles.fieldLabel}>Category</Text>
@@ -250,8 +292,8 @@ function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSa
           <TouchableOpacity style={[styles.saveBtn, saving && { opacity: 0.7 }]} onPress={handleSave} disabled={saving}>
             <Text style={styles.saveBtnText}>{saving ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Activity'}</Text>
           </TouchableOpacity>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
     </Modal>
   );
 }
@@ -459,7 +501,7 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
             <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
               <Text style={styles.notesModalTitle}>Location</Text>
               <TextInput
-                style={styles.notesModalInput}
+                style={[styles.notesModalInput, styles.locationModalInput]}
                 value={locationText}
                 onChangeText={setLocationText}
                 placeholder="e.g. Coron Town Port, Palawan"
@@ -855,7 +897,7 @@ export default function TripDetailsScreen({ navigation, route }) {
           <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
             <Text style={styles.notesModalTitle}>Day {selectedDay + 1} Label</Text>
             <TextInput
-              style={styles.notesModalInput}
+              style={[styles.notesModalInput, styles.dayLabelInput]}
               value={dayLabelDraft}
               onChangeText={setDayLabelDraft}
               placeholder={`e.g. "Travel Day", "Baguio City"`}
@@ -1230,13 +1272,13 @@ const styles = StyleSheet.create({
   scrollContent: {},
   activitiesDraggableList: { flex: 1 },
   activitiesList: { paddingHorizontal: s(16), paddingTop: s(16) },
-  activityRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: s(10) },
+  activityRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: s(6) },
   activityRowActive: { zIndex: 2 },
   timeCol: { width: s(52), paddingTop: s(10) },
   timeText: { fontSize: s(10), fontFamily: Fonts.medium, color: Colors.textSecondary, lineHeight: s(14) },
   timelineCol: { width: s(20), alignItems: 'center', paddingTop: s(13) },
-  dot: { width: s(10), height: s(10), borderRadius: s(5), backgroundColor: Colors.primary },
-  line: { width: s(2), flex: 1, minHeight: s(48), backgroundColor: Colors.border, marginTop: s(4) },
+  dot: { width: s(10), height: s(10), borderRadius: s(5), backgroundColor: Colors.primary, marginBottom: s(3) },
+  line: { width: s(2), flex: 1, minHeight: s(60), backgroundColor: Colors.border },
   card: {
     flex: 1, flexDirection: 'column',
     backgroundColor: Colors.white, borderRadius: s(14),
@@ -1416,9 +1458,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white, borderTopLeftRadius: s(24), borderTopRightRadius: s(24),
     padding: s(24), paddingTop: s(12),
   },
+  modalHandleTouch: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingTop: s(2),
+    paddingBottom: s(10),
+    marginBottom: s(8),
+  },
   modalHandle: {
     width: s(40), height: s(4), borderRadius: s(2),
-    backgroundColor: Colors.grayMedium, alignSelf: 'center', marginBottom: s(20),
+    backgroundColor: Colors.grayMedium,
   },
   modalTitle: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(16) },
   fieldLabel: { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.textSecondary, marginBottom: s(8) },
@@ -1501,6 +1550,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: s(14), paddingVertical: s(12),
     fontSize: s(14), fontFamily: Fonts.regular, color: Colors.textPrimary,
     minHeight: s(100), textAlignVertical: 'top', marginBottom: s(16),
+  },
+  dayLabelInput: {
+    minHeight: s(52),
+    paddingVertical: s(10),
+    textAlignVertical: 'center',
+  },
+  locationModalInput: {
+    minHeight: s(52),
+    paddingVertical: s(10),
+    textAlignVertical: 'center',
   },
   notesModalActions: { flexDirection: 'row', gap: s(10) },
   notesCancelBtn: {

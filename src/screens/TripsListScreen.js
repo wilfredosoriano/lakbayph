@@ -1,15 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform, RefreshControl, Animated, Image,
+  StatusBar, Dimensions, Alert, Modal, TextInput, Keyboard, Platform, RefreshControl, Animated, PanResponder,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
-import { getTrips, deleteTrip, updateTrip, duplicateTrip, updateTripCoverPhoto } from '../database/db';
+import { getTrips, deleteTrip, updateTrip, duplicateTrip } from '../database/db';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
@@ -30,6 +29,7 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
   const [destination, setDestination] = useState('');
   const [emoji, setEmoji] = useState('✈️');
   const [kbHeight, setKbHeight] = useState(0);
+  const sheetTranslateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (trip) {
@@ -46,6 +46,52 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
     const s2 = Keyboard.addListener(hide, () => setKbHeight(0));
     return () => { s1.remove(); s2.remove(); };
   }, []);
+
+  useEffect(() => {
+    if (visible) {
+      sheetTranslateY.setValue(0);
+    }
+  }, [visible, sheetTranslateY]);
+
+  const handlePanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          sheetTranslateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (Math.abs(gestureState.dy) < 6 && Math.abs(gestureState.dx) < 6) {
+          onClose();
+          return;
+        }
+
+        if (gestureState.dy > 90) {
+          Animated.timing(sheetTranslateY, {
+            toValue: 320,
+            duration: 180,
+            useNativeDriver: true,
+          }).start(() => onClose());
+          return;
+        }
+
+        Animated.spring(sheetTranslateY, {
+          toValue: 0,
+          useNativeDriver: true,
+          bounciness: 0,
+        }).start();
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(sheetTranslateY, {
+          toValue: 0,
+          useNativeDriver: true,
+          bounciness: 0,
+        }).start();
+      },
+    })
+  ).current;
 
   const handleSave = async () => {
     if (!name.trim()) { Alert.alert('Missing Info', 'Please enter a trip name.'); return; }
@@ -65,11 +111,17 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
     <Modal visible={visible} animationType="slide" transparent statusBarTranslucent onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
         <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={onClose} />
-        <View style={[modal.sheet, {
+        <Animated.View style={[modal.sheet, {
           paddingBottom: kbHeight > 0 ? s(24) : insets.bottom + s(16),
           marginBottom: kbHeight > 0 ? kbHeight + s(12) : 0,
+          transform: [{ translateY: sheetTranslateY }],
         }]}>
-          <View style={modal.handle} />
+          <View
+            style={modal.handleTouch}
+            {...handlePanResponder.panHandlers}
+          >
+            <View style={modal.handle} />
+          </View>
           <Text style={modal.title}>Edit Trip</Text>
 
           <View style={modal.emojiPreviewRow}>
@@ -114,7 +166,7 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
           <TouchableOpacity style={modal.saveBtn} onPress={handleSave}>
             <Text style={modal.saveBtnText}>Save Changes</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -134,13 +186,9 @@ function TripCard({ trip, onPress, onLongPress }) {
       delayLongPress={400}
     >
       <View style={styles.card}>
-        {trip.cover_photo ? (
-          <Image source={{ uri: trip.cover_photo }} style={styles.coverPhoto} resizeMode="cover" />
-        ) : (
-          <View style={styles.emojiBox}>
-            <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
-          </View>
-        )}
+        <View style={styles.emojiBox}>
+          <Text style={styles.emoji}>{trip.emoji || '✈️'}</Text>
+        </View>
 
         <View style={styles.info}>
           <Text style={styles.tripName} numberOfLines={1}>{trip.name}</Text>
@@ -236,22 +284,6 @@ export default function TripsListScreen({ navigation }) {
     setRefreshing(false);
   };
 
-  const handleSetCoverPhoto = async (trip) => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Allow photo access to set a cover photo.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'], allowsEditing: true, aspect: [3, 2], quality: 0.85,
-    });
-    if (!result.canceled && result.assets?.[0]?.uri) {
-      await updateTripCoverPhoto(trip.id, result.assets[0].uri);
-      const updated = await getTrips();
-      setTrips(updated);
-    }
-  };
-
   const handleLongPress = (trip) => {
     Alert.alert(
       trip.name,
@@ -260,10 +292,6 @@ export default function TripsListScreen({ navigation }) {
         {
           text: 'Edit Trip',
           onPress: () => setEditTrip(trip),
-        },
-        {
-          text: trip.cover_photo ? 'Change Cover Photo' : 'Set Cover Photo',
-          onPress: () => handleSetCoverPhoto(trip),
         },
         {
           text: 'Duplicate Trip',
@@ -437,10 +465,6 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     marginVertical: s(14),
   },
-  coverPhoto: {
-    width: s(64), height: s(82), borderRadius: s(12),
-    marginVertical: s(8),
-  },
   emoji: { fontSize: s(28) },
   info: { flex: 1, paddingVertical: s(14) },
   tripName: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(4) },
@@ -480,7 +504,14 @@ const modal = StyleSheet.create({
   },
   handle: {
     width: s(40), height: s(4), borderRadius: s(2),
-    backgroundColor: Colors.grayMedium, alignSelf: 'center', marginBottom: s(20),
+    backgroundColor: Colors.grayMedium,
+  },
+  handleTouch: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingTop: s(2),
+    paddingBottom: s(10),
+    marginBottom: s(8),
   },
   title: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(16) },
 

@@ -467,9 +467,16 @@ export default function BudgetScreen() {
               <Ionicons name="pencil" size={s(13)} color={Colors.white} />
             </TouchableOpacity>
           </View>
-          <View style={{ marginTop: s(12) }}>
-            <Text style={styles.remainingLabel}>Remaining</Text>
-            <Text style={styles.remainingValue}>₱{(summary?.remaining ?? 0).toLocaleString()}.00</Text>
+          <View style={styles.summaryMetaRow}>
+            <View style={styles.summaryMetaBlock}>
+              <Text style={styles.remainingLabel}>Spent</Text>
+              <Text style={styles.remainingValue}>₱{(summary?.spent ?? 0).toLocaleString()}.00</Text>
+            </View>
+            <View style={styles.summaryMetaDivider} />
+            <View style={styles.summaryMetaBlock}>
+              <Text style={styles.remainingLabel}>Remaining</Text>
+              <Text style={styles.remainingValue}>₱{(summary?.remaining ?? 0).toLocaleString()}.00</Text>
+            </View>
           </View>
 
           {/* Per-person split */}
@@ -643,6 +650,20 @@ const styles = StyleSheet.create({
     width: s(26), height: s(26), borderRadius: s(13),
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center', justifyContent: 'center',
+  },
+  summaryMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: s(12),
+    marginTop: s(12),
+  },
+  summaryMetaBlock: {
+    flex: 1,
+  },
+  summaryMetaDivider: {
+    width: 1,
+    alignSelf: 'stretch',
+    backgroundColor: 'rgba(255,255,255,0.18)',
   },
   remainingLabel: { fontFamily: Fonts.regular, color: 'rgba(255,255,255,0.75)', fontSize: s(12) },
   remainingValue: { fontFamily: Fonts.bold, color: Colors.white, fontSize: s(18), marginTop: s(2) },
