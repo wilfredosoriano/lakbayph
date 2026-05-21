@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '../context/UserContext';
 import { parseMessage } from '../utils/chatParser';
 import {
-  addExpense, getBudget, updateBudgetTotal, createTrip, addPackingItem,
+  addExpense, getBudget, updateBudgetTotal, createTrip, addPackingItem, getTrips,
 } from '../database/db';
 
 const { width } = require('react-native').Dimensions.get('window');
@@ -22,15 +22,16 @@ const s = (n) => Math.round(n * scale);
 
 const fmt = (n) => '₱' + Number(n).toLocaleString();
 
-const QUICK_TIPS = [
+// Fallback chips when user has no trips yet
+const DEFAULT_CHIPS = [
+  'Plan a trip to Baguio for 3 days',
+  'What to do in Boracay?',
+  'What to do in El Nido?',
+  "How's my budget?",
+  'Add sunscreen to packing list',
+  'How do I ride a jeepney?',
   'Spent ₱200 on food',
   'Show my trips',
-  "How's my budget?",
-  'What to do in Baguio?',
-  'Must-visit in Pangasinan?',
-  'Add sunscreen to packing list',
-  'Plan a trip to Vigan for 3 days',
-  'How do I ride a jeepney?',
 ];
 
 // ── Typing indicator ──────────────────────────────────────────────────────────
@@ -138,6 +139,26 @@ export default function AIAssistantScreen({ navigation }) {
   const [input, setInput] = useState('');
   const [pendingContext, setPendingContext] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [quickChips, setQuickChips] = useState(DEFAULT_CHIPS);
+
+  // Build quick chips from the user's actual trips
+  useEffect(() => {
+    getTrips().then(trips => {
+      if (!trips || trips.length === 0) return; // keep defaults
+      const chips = [];
+      // Trip-specific chips first (up to 3 trips)
+      trips.slice(0, 3).forEach(tr => {
+        chips.push(`What to do in ${tr.destination}?`);
+        chips.push(`Packing list for ${tr.name}`);
+      });
+      // Always-useful general chips
+      chips.push("How's my budget?");
+      chips.push('Show my trips');
+      chips.push('Spent ₱200 on food');
+      chips.push('How do I ride a jeepney?');
+      setQuickChips(chips);
+    });
+  }, []);
 
   const initialMessages = useMemo(() => [
     {
@@ -338,7 +359,7 @@ export default function AIAssistantScreen({ navigation }) {
           contentContainerStyle={{ paddingHorizontal: s(16), gap: s(8), paddingVertical: s(8) }}
           keyboardShouldPersistTaps="handled"
         >
-          {QUICK_TIPS.map((tip) => (
+          {quickChips.map((tip) => (
             <TouchableOpacity
               key={tip}
               style={styles.quickChip}

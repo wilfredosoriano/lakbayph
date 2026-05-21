@@ -62,7 +62,15 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
           if (!result.canceled) setCoverPhoto(result.assets[0].uri);
         },
       },
-      coverPhoto ? { text: 'Remove Photo', style: 'destructive', onPress: () => setCoverPhoto(null) } : null,
+      coverPhoto ? {
+        text: 'Remove Photo',
+        style: 'destructive',
+        onPress: async () => {
+          setCoverPhoto(null);
+          await updateTripCoverPhoto(trip.id, null);
+          onSaved({ ...trip, cover_photo: null });
+        },
+      } : null,
       { text: 'Cancel', style: 'cancel' },
     ].filter(Boolean));
   };
