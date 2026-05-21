@@ -5,6 +5,10 @@
  *   text      — bot reply string
  *   action    — { intent, data } → screen shows confirm/cancel card
  *   needsMore — { context } → screen sets pendingContext, waits for next message
+ *
+ * lang param: 'en' (default) | 'tl' (Filipino/Tagalog)
+ *   • Conversational wrapper text is translated to Tagalog when lang === 'tl'
+ *   • Proper nouns, place names, prices, and travel data stay in English
  */
 
 import { getBudgetSummary, getTrips, getPackingItems } from '../database/db';
@@ -273,6 +277,169 @@ const GENERAL_DEST_INFO = {
   },
 };
 
+// ── Best time / weather per destination ───────────────────────────────────────
+
+const BEST_TIME = {
+  'Baguio':          { best: 'November to February', avoid: 'June–October (heavy rain & fog)', note: 'Cool and dry; strawberry season peaks Dec–Feb.' },
+  'Tagaytay':        { best: 'December to February', avoid: 'June–August (foggy, rainy)', note: 'Coolest and clearest for Taal Volcano views.' },
+  'Vigan':           { best: 'October to May',       avoid: 'June–September (typhoon season)', note: 'Dry and comfortable for walking the heritage streets.' },
+  'Boracay':         { best: 'November to May',      avoid: 'June–October (rough waves, amihan)', note: 'Flat calm seas and sunny White Beach.' },
+  'El Nido':         { best: 'November to May',      avoid: 'June–October (rough seas, tours may cancel)', note: 'Calm lagoons and clear water for island hopping.' },
+  'Coron':           { best: 'October to May',       avoid: 'June–September (typhoon risk)', note: 'Crystal visibility for diving, lakes, and snorkeling.' },
+  'Cebu':            { best: 'January to May',       avoid: 'July–October (typhoon season)', note: 'Hottest and driest; whale sharks in Oslob run year-round.' },
+  'Bohol':           { best: 'January to May',       avoid: 'June–October (typhoon season)', note: 'Dry season is perfect for countryside tours and beach days.' },
+  'Batanes':         { best: 'March to June',        avoid: 'July–November (strongest typhoons in PH)', note: 'Calmest seas for the Sabtang ferry and clearest skies for photos.' },
+  'Davao':           { best: 'Year-round',           avoid: 'None (outside the typhoon belt)', note: "One of the most typhoon-free areas in the Philippines — always a safe bet." },
+  'Batangas':        { best: 'November to May',      avoid: 'June–October (rainy, Taal may be restricted)', note: 'Clear water for Anilao diving and good conditions for Fortune Island.' },
+  'Ilocos Norte':    { best: 'November to April',    avoid: 'May–October (hot and rainy)', note: 'Dry season for Pagudpud beaches and the Bangui Windmills drive.' },
+  'Pangasinan':      { best: 'October to May',       avoid: 'June–September (rain)', note: 'Dry season for Hundred Islands boat tours and Bolinao.' },
+  'Siargao':         { best: 'September to November', avoid: 'Jan–Feb (Sugba Lagoon closed for rehab)', note: 'Peak surf season — Cloud 9 waves are at their best in October.' },
+  'Palawan':         { best: 'November to May',      avoid: 'June–October (rough seas, tours may cancel)', note: 'Calm waters for El Nido tours and the underground river.' },
+  'Bukidnon':        { best: 'October to February',  avoid: 'March–May (very hot)', note: 'Cool highland air and the most lush green landscapes.' },
+  'Puerto Princesa': { best: 'November to May',      avoid: 'June–October (underground river may close in rough weather)', note: 'Dry season ensures all boat tours and permits are available.' },
+  'Camiguin':        { best: 'March to May',         avoid: 'November–January (rough seas for White Island)', note: 'Best conditions for the White Island sandbar and snorkeling.' },
+  'Sagada':          { best: 'November to February', avoid: 'June–September (misty, cave entrances may flood)', note: 'Clear skies for the hanging coffins walk and cave connections.' },
+  'Banaue':          { best: 'March to May, Sep–Nov', avoid: 'December–February (foggy viewpoints)', note: 'Greenest terraces in March–May; harvest season in Sep–Nov.' },
+  'Laguna':          { best: 'October to May',       avoid: 'June–September (heavy rain; Pagsanjan boat rides can be rough)', note: 'Hot spring resorts are great any time but most pleasant Nov–Feb.' },
+  'Metro Manila':    { best: 'November to February', avoid: 'March–May (extreme heat up to 38°C)', note: 'Coolest and most comfortable for walking Intramuros and sightseeing.' },
+};
+
+// ── Vibe-based destination suggestions ───────────────────────────────────────
+
+const VIBE_SUGGESTIONS = [
+  {
+    vibes: ['cold', 'cool', 'cool place', 'malamig', 'cool weather', 'mountain', 'highlands', 'bundok'],
+    label: 'cool/cold mountain destinations',
+    places: [
+      { name: 'Baguio',    note: 'City of Pines · avg 17°C · 6 hrs from Manila' },
+      { name: 'Sagada',    note: 'Misty mountain town · caves & hanging coffins · 4 hrs from Baguio' },
+      { name: 'Batanes',   note: 'Windswept northernmost tip · rolling hills · flight from Manila' },
+      { name: 'Bukidnon',  note: 'Highland farms & ziplines · cool air year-round' },
+      { name: 'Tagaytay',  note: 'Taal views & cool breeze · 2 hrs from Manila' },
+    ],
+  },
+  {
+    vibes: ['beach', 'island', 'swimming', 'sun', 'white sand', 'mga beach', 'beach trip', 'island hopping'],
+    label: 'top beach & island destinations',
+    places: [
+      { name: 'Boracay',   note: 'World-famous White Beach · calm Nov–May' },
+      { name: 'El Nido',   note: 'Limestone lagoons & island hopping · Palawan' },
+      { name: 'Siargao',   note: 'Surfer island + Sugba Lagoon · best Sep–Nov' },
+      { name: 'Coron',     note: 'Emerald lakes & WWII wrecks · Palawan' },
+      { name: 'Bohol',     note: 'Alona Beach diving + Chocolate Hills · Visayas' },
+    ],
+  },
+  {
+    vibes: ['adventure', 'hiking', 'extreme', 'thrilling', 'adrenaline', 'pababa', 'spelunking', 'cliff', 'trek'],
+    label: 'best adventure destinations',
+    places: [
+      { name: 'Sagada',    note: 'Cave spelunking, cliff jumping & hanging coffins trek' },
+      { name: 'Batanes',   note: 'Raw coastal cliffs, rolling hills & isolated island hikes' },
+      { name: 'Siargao',   note: "Surfing, cliff jumping at Ariel's Point, island hopping" },
+      { name: 'Batangas',  note: 'Anilao diving, Taal volcano trek & Fortune Island' },
+      { name: 'Banaue',    note: 'Batad rice terrace trek to Tappiya Falls' },
+    ],
+  },
+  {
+    vibes: ['budget', 'cheap', 'affordable', 'mura', 'tipid', 'low budget', 'sulit'],
+    label: 'budget-friendly destinations',
+    places: [
+      { name: 'Vigan',       note: 'Free to walk, guesthouses ₱500/night · 8 hrs from Manila' },
+      { name: 'Pangasinan',  note: 'Hundred Islands day trip · ~₱1,500/day all-in' },
+      { name: 'Ilocos Norte', note: 'Bangui + Pagudpud · ~₱2,000/day' },
+      { name: 'Batangas',    note: 'Beach resorts 3 hrs from Manila · ₱1,500–₱2,000/day' },
+      { name: 'Baguio',      note: 'Affordable guesthouses + free parks · ₱1,500/day' },
+    ],
+  },
+  {
+    vibes: ['near manila', 'malapit manila', 'short trip', 'weekend trip', 'day trip', 'nearby', 'pababa sa manila', 'weekend getaway'],
+    label: 'weekend trips from Manila',
+    places: [
+      { name: 'Tagaytay',   note: '2 hrs south · Taal views & bulalo' },
+      { name: 'Batangas',   note: '3 hrs south · beaches & diving' },
+      { name: 'Laguna',     note: '1.5 hrs south · hot springs & Pagsanjan Falls' },
+      { name: 'Zambales',   note: '3 hrs north · Nagsasa Cove & white sand' },
+      { name: 'Pangasinan', note: '5 hrs north · Hundred Islands' },
+    ],
+  },
+  {
+    vibes: ['diving', 'snorkeling', 'snorkel', 'underwater', 'fish', 'coral', 'scuba', 'whale shark'],
+    label: 'top dive & snorkel spots',
+    places: [
+      { name: 'Coron',     note: 'WWII wreck dives + Kayangan Lake · Palawan' },
+      { name: 'Bohol',     note: 'Alona Beach · colorful reefs & whale sharks nearby' },
+      { name: 'Cebu',      note: 'Moalboal sardines + Oslob whale sharks' },
+      { name: 'Batangas',  note: 'Anilao · globally ranked macro diving' },
+      { name: 'Siargao',   note: 'Sugba Lagoon + STFD dive sites' },
+    ],
+  },
+  {
+    vibes: ['culture', 'heritage', 'history', 'kasaysayan', 'simbahan', 'church', 'colonial', 'museo', 'museum'],
+    label: 'cultural & heritage destinations',
+    places: [
+      { name: 'Vigan',        note: 'UNESCO heritage colonial city · cobblestone streets' },
+      { name: 'Metro Manila', note: 'Intramuros · National Museum · Binondo Chinatown' },
+      { name: 'Bohol',        note: 'Baclayon Church + Chocolate Hills + Tarsier' },
+      { name: 'Batanes',      note: 'Ivatan stone houses · oldest surviving architecture in PH' },
+      { name: 'Banaue',       note: '2,000-year-old rice terraces · living UNESCO heritage' },
+    ],
+  },
+  {
+    vibes: ['family', 'kids', 'pamilya', 'mga bata', 'children', 'family trip', 'for kids'],
+    label: 'family-friendly destinations',
+    places: [
+      { name: 'Tagaytay',  note: 'Sky Ranch rides + Taal views · 2 hrs from Manila' },
+      { name: 'Bohol',     note: 'Tarsiers + Chocolate Hills + calm Alona Beach' },
+      { name: 'Boracay',   note: 'Calm waters at Station 1 · White Beach perfect for kids' },
+      { name: 'Davao',     note: 'Philippine Eagle Center + Eden Nature Park + Crocodile Park' },
+      { name: 'Batangas',  note: 'Matabungkay calm beach · perfect for first-time swimmers' },
+    ],
+  },
+  {
+    vibes: ['romantic', 'honeymoon', 'date', 'couple', 'anniversary', 'magkasamang'],
+    label: 'romantic getaways',
+    places: [
+      { name: 'Batanes',   note: 'Most dramatic & intimate in PH · rolling hills & cliffs' },
+      { name: 'El Nido',   note: 'Sunset lagoon kayaking · dramatic limestone backdrop' },
+      { name: 'Siargao',   note: 'Laid-back island vibes · stunning sunsets' },
+      { name: 'Baguio',    note: 'Cool evenings, pine trees & cozy cafes' },
+      { name: 'Vigan',     note: 'Kalesa rides at night through candlelit heritage streets' },
+    ],
+  },
+  {
+    vibes: ['nature', 'waterfall', 'falls', 'forest', 'river', 'lake', 'green', 'trees', 'talon'],
+    label: 'nature & waterfalls',
+    places: [
+      { name: 'Iligan',    note: 'Tinago Falls — 240 steps to a hidden paradise' },
+      { name: 'Laguna',    note: 'Pagsanjan Falls boat ride + Pansol hot springs' },
+      { name: 'Camiguin',  note: 'Katibawasan Falls + Sunken Cemetery + hot springs' },
+      { name: 'Batangas',  note: 'Anilao reefs + lush Caleruega chapel grounds' },
+      { name: 'Banaue',    note: 'Tappiya Falls after the Batad rice terrace trek' },
+    ],
+  },
+];
+
+// ── Parse trip start date from stored dates string ────────────────────────────
+
+function parseTripDateStr(datesStr) {
+  if (!datesStr) return null;
+  // Skip "X days" format — no real date
+  if (/^\d+\s*days?$/i.test(datesStr.trim())) return null;
+  const normalized = datesStr.replace(/\s+[–-]\s+.*$/, '');
+  const yearMatch  = datesStr.match(/(\d{4})/);
+  const full       = `${normalized}, ${yearMatch?.[1] ?? ''}`;
+  const match      = full.match(/([a-z]+)\s+(\d+),?\s*(\d{4})/i);
+  if (match) {
+    const monthMap = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+    const mKey     = match[1].toLowerCase().slice(0, 3);
+    const month    = monthMap[mKey];
+    const day      = parseInt(match[2], 10);
+    const year     = parseInt(match[3], 10);
+    if (month !== undefined && day && year) return new Date(year, month, day);
+  }
+  return null;
+}
+
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
 function parseDateInput(text) {
@@ -454,76 +621,93 @@ function findDestKey(text) {
 
 // ── Read-only handlers ────────────────────────────────────────────────────────
 
-async function showBudget() {
+async function showBudget(lang = 'en') {
+  const TL = lang === 'tl';
   const s = await getBudgetSummary('1');
   const pct = s.total > 0 ? Math.round((s.spent / s.total) * 100) : 0;
   const lines = [
-    `Here's your budget summary:\n`,
-    `💰 Total:     ${fmt(s.total)}`,
-    `💸 Spent:     ${fmt(s.spent)} (${pct}%)`,
-    `✅ Remaining: ${fmt(s.remaining)}`,
+    TL ? `Narito ang buod ng iyong budget:\n` : `Here's your budget summary:\n`,
+    `💰 ${TL ? 'Kabuuan' : 'Total'}:     ${fmt(s.total)}`,
+    `💸 ${TL ? 'Nagastos' : 'Spent'}:     ${fmt(s.spent)} (${pct}%)`,
+    `✅ ${TL ? 'Natitira' : 'Remaining'}: ${fmt(s.remaining)}`,
   ];
   if (s.breakdown.length > 0) {
-    lines.push('\nBy category:');
+    lines.push(TL ? '\nAyon sa kategorya:' : '\nBy category:');
     s.breakdown.sort((a, b) => b.amount - a.amount).slice(0, 3)
       .forEach(b => lines.push(`• ${b.category}: ${fmt(b.amount)} (${b.percentage}%)`));
   }
-  if (pct >= 90)      lines.push('\n⚠️ Almost at the limit! Stick to essentials.');
-  else if (pct >= 70) lines.push('\n📌 Getting tight. Prioritize your must-dos.');
-  else if (pct < 30)  lines.push('\n😊 Great pacing! Log every expense to stay accurate.');
+  if (pct >= 90)      lines.push(TL ? '\n⚠️ Halos puno na ang budget! Magtipid na.' : '\n⚠️ Almost at the limit! Stick to essentials.');
+  else if (pct >= 70) lines.push(TL ? '\n📌 Malapit na maubos. Unahin ang mga importanteng gastos.' : '\n📌 Getting tight. Prioritize your must-dos.');
+  else if (pct < 30)  lines.push(TL ? '\n😊 Maganda ang pag-gastos mo! I-log ang bawat gastos para accurate.' : '\n😊 Great pacing! Log every expense to stay accurate.');
   return lines.join('\n');
 }
 
-async function showTrips() {
+async function showTrips(lang = 'en') {
+  const TL = lang === 'tl';
   const trips = await getTrips();
   if (!trips || trips.length === 0) {
-    return `You don't have any trips yet!\n\nTry: "Plan a trip to Baguio for 3 days"`;
+    return TL
+      ? `Wala ka pa ring trips!\n\nSubukan: "Mag-plan ng trip sa Baguio para sa 3 araw"`
+      : `You don't have any trips yet!\n\nTry: "Plan a trip to Baguio for 3 days"`;
   }
   const list = trips.map(t =>
-    `${t.emoji || '✈️'} ${t.name}\n   📍 ${t.destination} · ${t.days} day${t.days !== 1 ? 's' : ''}`
+    `${t.emoji || '✈️'} ${t.name}\n   📍 ${t.destination} · ${t.days} ${TL ? 'araw' : `day${t.days !== 1 ? 's' : ''}`}`
   ).join('\n\n');
-  return `Your trips (${trips.length}):\n\n${list}\n\nAsk me about any of them — budget, packing list, or what to do there.`;
+  return TL
+    ? `Ang iyong mga trips (${trips.length}):\n\n${list}\n\nTanungin mo ako tungkol sa kahit alin — budget, listahan ng dala, o kung ano ang gagawin doon.`
+    : `Your trips (${trips.length}):\n\n${list}\n\nAsk me about any of them — budget, packing list, or what to do there.`;
 }
 
-async function showPackingList(tripName, trips) {
+async function showPackingList(tripName, trips, lang = 'en') {
+  const TL = lang === 'tl';
   const trip = tripName ? findTripByName(trips, tripName) : trips[0];
-  if (!trip) return `I couldn't find that trip. Try "Show my trips" to see what you have.`;
+  if (!trip) return TL
+    ? `Hindi ko makita ang trip na iyon. Subukan ang "Ipakita ang aking mga trips" para makita ang listahan.`
+    : `I couldn't find that trip. Try "Show my trips" to see what you have.`;
   const items = await getPackingItems(trip.id);
   if (!items || items.length === 0) {
-    return `No packing items yet for "${trip.name}".\n\nTry: "Add sunscreen to packing list for ${trip.name}"`;
+    return TL
+      ? `Wala pa ring gamit na naka-lista para sa "${trip.name}".\n\nSubukan: "Dagdag sunscreen sa listahan ng dala para sa ${trip.name}"`
+      : `No packing items yet for "${trip.name}".\n\nTry: "Add sunscreen to packing list for ${trip.name}"`;
   }
   const packed   = items.filter(i => i.checked);
   const unpacked = items.filter(i => !i.checked);
-  const lines = [`🎒 Packing list for "${trip.name}":\n`];
+  const lines = [TL ? `🎒 Listahan ng dala para sa "${trip.name}":\n` : `🎒 Packing list for "${trip.name}":\n`];
   if (unpacked.length) {
-    lines.push('Still needed:');
+    lines.push(TL ? 'Kailangan pa dalhin:' : 'Still needed:');
     unpacked.forEach(i => lines.push(`  ☐ ${i.item}`));
   }
   if (packed.length) {
-    lines.push(`\nPacked (${packed.length}/${items.length}):`);
+    lines.push(TL ? `\nNakalagay na (${packed.length}/${items.length}):` : `\nPacked (${packed.length}/${items.length}):`);
     packed.forEach(i => lines.push(`  ✓ ${i.item}`));
   }
   return lines.join('\n');
 }
 
-function showPlacesInDestination(destKey, opts = {}) {
+function showPlacesInDestination(destKey, opts = {}, lang = 'en') {
+  const TL = lang === 'tl';
+
   // ── Try app-curated places first ──────────────────────────────────────────
   const places = PLACES_BY_DESTINATION[destKey];
   if (places && places.length > 0) {
     const filtered = opts.mustVisit ? places.filter(p => p.mustVisit) : places;
     const shown    = filtered.slice(0, 7);
     const header   = opts.mustVisit
-      ? `⭐ Must-visit in ${destKey}:\n`
-      : `📍 Places to visit in ${destKey} (${filtered.length} total):\n`;
+      ? (TL ? `⭐ Mga dapat bisitahin sa ${destKey}:\n` : `⭐ Must-visit in ${destKey}:\n`)
+      : (TL ? `📍 Mga lugar sa ${destKey} (${filtered.length} total):\n` : `📍 Places to visit in ${destKey} (${filtered.length} total):\n`);
     const lines = [header];
     shown.forEach(p => {
-      const fee  = p.entranceFee > 0 ? ` · ₱${p.entranceFee}` : ' · Free entry';
+      const fee  = p.entranceFee > 0 ? ` · ₱${p.entranceFee}` : (TL ? ' · Libre' : ' · Free entry');
       const star = p.mustVisit ? ' ⭐' : '';
       lines.push(`${CATEGORY_EMOJI[p.category] || '📍'} ${p.name}${fee}${star}`);
       if (p.itineraryTip) lines.push(`   💡 ${p.itineraryTip.slice(0, 90)}${p.itineraryTip.length > 90 ? '…' : ''}`);
     });
-    if (filtered.length > 7) lines.push(`\n...and ${filtered.length - 7} more in the Discover tab`);
-    lines.push('\nOpen the Discover tab for photos, directions, and itinerary tips.');
+    if (filtered.length > 7) lines.push(TL
+      ? `\n...at ${filtered.length - 7} pa sa Discover tab`
+      : `\n...and ${filtered.length - 7} more in the Discover tab`);
+    lines.push(TL
+      ? '\nBuksan ang Discover tab para sa mga larawan, direksyon, at tips.'
+      : '\nOpen the Discover tab for photos, directions, and itinerary tips.');
     return lines.join('\n');
   }
 
@@ -533,7 +717,7 @@ function showPlacesInDestination(destKey, opts = {}) {
 
   const shown = opts.mustVisit ? info.highlights.slice(0, 5) : info.highlights;
   const lines = [
-    `${info.emoji} What to do in ${destKey}`,
+    TL ? `${info.emoji} Mga gagawin sa ${destKey}` : `${info.emoji} What to do in ${destKey}`,
     `${info.tagline}\n`,
   ];
 
@@ -548,36 +732,276 @@ function showPlacesInDestination(destKey, opts = {}) {
   return lines.join('\n');
 }
 
-function showTransport(t) {
-  if (/jeepney/.test(t))        return `🚌 Jeepney — The king of the road\n\nFare: ₱13–₱15 minimum\n\nHow to ride:\n1. Flag it down — raise your hand\n2. Tell the driver your stop\n3. Pass fare forward to the driver\n4. Say "Para!" to stop\n\nTip: Keep small bills ready.`;
-  if (/tricycle/.test(t))       return `🛺 Tricycle — Your neighborhood ride\n\nFare: ₱10–₱50 per person\n\nHow to ride:\n1. Flag one down anywhere\n2. Agree on fare before getting in\n3. Charter rate = 3–4x for the whole sidecar\n\nTip: Always negotiate the fare first.`;
-  if (/ferry|boat/.test(t))     return `⛵ Ferry/Boat — For island hopping\n\nFare: ₱150–₱2,000+\n\nHow to ride:\n1. Buy ticket at the port terminal\n2. Arrive 30–45 min early\n3. Bring valid ID for boarding\n\nTip: Book in advance during peak season.`;
-  if (/\bbus\b/.test(t))        return `🚍 Bus — Inter-provincial travel\n\nFare: ₱50–₱800\n\nMajor operators: Victory Liner, Partas, Ceres\n\nTip: Night buses save time and hotel cost.`;
-  if (/van|fx|shuttle/.test(t)) return `🚐 Van/FX — Faster than buses\n\nFare: ₱80–₱500 per seat\nDeparts when full — no fixed schedule.\n\nTip: Go before 8 AM for most reliable trips.`;
-  if (/habal/.test(t))          return `🏍️ Habal-Habal — Mountain road motorcycle\n\nFare: ₱20–₱200\n\nEssential in remote areas and mountain barangays.\n\nTip: Always agree on fare before riding.`;
-  if (/grab|taxi/.test(t))      return `🚗 Grab / Taxi — Door-to-door rides\n\nGrab is available in most cities.\n\nTip: Enable ride sharing (GrabShare) to save 20–30%.`;
-  return `How do you want to get around?\n\n🚌 Jeepney — ₱13–₱15 (city routes)\n🛺 Tricycle — ₱10–₱50 (barangay)\n⛵ Ferry — ₱150–₱2,000+ (islands)\n🚍 Bus — ₱50–₱800 (inter-city)\n🚐 Van/FX — ₱80–₱500 (provincial)\n🏍️ Habal-Habal — ₱20–₱200 (mountain)\n🚗 Grab — metered + app surge\n\nAsk me about a specific one!`;
+function showBestTime(destKey, lang = 'en') {
+  const TL = lang === 'tl';
+  const info = BEST_TIME[destKey];
+  if (!info) return showWeatherInfo(null, lang);
+  return [
+    TL ? `📅 Pinakamainam na panahon para bisitahin ang ${destKey}\n` : `📅 Best time to visit ${destKey}\n`,
+    `✅ ${TL ? 'Pumunta' : 'Go'}:    ${info.best}`,
+    `⚠️ ${TL ? 'Iwasan' : 'Avoid'}: ${info.avoid}`,
+    `\n💡 ${info.note}`,
+    TL
+      ? `\nPangkalahatang tuntunin: Ang dry season ng Pilipinas ay Nobyembre–Mayo. Ang rainy season ay Hunyo–Oktubre, na may mga bagyo na tumataas mula Agosto–Oktubre.`
+      : `\nGeneral rule: Philippines dry season is November–May. Rainy season is June–October, with typhoons peaking August–October.`,
+  ].join('\n');
 }
 
-function showFood() {
-  return `🍽️ Food tips:\n\n• Eat at local carinderias — cheap and authentic\n• Budget ₱100–₱250 per meal at local spots\n• Try lechon, sinigang, adobo for local flavors\n• Visit the palengke (wet market) for snacks\n• Mang Inasal and Jollibee are affordable go-tos\n• Halo-halo is a must on hot afternoons`;
+function showWeatherInfo(destKey, lang = 'en') {
+  const TL = lang === 'tl';
+  if (destKey) {
+    const info = BEST_TIME[destKey];
+    if (info) return showBestTime(destKey, lang);
+  }
+  return [
+    TL ? `🌤 Gabay sa Panahon ng Pilipinas\n` : `🌤 Philippines Weather Guide\n`,
+    TL ? `☀️ Dry Season (Amihan): Nobyembre hanggang Mayo` : `☀️ Dry Season (Amihan): November to May`,
+    TL ? `   Malamig na hangin mula NE · Pinakamainam para sa beach at outdoor trips` : `   Cool NE winds · Best for beaches & outdoor trips`,
+    TL ? `🌧 Rainy Season (Habagat): Hunyo hanggang Oktubre` : `🌧 Rainy Season (Habagat): June to October`,
+    TL ? `   Mainit at mahalumigmig · Umuulan hapon-hapon` : `   Hot & humid · Afternoon thunderstorms daily`,
+    TL ? `🌀 Typhoon Season: Hulyo hanggang Nobyembre` : `🌀 Typhoon Season: July to November`,
+    TL ? `   Pinakamalakas Agosto–Oktubre · Iwasan ang mga lugar na nakalantad` : `   Peaks August–October · Avoid exposed coasts`,
+    TL ? `\n📍 Mga lugar na halos walang bagyo:` : `\n📍 Typhoon-free zones:`,
+    TL ? `   • Davao at Mindanao — halos hindi tinatamaan` : `   • Davao & Mindanao — almost never hit`,
+    TL ? `   • Palawan — napoprotektahan ng Borneo` : `   • Palawan — sheltered by Borneo`,
+    TL ? `\n📍 Laging malamig:` : `\n📍 Always cool:`,
+    `   • Baguio, Sagada, Batanes, Bukidnon (highlands)`,
+    TL
+      ? `\nTanungin mo ako ng "pinakamainam na panahon sa Batanes" o "kailan pumunta sa Boracay" para sa mga tiyak na destinasyon!`
+      : `\nAsk me "best time for Batanes" or "when to go to Boracay" for specific destinations!`,
+  ].join('\n');
 }
 
-function showAccommodation() {
-  return `🏨 Accommodation tips:\n\n• Guesthouses: ₱400–₱800/night\n• Hostels (solo): ₱200–₱500/bed\n• Book a week ahead in peak season (Dec–May)\n• Airbnb is great for group stays\n• Check if breakfast is included!\n• Booking.com usually has the best rates`;
+function showVisa(lang = 'en') {
+  const TL = lang === 'tl';
+  return [
+    TL ? `🛂 Paglalakbay sa Pilipinas — Pagpasok at Visa\n` : `🛂 Philippines Travel — Entry & Visa\n`,
+    TL ? `✅ Karamihan sa mga nasyonalidad ay hindi kailangan ng visa` : `✅ No visa needed for most nationalities`,
+    TL ? `   • 30 araw na libreng pagpasok para sa karamihan ng passport holder` : `   • 30-day free entry for most passport holders`,
+    TL ? `   • Maaaring palawigin sa Bureau of Immigration (BI)` : `   • Extendable at Bureau of Immigration (BI)`,
+    TL ? `\n📋 Kailangan mo sa pagdating:` : `\n📋 What you need at arrival:`,
+    `   • Return or onward ticket`,
+    TL ? `   • Katibayan ng tirahan` : `   • Proof of accommodation`,
+    TL ? `   • Sapat na pondo (₱1,000/araw ang inirekomenda)` : `   • Sufficient funds (₱1,000/day recommended)`,
+    TL ? `\n🔄 Palawigin ang iyong pananatili:` : `\n🔄 Extending your stay:`,
+    `   • First extension: 29 days (₱3,130 at BI)`,
+    TL ? `   • Maaaring mag-extend nang maraming beses hanggang 36 buwan` : `   • Multiple extensions allowed up to 36 months`,
+    `   • Online extension: etravel.gov.ph`,
+    TL ? `\n🇵🇭 Paglalakbay sa loob ng Pilipinas:` : `\n🇵🇭 Traveling within the Philippines:`,
+    TL ? `   • Hindi kailangan ng panloob na visa` : `   • No internal visa needed`,
+    TL ? `   • Magdala ng valid na government ID` : `   • Bring a valid government ID`,
+    TL ? `   • Ang ilang isla ay nangangailangan ng eTravel QR code registration` : `   • Some islands require eTravel QR code registration`,
+    TL
+      ? `\nMag-register sa etravel.gov.ph bago ang anumang domestic flight o inter-island ferry.`
+      : `\nRegister at etravel.gov.ph before any domestic flight or inter-island ferry.`,
+  ].join('\n');
 }
 
-function showTips() {
-  return `💡 Quick travel tips:\n\n• Always carry cash — many spots don't take cards\n• Exchange at Palawan Pawnshop for better rates\n• Keep ₱500 emergency fund in a separate pocket\n• Haggling at markets is expected\n• Travel light — baggage fees drain the budget\n• Download maps offline before leaving the city\n• Save your must-do stops in your itinerary early`;
+async function showTripCountdown(trips, lang = 'en') {
+  const TL = lang === 'tl';
+  if (!trips || trips.length === 0) {
+    return TL
+      ? `Wala ka pa ring trips. Gumawa ng isa para magsimula ang countdown! ✈️`
+      : `You don't have any trips yet. Create one to start the countdown! ✈️`;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let upcoming    = null;
+  let nearestDiff = Infinity;
+  let ongoingTrip = null;
+
+  for (const tr of trips) {
+    const start = parseTripDateStr(tr.dates);
+    if (!start) continue;
+    start.setHours(0, 0, 0, 0);
+    const diff = Math.ceil((start - today) / 86400000);
+    if (diff === 0) {
+      ongoingTrip = tr;
+    } else if (diff > 0 && diff < nearestDiff) {
+      nearestDiff = diff;
+      upcoming = { trip: tr, start, diff };
+    }
+  }
+
+  // Currently on a trip
+  if (ongoingTrip) {
+    const start   = parseTripDateStr(ongoingTrip.dates);
+    const endDate = new Date(start);
+    endDate.setDate(endDate.getDate() + ongoingTrip.days - 1);
+    endDate.setHours(0, 0, 0, 0);
+    const daysLeft = Math.ceil((endDate - today) / 86400000) + 1;
+    return [
+      TL ? `✈️ KASALUKUYAN KANG NASA TRIP MO!\n` : `✈️ You're on your trip RIGHT NOW!\n`,
+      `${ongoingTrip.emoji || '✈️'} ${ongoingTrip.name}`,
+      `📍 ${ongoingTrip.destination}`,
+      TL
+        ? `⏱ ${daysLeft} araw pa ang natitira sa iyong trip`
+        : `⏱ ${daysLeft} day${daysLeft !== 1 ? 's' : ''} left in your trip`,
+      TL ? `\nMag-enjoy ka! Maligayang biyahe! 🎉` : `\nHave a great trip! 🎉 Enjoy every moment.`,
+    ].join('\n');
+  }
+
+  // No trip with dates
+  if (!upcoming) {
+    const noDate = trips.filter(tr => !parseTripDateStr(tr.dates));
+    if (noDate.length > 0 && noDate.length === trips.length) {
+      return TL
+        ? `Ang iyong mga trips ay walang petsa pa.\n\nI-edit ang isang trip para magdagdag ng petsa, tapos maaari akong mag-countdown para sa iyo! ✈️`
+        : `Your trips don't have start dates yet.\n\nEdit a trip to add dates, then I can count down for you! ✈️`;
+    }
+    return TL
+      ? `Lahat ng iyong mga upcoming trips ay nakaraan na. Panahon na para mag-plano ng bagong adventure! 🗺️\n\nSubukan: "Mag-plan ng trip sa Siargao para sa 5 araw"`
+      : `All your upcoming trips have already passed. Time to plan a new adventure! 🗺️\n\nTry: "Plan a trip to Siargao for 5 days"`;
+  }
+
+  const { trip, diff } = upcoming;
+  const lines = [TL ? `⏳ Countdown para sa ${trip.name}\n` : `⏳ Countdown to ${trip.name}\n`];
+
+  if (diff === 1)       lines.push(TL ? `Bukas na! 🎉 Ihanda na ang iyong mga gamit!` : `Tomorrow! 🎉 Get your bags ready!`);
+  else if (diff <= 3)   lines.push(TL ? `${diff} araw na lang — malapit na! 🎒` : `Only ${diff} days to go — almost there! 🎒`);
+  else if (diff <= 7)   lines.push(TL ? `${diff} araw pa — ngayong linggo na! 🎒` : `${diff} days to go — this week! 🎒`);
+  else if (diff <= 14)  lines.push(TL ? `${diff} araw pa — susunod na linggo!` : `${diff} days to go — next week!`);
+  else if (diff <= 30)  lines.push(TL ? `${diff} araw pa (~${Math.ceil(diff / 7)} linggo)` : `${diff} days to go (~${Math.ceil(diff / 7)} weeks)`);
+  else                  lines.push(TL ? `${diff} araw pa` : `${diff} days to go`);
+
+  lines.push(`\n${trip.emoji || '✈️'} ${trip.name}`);
+  lines.push(`📍 ${trip.destination}`);
+  if (trip.dates && !/^\d+\s*days?$/i.test(trip.dates)) lines.push(`📅 ${trip.dates}`);
+  lines.push(TL ? `🗓 ${trip.days} araw na trip` : `🗓 ${trip.days} day${trip.days !== 1 ? 's' : ''} trip`);
+
+  if (diff <= 3)       lines.push(TL
+    ? `\n🎒 I-check na ang iyong listahan ng dala! Tanungin: "listahan ng dala para sa ${trip.name}"`
+    : `\n🎒 Better check your packing list! Ask me "packing list for ${trip.name}"`);
+  else if (diff <= 14) lines.push(TL
+    ? `\n💡 Tanungin: "ano ang gagawin sa ${trip.destination}" para planuhin ang iyong itinerary!`
+    : `\n💡 Ask me "what to do in ${trip.destination}" to plan your itinerary!`);
+  else                 lines.push(TL
+    ? `\n💰 Tanungin: "kumusta ang budget ko?" para makita kung naka-track ka.`
+    : `\n💰 Ask me "how's my budget?" to see if you're on track.`);
+
+  return lines.join('\n');
 }
 
-function fallback(name) {
-  return `Here's what I can help you with, ${name}:\n\n✏️  Log expenses — "Spent ₱200 on food"\n💰  Budget — "Add ₱1,000 to my budget"\n✈️  Plan a trip — "Plan a trip to Vigan for 3 days"\n🎒  Packing — "Add sunscreen to packing list"\n📋  My trips — "Show my trips"\n📍  Places — "What to do in Baguio?"\n🚌  Transport — "How do I ride a jeepney?"\n\nJust type naturally — I understand Filipino too!`;
+function suggestDestination(t, lang = 'en') {
+  const TL = lang === 'tl';
+  for (const entry of VIBE_SUGGESTIONS) {
+    if (entry.vibes.some(v => t.includes(v))) {
+      const lines = [TL
+        ? `🗺️ Mga ${entry.label} sa Pilipinas:\n`
+        : `🗺️ ${titleCase(entry.label)} in the Philippines:\n`];
+      entry.places.forEach(p => {
+        lines.push(`• ${p.name}`);
+        lines.push(`  ${p.note}`);
+      });
+      lines.push(TL
+        ? `\nTanungin mo ako ng "ano ang gagawin sa [destinasyon]" para sa buong detalye!`
+        : `\nAsk me "what to do in [destination]" for full details on any of these!`);
+      return lines.join('\n');
+    }
+  }
+  return null;
 }
+
+async function smartFallback(t, userName, trips, lang = 'en') {
+  const TL = lang === 'tl';
+
+  // 1. Destination is mentioned but no query keyword → offer suggestions
+  const destKey = findDestKey(t);
+  if (destKey) {
+    const result = showPlacesInDestination(destKey, { mustVisit: false }, lang);
+    if (result) return result;
+  }
+
+  // 2. Trip-related words → show their trips
+  if (contains(t, ['trip', 'lakbay', 'biyahe', 'travel', 'byahe', 'lakad'])) {
+    return await showTrips(lang);
+  }
+
+  // 3. Money / cost mentioned → budget
+  if (contains(t, ['₱', 'piso', 'peso', 'pera', 'bayad', 'gastos', 'budget', 'money', 'cost', 'magkano'])) {
+    return await showBudget(lang);
+  }
+
+  // 4. Vibe-based suggestions
+  const vibeResult = suggestDestination(t, lang);
+  if (vibeResult) return vibeResult;
+
+  // 5. Greetings → friendly response
+  if (contains(t, ['hello', 'hi', 'hey', 'kumusta', 'kamusta', 'musta', 'good morning', 'good afternoon', 'magandang'])) {
+    const tripData = trips && trips.length > 0
+      ? (TL
+          ? `\n\nMayroon kang ${trips.length} trip${trips.length !== 1 ? 's' : ''} na nakatakda. Tanungin mo ako tungkol sa kanila!`
+          : `\n\nYou have ${trips.length} trip${trips.length !== 1 ? 's' : ''} planned. Ask me anything about them!`)
+      : (TL
+          ? `\n\nWala ka pa ring trips — subukan ang "Mag-plan ng trip sa Baguio para sa 3 araw" para magsimula!`
+          : `\n\nYou don't have any trips yet — try "Plan a trip to Baguio for 3 days" to start!`);
+    return TL
+      ? `Kumusta, ${userName}! 😊${tripData}\n\nAko ay may alam sa iyong mga trips, budget, listahan ng dala, at mga destinasyon sa buong Pilipinas. Magtanong ka lang!`
+      : `Kamusta, ${userName}! 😊${tripData}\n\nI know your trips, budget, packing lists, and destinations all across the Philippines. Just ask!`;
+  }
+
+  // 6. True fallback — show specific actionable examples
+  return TL
+    ? `Hindi ko naintindihan iyon, ${userName}. Narito ang ilang maaari mong itanong:\n\n🗺️ "Ano ang gagawin sa Baguio?"\n⏳ "Ilang araw na lang ang trip ko?"\n🌤 "Pinakamainam na panahon sa Batanes?"\n🎒 "Dagdag jacket sa listahan ng dala"\n💸 "Nagastos ng ₱350 sa pagkain"\n✈️ "Mag-plan ng trip sa El Nido para sa 4 araw"\n\nO subukan: "Gusto ko ng malamig na lugar" at magmumungkahi ako ng mga destinasyon!`
+    : `I didn't quite catch that, ${userName}. Here are some things you can ask:\n\n🗺️ "What to do in Baguio?"\n⏳ "How many days left in my trip?"\n🌤 "Best time to visit Batanes?"\n🎒 "Add jacket to packing list"\n💸 "Spent ₱350 on food"\n✈️ "Plan a trip to El Nido for 4 days"\n\nOr try: "I want somewhere cold" and I'll suggest destinations!`;
+}
+
+function showTransport(t, lang = 'en') {
+  const TL = lang === 'tl';
+  if (/jeepney/.test(t)) return TL
+    ? `🚌 Jeepney — Hari ng kalsada\n\nBayad: ₱13–₱15 minimum\n\nParaan ng pagsakay:\n1. Ihinto — itaas ang kamay\n2. Sabihin sa driver ang iyong hintuan\n3. Ipasa ang bayad pasulong sa driver\n4. Sabihing "Para!" para huminto\n\nTip: Magdala ng barya.`
+    : `🚌 Jeepney — The king of the road\n\nFare: ₱13–₱15 minimum\n\nHow to ride:\n1. Flag it down — raise your hand\n2. Tell the driver your stop\n3. Pass fare forward to the driver\n4. Say "Para!" to stop\n\nTip: Keep small bills ready.`;
+  if (/tricycle/.test(t)) return TL
+    ? `🛺 Tricycle — Ang sasakyan sa barangay\n\nBayad: ₱10–₱50 bawat tao\n\nParaan ng pagsakay:\n1. Ihinto kahit saan\n2. Makipag-usap sa bayad bago sumakay\n3. Charter rate = 3–4x para sa buong sidecar\n\nTip: Laging itanong ang bayad bago sumakay.`
+    : `🛺 Tricycle — Your neighborhood ride\n\nFare: ₱10–₱50 per person\n\nHow to ride:\n1. Flag one down anywhere\n2. Agree on fare before getting in\n3. Charter rate = 3–4x for the whole sidecar\n\nTip: Always negotiate the fare first.`;
+  if (/ferry|boat/.test(t)) return TL
+    ? `⛵ Ferry/Bangka — Para sa island hopping\n\nBayad: ₱150–₱2,000+\n\nParaan ng pagsakay:\n1. Bumili ng tiket sa port terminal\n2. Dumating nang 30–45 minuto bago\n3. Magdala ng valid ID para sa pag-board\n\nTip: Mag-book nang maaga sa peak season.`
+    : `⛵ Ferry/Boat — For island hopping\n\nFare: ₱150–₱2,000+\n\nHow to ride:\n1. Buy ticket at the port terminal\n2. Arrive 30–45 min early\n3. Bring valid ID for boarding\n\nTip: Book in advance during peak season.`;
+  if (/\bbus\b/.test(t)) return TL
+    ? `🚍 Bus — Paglalakbay sa ibang lalawigan\n\nBayad: ₱50–₱800\n\nMga pangunahing operator: Victory Liner, Partas, Ceres\n\nTip: Ang night bus ay makatipid ng oras at bayad sa hotel.`
+    : `🚍 Bus — Inter-provincial travel\n\nFare: ₱50–₱800\n\nMajor operators: Victory Liner, Partas, Ceres\n\nTip: Night buses save time and hotel cost.`;
+  if (/van|fx|shuttle/.test(t)) return TL
+    ? `🚐 Van/FX — Mas mabilis kaysa bus\n\nBayad: ₱80–₱500 bawat upuan\nUmaalis kapag puno — walang nakatakdang iskedyul.\n\nTip: Pumunta bago mag-8 AM para sa pinaka-maaasahang trips.`
+    : `🚐 Van/FX — Faster than buses\n\nFare: ₱80–₱500 per seat\nDeparts when full — no fixed schedule.\n\nTip: Go before 8 AM for most reliable trips.`;
+  if (/habal/.test(t)) return TL
+    ? `🏍️ Habal-Habal — Motorsiklo para sa bundok\n\nBayad: ₱20–₱200\n\nKailangan sa mga liblib na lugar at barangay sa bundok.\n\nTip: Palaging itanong ang bayad bago sumakay.`
+    : `🏍️ Habal-Habal — Mountain road motorcycle\n\nFare: ₱20–₱200\n\nEssential in remote areas and mountain barangays.\n\nTip: Always agree on fare before riding.`;
+  if (/grab|taxi/.test(t)) return TL
+    ? `🚗 Grab / Taxi — Door-to-door na pagsakay\n\nAng Grab ay available sa karamihan ng mga lungsod.\n\nTip: I-enable ang ride sharing (GrabShare) para makatipid ng 20–30%.`
+    : `🚗 Grab / Taxi — Door-to-door rides\n\nGrab is available in most cities.\n\nTip: Enable ride sharing (GrabShare) to save 20–30%.`;
+  return TL
+    ? `Paano mo gustong maglakbay?\n\n🚌 Jeepney — ₱13–₱15 (lungsod)\n🛺 Tricycle — ₱10–₱50 (barangay)\n⛵ Ferry — ₱150–₱2,000+ (mga isla)\n🚍 Bus — ₱50–₱800 (inter-city)\n🚐 Van/FX — ₱80–₱500 (lalawigan)\n🏍️ Habal-Habal — ₱20–₱200 (bundok)\n🚗 Grab — metro + app surge\n\nTanungin mo ako tungkol sa isa!`
+    : `How do you want to get around?\n\n🚌 Jeepney — ₱13–₱15 (city routes)\n🛺 Tricycle — ₱10–₱50 (barangay)\n⛵ Ferry — ₱150–₱2,000+ (islands)\n🚍 Bus — ₱50–₱800 (inter-city)\n🚐 Van/FX — ₱80–₱500 (provincial)\n🏍️ Habal-Habal — ₱20–₱200 (mountain)\n🚗 Grab — metered + app surge\n\nAsk me about a specific one!`;
+}
+
+function showFood(lang = 'en') {
+  const TL = lang === 'tl';
+  return TL
+    ? `🍽️ Mga tip sa pagkain:\n\n• Kumain sa lokal na carinderia — mura at tunay\n• Budget na ₱100–₱250 bawat kain sa lokal na lugar\n• Subukan ang lechon, sinigang, adobo para sa lokal na lasa\n• Bisitahin ang palengke para sa mga meryenda\n• Ang Mang Inasal at Jollibee ay abot-kayang pagpipilian\n• Ang halo-halo ay kailangan sa mainit na hapon`
+    : `🍽️ Food tips:\n\n• Eat at local carinderias — cheap and authentic\n• Budget ₱100–₱250 per meal at local spots\n• Try lechon, sinigang, adobo for local flavors\n• Visit the palengke (wet market) for snacks\n• Mang Inasal and Jollibee are affordable go-tos\n• Halo-halo is a must on hot afternoons`;
+}
+
+function showAccommodation(lang = 'en') {
+  const TL = lang === 'tl';
+  return TL
+    ? `🏨 Mga tip sa tirahan:\n\n• Mga guesthouse: ₱400–₱800/gabi\n• Mga hostel (solo): ₱200–₱500/higaan\n• Mag-book nang isang linggo bago sa peak season (Dis–Mayo)\n• Ang Airbnb ay maganda para sa group stays\n• I-check kung kasama ang almusal!\n• Ang Booking.com ay karaniwang may pinakamababang presyo`
+    : `🏨 Accommodation tips:\n\n• Guesthouses: ₱400–₱800/night\n• Hostels (solo): ₱200–₱500/bed\n• Book a week ahead in peak season (Dec–May)\n• Airbnb is great for group stays\n• Check if breakfast is included!\n• Booking.com usually has the best rates`;
+}
+
+function showTips(lang = 'en') {
+  const TL = lang === 'tl';
+  return TL
+    ? `💡 Mga mabilis na tip sa pagbiyahe:\n\n• Laging magdala ng cash — maraming lugar na hindi tumatanggap ng card\n• Mag-palitan sa Palawan Pawnshop para sa mas magandang palitan\n• Mag-ipon ng ₱500 emergency fund sa hiwalay na bulsa\n• Ang pagtawad sa mga palengke ay inaasahan\n• Maglakbay nang magaan — ang bayad sa bagahe ay nakaka-ubos ng budget\n• I-download ang mga mapa offline bago umalis sa lungsod\n• I-save ang mga dapat gawin sa iyong itinerary nang maaga`
+    : `💡 Quick travel tips:\n\n• Always carry cash — many spots don't take cards\n• Exchange at Palawan Pawnshop for better rates\n• Keep ₱500 emergency fund in a separate pocket\n• Haggling at markets is expected\n• Travel light — baggage fees drain the budget\n• Download maps offline before leaving the city\n• Save your must-do stops in your itinerary early`;
+}
+
 
 // ── Multi-turn continuation ───────────────────────────────────────────────────
 
-async function continueFlow(t, raw, context) {
+async function continueFlow(t, raw, context, lang = 'en') {
+  const TL = lang === 'tl';
   const { intent, partialData, step } = context;
 
   if (intent === 'LOG_EXPENSE' && step === 'category') {
@@ -589,12 +1013,16 @@ async function continueFlow(t, raw, context) {
        /^other/i.test(t.trim())              ? 'Others'        : null);
     if (!category) {
       return {
-        text: `Which category?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`,
+        text: TL
+          ? `Anong kategorya?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`
+          : `Which category?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`,
         needsMore: { context, question: 'category' },
       };
     }
     return {
-      text: `Got it! Here's what I'll log:\n\n💸 ${fmt(partialData.amount)} • ${category}\n\nShall I add this to your expenses?`,
+      text: TL
+        ? `Sige! Ito ang ilo-log ko:\n\n💸 ${fmt(partialData.amount)} • ${category}\n\nIdadagdag ko ba ito sa iyong mga gastos?`
+        : `Got it! Here's what I'll log:\n\n💸 ${fmt(partialData.amount)} • ${category}\n\nShall I add this to your expenses?`,
       action: { intent: 'LOG_EXPENSE', data: { amount: partialData.amount, category, note: '' } },
     };
   }
@@ -605,12 +1033,16 @@ async function continueFlow(t, raw, context) {
     if (!trip) {
       const tripList = trips.map(tr => `• ${tr.name}`).join('\n');
       return {
-        text: `I couldn't match that. Which trip?\n\n${tripList}`,
+        text: TL
+          ? `Hindi ko matukoy iyon. Aling trip?\n\n${tripList}`
+          : `I couldn't match that. Which trip?\n\n${tripList}`,
         needsMore: { context, question: 'selectTrip' },
       };
     }
     return {
-      text: `Add "${partialData.item}" to "${trip.name}"?\n\nConfirm?`,
+      text: TL
+        ? `Idadagdag ba ang "${partialData.item}" sa "${trip.name}"?\n\nKumpirmahin?`
+        : `Add "${partialData.item}" to "${trip.name}"?\n\nConfirm?`,
       action: { intent: 'ADD_PACKING_ITEM', data: { item: partialData.item, tripId: trip.id, tripName: trip.name } },
     };
   }
@@ -618,7 +1050,9 @@ async function continueFlow(t, raw, context) {
   if (intent === 'CREATE_TRIP' && step === 'destination') {
     const destination = titleCase(raw.trim());
     return {
-      text: `A trip to ${destination}! 🎒\n\nHow many days?`,
+      text: TL
+        ? `Trip sa ${destination}! 🎒\n\nIlang araw?`
+        : `A trip to ${destination}! 🎒\n\nHow many days?`,
       needsMore: { context: { intent: 'CREATE_TRIP', partialData: { destination }, step: 'days' } },
     };
   }
@@ -627,37 +1061,48 @@ async function continueFlow(t, raw, context) {
     const days = extractDays(t) || (parseInt(t) > 0 && parseInt(t) < 365 ? parseInt(t) : null);
     if (!days) {
       return {
-        text: `How many days? (e.g. "3 days" or just "3")`,
+        text: TL
+          ? `Ilang araw? (hal. "3 araw" o "3" lang)`
+          : `How many days? (e.g. "3 days" or just "3")`,
         needsMore: { context, question: 'days' },
       };
     }
     return {
-      text: `Got it — ${days} day${days > 1 ? 's' : ''}! 📅\n\nWhen do you plan to start? (e.g. "June 10", "next Friday", "in 2 weeks", or "not sure yet")`,
+      text: TL
+        ? `Sige — ${days} araw! 📅\n\nKailan mo planong magsimula? (hal. "June 10", "susunod na Biyernes", "sa loob ng 2 linggo", o "hindi pa sigurado")`
+        : `Got it — ${days} day${days > 1 ? 's' : ''}! 📅\n\nWhen do you plan to start? (e.g. "June 10", "next Friday", "in 2 weeks", or "not sure yet")`,
       needsMore: { context: { intent: 'CREATE_TRIP', partialData: { ...partialData, days }, step: 'startDate' } },
     };
   }
 
   if (intent === 'CREATE_TRIP' && step === 'startDate') {
     const { destination, days } = partialData;
-    const notSure   = /not sure|unsure|don't know|no idea|tbd|later|someday/.test(t);
+    const notSure   = /not sure|unsure|don't know|no idea|tbd|later|someday|hindi pa|hindi ko alam/.test(t);
     const startDate = notSure ? null : parseDateInput(raw);
     const dates     = tripDates(startDate, days);
     const name      = destination + ' Trip';
     return {
-      text: `Here's what I'll create:\n\n✈️ ${name}\n📍 ${destination}\n📅 ${days} day${days > 1 ? 's' : ''} · ${dates}\n\nShall I add this to your trips?`,
+      text: TL
+        ? `Ito ang aking gagawin:\n\n✈️ ${name}\n📍 ${destination}\n📅 ${days} araw · ${dates}\n\nIdadagdag ko ba ito sa iyong mga trips?`
+        : `Here's what I'll create:\n\n✈️ ${name}\n📍 ${destination}\n📅 ${days} day${days > 1 ? 's' : ''} · ${dates}\n\nShall I add this to your trips?`,
       action: { intent: 'CREATE_TRIP', data: { name, destination, days, dates, emoji: '✈️' } },
     };
   }
 
-  return { text: fallback('there') };
+  return {
+    text: TL
+      ? `Hindi ko naintindihan. Subukan:\n• Isang numero tulad ng "3" para sa mga araw\n• Isang pangalan ng lugar tulad ng "Baguio"\n• "Hindi pa sigurado" kung hindi ka pa nagpasya\n\nO i-type ang "cancel" para magsimula ulit.`
+      : `I didn't catch that. Try:\n• A number like "3" for days\n• A place name like "Baguio"\n• "Not sure yet" if you haven't decided\n\nOr type "cancel" to start over.`,
+  };
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export async function parseMessage(input, userName = 'Lakbayero', context = null) {
-  const t = input.toLowerCase().trim();
+export async function parseMessage(input, userName = 'Lakbayero', context = null, lang = 'en') {
+  const t  = input.toLowerCase().trim();
+  const TL = lang === 'tl';
 
-  if (context) return continueFlow(t, input, context);
+  if (context) return continueFlow(t, input, context, lang);
 
   // ── LOG_EXPENSE ────────────────────────────────────────────────────────────
   const isSpendWord = /spend|spent|paid|pay\s|bought|nagbayad|nagastos|gumastos/.test(t);
@@ -667,12 +1112,16 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
   if (isSpendWord && amount) {
     if (category) {
       return {
-        text: `Got it! Here's what I'll log:\n\n💸 ${fmt(amount)} • ${category}\n\nShall I add this to your expenses?`,
+        text: TL
+          ? `Sige! Ito ang ilo-log ko:\n\n💸 ${fmt(amount)} • ${category}\n\nIdadagdag ko ba ito sa iyong mga gastos?`
+          : `Got it! Here's what I'll log:\n\n💸 ${fmt(amount)} • ${category}\n\nShall I add this to your expenses?`,
         action: { intent: 'LOG_EXPENSE', data: { amount, category, note: '' } },
       };
     }
     return {
-      text: `I'll log ${fmt(amount)}. What category?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`,
+      text: TL
+        ? `Ilo-log ko ang ${fmt(amount)}. Anong kategorya?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`
+        : `I'll log ${fmt(amount)}. What category?\n\n• Food\n• Transport\n• Accommodation\n• Activities\n• Others`,
       needsMore: { context: { intent: 'LOG_EXPENSE', partialData: { amount }, step: 'category' } },
     };
   }
@@ -680,7 +1129,9 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
   // ── ADD_TO_BUDGET ──────────────────────────────────────────────────────────
   if (/add\s+.*\bbudget\b|increase.*budget/.test(t) && amount) {
     return {
-      text: `I'll add ${fmt(amount)} to your budget.\n\nConfirm?`,
+      text: TL
+        ? `Idadagdag ko ang ${fmt(amount)} sa iyong budget.\n\nKumpirmahin?`
+        : `I'll add ${fmt(amount)} to your budget.\n\nConfirm?`,
       action: { intent: 'ADD_TO_BUDGET', data: { amount } },
     };
   }
@@ -688,7 +1139,9 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
   // ── SET_BUDGET ─────────────────────────────────────────────────────────────
   if (/set.*budget|budget.*to\s+₱?\d|budget.*is\s+₱?\d/.test(t) && amount) {
     return {
-      text: `I'll set your budget to ${fmt(amount)}.\n\nConfirm?`,
+      text: TL
+        ? `Itatakda ko ang iyong budget sa ${fmt(amount)}.\n\nKumpirmahin?`
+        : `I'll set your budget to ${fmt(amount)}.\n\nConfirm?`,
       action: { intent: 'SET_BUDGET', data: { amount } },
     };
   }
@@ -698,7 +1151,9 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
   if (packingItem) {
     const trips = await getTrips();
     if (trips.length === 0) {
-      return { text: `You don't have any trips yet. Create one first, then I can add items to its packing list.` };
+      return { text: TL
+        ? `Wala ka pang trips. Gumawa muna ng isa, tapos maaari akong magdagdag ng gamit sa listahan ng dala.`
+        : `You don't have any trips yet. Create one first, then I can add items to its packing list.` };
     }
     let targetTrip = null;
     for (const tr of trips) {
@@ -710,13 +1165,17 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
     if (!targetTrip && trips.length === 1) targetTrip = trips[0];
     if (targetTrip) {
       return {
-        text: `Add "${packingItem}" to the packing list for "${targetTrip.name}"?\n\nConfirm?`,
+        text: TL
+          ? `Idadagdag ba ang "${packingItem}" sa listahan ng dala para sa "${targetTrip.name}"?\n\nKumpirmahin?`
+          : `Add "${packingItem}" to the packing list for "${targetTrip.name}"?\n\nConfirm?`,
         action: { intent: 'ADD_PACKING_ITEM', data: { item: packingItem, tripId: targetTrip.id, tripName: targetTrip.name } },
       };
     }
     const tripList = trips.map(tr => `• ${tr.name}`).join('\n');
     return {
-      text: `Which trip should I add "${packingItem}" to?\n\n${tripList}`,
+      text: TL
+        ? `Sa aling trip ko idadagdag ang "${packingItem}"?\n\n${tripList}`
+        : `Which trip should I add "${packingItem}" to?\n\n${tripList}`,
       needsMore: { context: { intent: 'ADD_PACKING_ITEM', partialData: { item: packingItem }, step: 'selectTrip' } },
     };
   }
@@ -728,27 +1187,57 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
     const days = extractDays(t);
     if (dest && days) {
       return {
-        text: `${days} days in ${dest} — nice! 📅\n\nWhen do you plan to start? (e.g. "June 10", "next Friday", "in 2 weeks", or "not sure yet")`,
+        text: TL
+          ? `${days} araw sa ${dest} — maganda! 📅\n\nKailan mo planong magsimula? (hal. "June 10", "susunod na Biyernes", "sa loob ng 2 linggo", o "hindi pa sigurado")`
+          : `${days} days in ${dest} — nice! 📅\n\nWhen do you plan to start? (e.g. "June 10", "next Friday", "in 2 weeks", or "not sure yet")`,
         needsMore: { context: { intent: 'CREATE_TRIP', partialData: { destination: dest, days }, step: 'startDate' } },
       };
     }
     if (dest) {
       return {
-        text: `A trip to ${dest}! 🎒\n\nHow many days?`,
+        text: TL
+          ? `Trip sa ${dest}! 🎒\n\nIlang araw?`
+          : `A trip to ${dest}! 🎒\n\nHow many days?`,
         needsMore: { context: { intent: 'CREATE_TRIP', partialData: { destination: dest }, step: 'days' } },
       };
     }
     return {
-      text: `Let's plan a trip! 🎒\n\nWhere are you going?`,
+      text: TL
+        ? `Mag-plan tayo ng trip! 🎒\n\nSaan ka pupunta?`
+        : `Let's plan a trip! 🎒\n\nWhere are you going?`,
       needsMore: { context: { intent: 'CREATE_TRIP', partialData: {}, step: 'destination' } },
     };
   }
 
-  // ── PACKING LIST QUERY ─────────────────────────────────────────────────────
-  if (contains(t, ['packing list', 'what to pack', 'pack list', 'what do i need to bring', 'what should i bring', 'ano dala', 'ano dadalhin', 'what to bring'])) {
+  // ── TRIP COUNTDOWN / CONTEXT AWARENESS ────────────────────────────────────
+  if (contains(t, ['how many days', 'days left', 'countdown', 'how long', 'when is my trip', 'when does my trip', 'ilang araw', 'kailan trip', 'am i on my trip', 'trip start', 'trip na ba'])) {
     const trips = await getTrips();
-    if (trips.length === 0) return { text: `You don't have any trips yet. Create one first!` };
-    // Find which trip the user is asking about by matching trip name or destination
+    return { text: await showTripCountdown(trips, lang) };
+  }
+
+  // ── BEST TIME / WEATHER ────────────────────────────────────────────────────
+  if (contains(t, ['best time', 'when to go', 'when to visit', 'weather', 'rainy season', 'dry season', 'typhoon', 'season', 'climate', 'when is it nice', 'pinakamainam', 'kailan pumunta', 'tag-ulan', 'tag-araw'])) {
+    const destKey = findDestKey(t);
+    return { text: destKey ? showBestTime(destKey, lang) : showWeatherInfo(null, lang) };
+  }
+
+  // ── VISA / ENTRY REQUIREMENTS ─────────────────────────────────────────────
+  if (contains(t, ['visa', 'entry', 'passport', 'immigration', 'extension', 'etravel', 'requirements', 'can i enter', 'how long can i stay', 'tourist', 'foreign'])) {
+    return { text: showVisa(lang) };
+  }
+
+  // ── VIBE-BASED DESTINATION SUGGESTION ─────────────────────────────────────
+  if (contains(t, ['where should i go', 'where to go', 'suggest a place', 'recommend a place', 'i want to go', 'saan ako pupunta', 'saan maganda', 'magandang lugar', 'destination suggestion', 'where in the philippines', 'i want somewhere', 'looking for a place', 'sanang pumunta', 'gusto ko ng', 'gusto ko pumunta'])) {
+    const result = suggestDestination(t, lang);
+    if (result) return { text: result };
+  }
+
+  // ── PACKING LIST QUERY ─────────────────────────────────────────────────────
+  if (contains(t, ['packing list', 'what to pack', 'pack list', 'what do i need to bring', 'what should i bring', 'ano dala', 'ano dadalhin', 'what to bring', 'listahan ng dala'])) {
+    const trips = await getTrips();
+    if (trips.length === 0) return { text: TL
+      ? `Wala ka pang trips. Gumawa muna ng isa!`
+      : `You don't have any trips yet. Create one first!` };
     let mentionedTrip = null;
     for (const tr of trips) {
       if (t.includes(tr.name.toLowerCase()) || t.includes(tr.destination.toLowerCase())) {
@@ -756,16 +1245,16 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
         break;
       }
     }
-    return { text: await showPackingList(mentionedTrip, trips) };
+    return { text: await showPackingList(mentionedTrip, trips, lang) };
   }
 
   // ── MY TRIPS ───────────────────────────────────────────────────────────────
-  if (contains(t, ['my trips', 'show trips', 'list trips', 'what trips', 'mga trip', 'my trip', 'aking trip', 'show my']))
-    return { text: await showTrips() };
+  if (contains(t, ['my trips', 'show trips', 'list trips', 'what trips', 'mga trip', 'my trip', 'aking trip', 'show my', 'ipakita', 'mga biyahe ko']))
+    return { text: await showTrips(lang) };
 
   // ── BUDGET ─────────────────────────────────────────────────────────────────
-  if (contains(t, ['budget', 'how much', 'spending', 'gastos', 'remaining', 'expense', 'pera ko', "how's my", 'how is my', 'magkano']))
-    return { text: await showBudget() };
+  if (contains(t, ['budget', 'how much', 'spending', 'gastos', 'remaining', 'expense', 'pera ko', "how's my", 'how is my', 'magkano', 'kumusta ang']))
+    return { text: await showBudget(lang) };
 
   // ── DESTINATION QUERY — "what to do in X", "tourist spots in X", etc. ──────
   const destKey = findDestKey(t);
@@ -774,40 +1263,45 @@ export async function parseMessage(input, userName = 'Lakbayero', context = null
     'must visit', 'must-visit', 'must see', 'what can i do', 'saan pumunta',
     'saan punta', 'ano maganda', 'ano gagawin', 'activities in', 'itinerary',
     'where to go', 'suggest', 'recommend', 'top spots', 'best places',
-    'go to', 'see in', 'visit in', 'what to see',
+    'go to', 'see in', 'visit in', 'what to see', 'mga gagawin', 'gagawin sa',
   ]);
 
   if (destKey && isDestQuery) {
     const mustVisit = contains(t, ['must', 'top', 'best', 'highlight', 'must-visit']);
-    const result = showPlacesInDestination(destKey, { mustVisit });
+    const result = showPlacesInDestination(destKey, { mustVisit }, lang);
     if (result) return { text: result };
   }
 
   // If a destination is mentioned but no activity keyword, still give suggestions
   if (destKey && !isDestQuery) {
-    // Check if it's a question or general query about the place
     const isQuestion = t.includes('?') || contains(t, ['how', 'where', 'when', 'what', 'ano', 'saan', 'paano', 'kailan', 'maganda', 'punta', 'trip']);
     if (isQuestion) {
-      const result = showPlacesInDestination(destKey, { mustVisit: false });
+      const result = showPlacesInDestination(destKey, { mustVisit: false }, lang);
       if (result) return { text: result };
     }
   }
 
   // ── TRANSPORT ──────────────────────────────────────────────────────────────
-  if (contains(t, ['transport', 'jeepney', 'tricycle', 'ferry', 'bus', 'van', 'habal', 'grab', 'taxi', 'ride', 'commute', 'travel by', 'how to get', 'paano pumunta', 'paano makarating']))
-    return { text: showTransport(t) };
+  if (contains(t, ['transport', 'jeepney', 'tricycle', 'ferry', 'bus', 'van', 'habal', 'grab', 'taxi', 'ride', 'commute', 'travel by', 'how to get', 'paano pumunta', 'paano makarating', 'paano sumakay']))
+    return { text: showTransport(t, lang) };
 
   // ── FOOD ───────────────────────────────────────────────────────────────────
   if (contains(t, ['food', 'eat', 'kain', 'restaurant', 'lunch', 'dinner', 'breakfast', 'where to eat', 'saan kumain', 'pagkain']))
-    return { text: showFood() };
+    return { text: showFood(lang) };
 
   // ── ACCOMMODATION ──────────────────────────────────────────────────────────
   if (contains(t, ['hotel', 'hostel', 'stay', 'accommodation', 'sleep', 'overnight', 'lodging', 'airbnb', 'saan matulog']))
-    return { text: showAccommodation() };
+    return { text: showAccommodation(lang) };
 
   // ── TIPS ───────────────────────────────────────────────────────────────────
   if (contains(t, ['tip', 'tips', 'advice', 'travel hack', 'trick', 'remind me', 'checklist']))
-    return { text: showTips() };
+    return { text: showTips(lang) };
 
-  return { text: fallback(userName) };
+  // ── VIBE CATCH-ALL (before smart fallback) ─────────────────────────────────
+  const vibeResult = suggestDestination(t, lang);
+  if (vibeResult) return { text: vibeResult };
+
+  // ── SMART FALLBACK ─────────────────────────────────────────────────────────
+  const trips = await getTrips();
+  return { text: await smartFallback(t, userName, trips, lang) };
 }

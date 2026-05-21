@@ -14,6 +14,7 @@ import { useUser } from '../context/UserContext';
 import { parseMessage } from '../utils/chatParser';
 import {
   addExpense, getBudget, updateBudgetTotal, createTrip, addPackingItem, getTrips,
+  getSetting, setSetting,
 } from '../database/db';
 
 const { width } = require('react-native').Dimensions.get('window');
@@ -75,9 +76,10 @@ function TypingIndicator() {
 
 // ── Message bubble ────────────────────────────────────────────────────────────
 
-function Message({ msg, onAction }) {
+function Message({ msg, onAction, lang = 'en' }) {
   const isBot    = msg.sender === 'bot';
   const isAction = msg.type === 'action';
+  const TL       = lang === 'tl';
 
   return (
     <View style={[styles.msgRow, !isBot && styles.msgRowRight]}>
@@ -100,14 +102,14 @@ function Message({ msg, onAction }) {
               onPress={() => onAction(msg.id, true)}
             >
               <Ionicons name="checkmark" size={s(15)} color={Colors.white} />
-              <Text style={styles.confirmText}>Confirm</Text>
+              <Text style={styles.confirmText}>{TL ? 'Kumpirmahin' : 'Confirm'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancelBtn}
               onPress={() => onAction(msg.id, false)}
             >
               <Ionicons name="close" size={s(15)} color={Colors.textSecondary} />
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={styles.cancelText}>{TL ? 'Kanselahin' : 'Cancel'}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -115,14 +117,14 @@ function Message({ msg, onAction }) {
         {isAction && msg.status === 'confirmed' && (
           <View style={styles.statusPill}>
             <Ionicons name="checkmark-circle" size={s(13)} color="#10b981" />
-            <Text style={[styles.statusText, { color: '#10b981' }]}>Logged</Text>
+            <Text style={[styles.statusText, { color: '#10b981' }]}>{TL ? 'Na-log' : 'Logged'}</Text>
           </View>
         )}
 
         {isAction && msg.status === 'cancelled' && (
           <View style={styles.statusPill}>
             <Ionicons name="close-circle" size={s(13)} color={Colors.grayMedium} />
-            <Text style={[styles.statusText, { color: Colors.grayMedium }]}>Cancelled</Text>
+            <Text style={[styles.statusText, { color: Colors.grayMedium }]}>{TL ? 'Kinansela' : 'Cancelled'}</Text>
           </View>
         )}
       </View>
@@ -140,35 +142,55 @@ export default function AIAssistantScreen({ navigation }) {
   const [pendingContext, setPendingContext] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
   const [quickChips, setQuickChips] = useState(DEFAULT_CHIPS);
+  const [lang, setLang] = useState('en');
 
-  // Build quick chips from the user's actual trips
+  // Load saved language preference
   useEffect(() => {
-    getTrips().then(trips => {
-      if (!trips || trips.length === 0) return; // keep defaults
-      const chips = [];
-      // Trip-specific chips first (up to 3 trips)
-      trips.slice(0, 3).forEach(tr => {
-        chips.push(`What to do in ${tr.destination}?`);
-        chips.push(`Packing list for ${tr.name}`);
-      });
-      // Always-useful general chips
-      chips.push("How's my budget?");
-      chips.push('Show my trips');
-      chips.push('Spent ₱200 on food');
-      chips.push('How do I ride a jeepney?');
-      setQuickChips(chips);
+    getSetting('assistant_lang', 'en').then(val => {
+      if (val === 'tl' || val === 'en') setLang(val);
     });
   }, []);
+
+  // Rebuild quick chips whenever trips or language changes
+  useEffect(() => {
+    getTrips().then(trips => {
+      const chips = [];
+      if (trips && trips.length > 0) {
+        trips.slice(0, 3).forEach(tr => {
+          chips.push(lang === 'tl'
+            ? `Ano ang gagawin sa ${tr.destination}?`
+            : `What to do in ${tr.destination}?`);
+          chips.push(lang === 'tl'
+            ? `Listahan ng dala para sa ${tr.name}`
+            : `Packing list for ${tr.name}`);
+        });
+      }
+      if (lang === 'tl') {
+        chips.push('Kumusta ang budget ko?');
+        chips.push('Ipakita ang aking mga trips');
+        chips.push('Nagastos ng ₱200 sa pagkain');
+        chips.push('Paano sumakay ng jeepney?');
+      } else {
+        chips.push("How's my budget?");
+        chips.push('Show my trips');
+        chips.push('Spent ₱200 on food');
+        chips.push('How do I ride a jeepney?');
+      }
+      if (chips.length > 0) setQuickChips(chips);
+    });
+  }, [lang]);
 
   const initialMessages = useMemo(() => [
     {
       id: '1',
       sender: 'bot',
       type: 'message',
-      text: `Kumusta, ${userName}! 😊\n\nI'm your Lakbay planning buddy. I know your trips, budget, packing lists, and all the Philippine destinations in this app — no internet needed.\n\nTry asking:\n• "What to do in Baguio?"\n• "Add sunscreen to packing list"\n• "Spent ₱350 on food"`,
+      text: lang === 'tl'
+        ? `Kumusta, ${userName}! 😊\n\nAko ang iyong Lakbay planning buddy. Alam ko ang iyong mga trips, budget, listahan ng dala, at lahat ng destinasyon sa Pilipinas — hindi kailangan ng internet.\n\nSubukan mong tanungin:\n• "Ano ang gagawin sa Baguio?"\n• "Dagdag sunscreen sa listahan ng dala"\n• "Nagastos ng ₱350 sa pagkain"`
+        : `Kumusta, ${userName}! 😊\n\nI'm your Lakbay planning buddy. I know your trips, budget, packing lists, and all the Philippine destinations in this app — no internet needed.\n\nTry asking:\n• "What to do in Baguio?"\n• "Add sunscreen to packing list"\n• "Spent ₱350 on food"`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
-  ], [userName]);
+  ], [userName, lang]);
 
   const [messages, setMessages] = useState(initialMessages);
 
@@ -187,6 +209,18 @@ export default function AIAssistantScreen({ navigation }) {
   const scrollToEnd = useCallback(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 80);
   }, []);
+
+  // ── Language toggle ─────────────────────────────────────────────────────────
+
+  const toggleLang = useCallback(async () => {
+    const next = lang === 'en' ? 'tl' : 'en';
+    setLang(next);
+    await setSetting('assistant_lang', next);
+    // Announce the switch in the new language
+    addBotMessage(next === 'tl'
+      ? 'Filipino mode! Sasagutin na kita sa Tagalog. 🇵🇭'
+      : 'English mode! I\'ll reply in English now. 🇬🇧');
+  }, [lang, addBotMessage]);
 
   // ── Send message ────────────────────────────────────────────────────────────
 
@@ -208,7 +242,7 @@ export default function AIAssistantScreen({ navigation }) {
     setIsThinking(true);
     scrollToEnd();
     const [result] = await Promise.all([
-      parseMessage(text, userName, pendingContext),
+      parseMessage(text, userName, pendingContext, lang),
       new Promise(res => setTimeout(res, 900)),
     ]);
     setIsThinking(false);
@@ -266,7 +300,7 @@ export default function AIAssistantScreen({ navigation }) {
     scrollToEnd();
 
     if (!confirmed) {
-      addBotMessage('No problem, nothing was logged! 👍');
+      addBotMessage(lang === 'tl' ? 'Sige lang, walang na-log! 👍' : 'No problem, nothing was logged! 👍');
       scrollToEnd();
       return;
     }
@@ -276,6 +310,8 @@ export default function AIAssistantScreen({ navigation }) {
     try {
       const { intent, data } = actionData;
 
+      const TL = lang === 'tl';
+
       if (intent === 'LOG_EXPENSE') {
         await addExpense({
           tripId:   '1',
@@ -284,37 +320,47 @@ export default function AIAssistantScreen({ navigation }) {
           note:     data.note || '',
           date:     new Date().toISOString().split('T')[0],
         });
-        addBotMessage(`✅ Done! ${fmt(data.amount)} for ${data.category} has been logged in your budget.`);
+        addBotMessage(TL
+          ? `✅ Tapos na! ${fmt(data.amount)} para sa ${data.category} ay na-log na sa iyong budget.`
+          : `✅ Done! ${fmt(data.amount)} for ${data.category} has been logged in your budget.`);
       }
 
       else if (intent === 'ADD_TO_BUDGET') {
         const budget = await getBudget('1');
         const newTotal = (budget?.total ?? 0) + data.amount;
         await updateBudgetTotal(newTotal);
-        addBotMessage(`✅ Budget updated! Added ${fmt(data.amount)}. Your new total is ${fmt(newTotal)}.`);
+        addBotMessage(TL
+          ? `✅ Na-update ang budget! Nadagdag ang ${fmt(data.amount)}. Ang bagong kabuuan ay ${fmt(newTotal)}.`
+          : `✅ Budget updated! Added ${fmt(data.amount)}. Your new total is ${fmt(newTotal)}.`);
       }
 
       else if (intent === 'SET_BUDGET') {
         await updateBudgetTotal(data.amount);
-        addBotMessage(`✅ Budget set to ${fmt(data.amount)}!`);
+        addBotMessage(TL
+          ? `✅ Na-set ang budget sa ${fmt(data.amount)}!`
+          : `✅ Budget set to ${fmt(data.amount)}!`);
       }
 
       else if (intent === 'CREATE_TRIP') {
         await createTrip(data);
-        addBotMessage(`✅ "${data.name}" created! Head to your Trips tab to start adding activities.`);
+        addBotMessage(TL
+          ? `✅ Nagawa na ang "${data.name}"! Pumunta sa Trips tab para magdagdag ng mga aktibidad.`
+          : `✅ "${data.name}" created! Head to your Trips tab to start adding activities.`);
       }
 
       else if (intent === 'ADD_PACKING_ITEM') {
         await addPackingItem(data.tripId, data.item);
-        addBotMessage(`✅ "${data.item}" added to the packing list for "${data.tripName}"!`);
+        addBotMessage(TL
+          ? `✅ Nadagdag ang "${data.item}" sa listahan ng dala para sa "${data.tripName}"!`
+          : `✅ "${data.item}" added to the packing list for "${data.tripName}"!`);
       }
 
     } catch (_) {
-      addBotMessage('Something went wrong. Please try again.');
+      addBotMessage(lang === 'tl' ? 'May nagkamali. Subukan muli.' : 'Something went wrong. Please try again.');
     }
 
     scrollToEnd();
-  }, [addBotMessage, scrollToEnd]);
+  }, [addBotMessage, scrollToEnd, lang]);
 
   // ── Render ──────────────────────────────────────────────────────────────────
 
@@ -333,8 +379,16 @@ export default function AIAssistantScreen({ navigation }) {
           </TouchableOpacity>
           <View style={styles.headerInfo}>
             <Text style={styles.headerTitle}>Lakbay Assistant ✦</Text>
-            <Text style={styles.headerSub}>Knows your trips, budget & destinations</Text>
+            <Text style={styles.headerSub}>
+              {lang === 'tl' ? 'May alam sa trips, budget at destinasyon' : 'Knows your trips, budget & destinations'}
+            </Text>
           </View>
+          {/* Language toggle pill */}
+          <TouchableOpacity style={styles.langToggle} onPress={toggleLang} activeOpacity={0.8}>
+            <Text style={[styles.langOption, lang === 'en' && styles.langOptionActive]}>EN</Text>
+            <Text style={styles.langDivider}>|</Text>
+            <Text style={[styles.langOption, lang === 'tl' && styles.langOptionActive]}>FIL</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Messages */}
@@ -346,7 +400,7 @@ export default function AIAssistantScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           {messages.map((msg) => (
-            <Message key={msg.id} msg={msg} onAction={handleAction} />
+            <Message key={msg.id} msg={msg} onAction={handleAction} lang={lang} />
           ))}
           {isThinking && <TypingIndicator />}
         </ScrollView>
@@ -374,13 +428,15 @@ export default function AIAssistantScreen({ navigation }) {
         <View style={[styles.inputRow, { paddingBottom: insets.bottom + s(8) }]}>
           {pendingContext && (
             <TouchableOpacity style={styles.contextBadge} onPress={() => setPendingContext(null)}>
-              <Text style={styles.contextBadgeText}>Waiting for reply  ✕</Text>
+              <Text style={styles.contextBadgeText}>
+                {lang === 'tl' ? 'Naghihintay ng sagot  ✕' : 'Waiting for reply  ✕'}
+              </Text>
             </TouchableOpacity>
           )}
           <View style={styles.inputInner}>
             <TextInput
               style={styles.input}
-              placeholder="Ask anything or log an expense..."
+              placeholder={lang === 'tl' ? 'Magtanong o mag-log ng gastos...' : 'Ask anything or log an expense...'}
               placeholderTextColor={Colors.grayMedium}
               value={input}
               onChangeText={setInput}
@@ -415,6 +471,26 @@ const styles = StyleSheet.create({
   headerInfo: { flex: 1 },
   headerTitle: { color: Colors.white, fontSize: s(17), fontFamily: Fonts.bold },
   headerSub: { color: 'rgba(255,255,255,0.7)', fontSize: s(12), fontFamily: Fonts.regular },
+
+  // Language toggle pill
+  langToggle: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderRadius: s(20), paddingHorizontal: s(10), paddingVertical: s(5),
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
+  },
+  langOption: {
+    fontSize: s(12), fontFamily: Fonts.bold,
+    color: 'rgba(255,255,255,0.55)',
+  },
+  langOptionActive: {
+    color: Colors.white,
+  },
+  langDivider: {
+    fontSize: s(12), color: 'rgba(255,255,255,0.35)',
+    marginHorizontal: s(4),
+  },
+
   headerAvatar: {
     width: s(42), height: s(42), borderRadius: s(21),
     backgroundColor: 'rgba(255,255,255,0.2)',
