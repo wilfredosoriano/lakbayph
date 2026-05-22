@@ -77,6 +77,18 @@ function parseActivityTime(time = '') {
   };
 }
 
+function timeToMinutes(timeStr) {
+  if (!timeStr) return null;
+  const match = String(timeStr).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return null;
+  let hour = parseInt(match[1], 10);
+  const min  = parseInt(match[2], 10);
+  const period = match[3].toUpperCase();
+  if (period === 'PM' && hour !== 12) hour += 12;
+  if (period === 'AM' && hour === 12) hour = 0;
+  return hour * 60 + min;
+}
+
 function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSaved }) {
   const insets = useSafeAreaInsets();
   const [hour, setHour]       = useState('');
@@ -301,15 +313,18 @@ function AddActivityModal({ visible, tripId, day, activity = null, onClose, onSa
 
 const MAX_PHOTOS = 3;
 
-function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhotoUpdate, onNotesUpdate, onLocationUpdate, drag, isActive, dragEnabled }) {
+function ActivityCard({ activity, isLast, isPast, onEdit, onDelete, onToggleDone, onPhotoUpdate, onNotesUpdate, onLocationUpdate, drag, isActive, dragEnabled }) {
   const done = !!activity.done;
   const photos = (() => {
     try { return JSON.parse(activity.photo_uri || '[]'); } catch { return []; }
   })();
-  const [editingNotes, setEditingNotes] = useState(false);
-  const [notesText, setNotesText] = useState(activity.notes || '');
+  const [expanded,        setExpanded]        = useState(false);
+  const [editingNotes,    setEditingNotes]    = useState(false);
+  const [notesText,       setNotesText]       = useState(activity.notes || '');
   const [editingLocation, setEditingLocation] = useState(false);
-  const [locationText, setLocationText] = useState(activity.location || '');
+  const [locationText,    setLocationText]    = useState(activity.location || '');
+
+  const cat = CATEGORIES.find(c => c.key === activity.category) || CATEGORIES[CATEGORIES.length - 1];
 
   const handleAddPhoto = () => {
     Alert.alert('Add Photo', 'Choose a source', [
@@ -318,14 +333,9 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
         onPress: async () => {
           try {
             const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== 'granted') {
-              Alert.alert('Permission needed', 'Allow camera access to take photos.');
-              return;
-            }
+            if (status !== 'granted') { Alert.alert('Permission needed', 'Allow camera access to take photos.'); return; }
             const result = await ImagePicker.launchCameraAsync({ allowsEditing: false, quality: 0.85 });
-            if (!result.canceled && result.assets?.[0]?.uri) {
-              onPhotoUpdate([...photos, result.assets[0].uri]);
-            }
+            if (!result.canceled && result.assets?.[0]?.uri) onPhotoUpdate([...photos, result.assets[0].uri]);
           } catch (e) { Alert.alert('Error', e?.message || 'Could not open camera.'); }
         },
       },
@@ -334,14 +344,9 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
         onPress: async () => {
           try {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-              Alert.alert('Permission needed', 'Allow photo access to attach images.');
-              return;
-            }
+            if (status !== 'granted') { Alert.alert('Permission needed', 'Allow photo access to attach images.'); return; }
             const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: false, quality: 0.85 });
-            if (!result.canceled && result.assets?.[0]?.uri) {
-              onPhotoUpdate([...photos, result.assets[0].uri]);
-            }
+            if (!result.canceled && result.assets?.[0]?.uri) onPhotoUpdate([...photos, result.assets[0].uri]);
           } catch (e) { Alert.alert('Error', e?.message || 'Could not open gallery.'); }
         },
       },
@@ -352,100 +357,70 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
   const handleRemovePhoto = (index) => {
     Alert.alert('Remove Photo', 'Remove this photo?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => {
-        const updated = photos.filter((_, i) => i !== index);
-        onPhotoUpdate(updated);
-      }},
+      { text: 'Remove', style: 'destructive', onPress: () => onPhotoUpdate(photos.filter((_, i) => i !== index)) },
     ]);
   };
 
   const cardContent = (
     <View style={[styles.activityRow, isActive && styles.activityRowActive]}>
-      <View style={styles.timeCol}>
-        <Text style={[styles.timeText, done && styles.timeTextDone]}>{activity.time.replace(' ', '\n')}</Text>
-      </View>
-      <View style={styles.timelineCol}>
-        <View style={[styles.dot, done && styles.dotDone]} />
-        {!isLast && <View style={styles.line} />}
-      </View>
-      <View style={[styles.card, done && styles.cardDone, isActive && styles.cardDragging]}>
-        {/* Row 1: edit / delete / drag handle */}
-        <View style={styles.cardActionRow}>
-          <TouchableOpacity style={styles.editChip} onPress={onEdit} activeOpacity={0.7}>
-            <Ionicons name="create-outline" size={s(11)} color={Colors.primary} />
-            <Text style={styles.editChipText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.deleteChip}
-            onPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Delete', style: 'destructive', onPress: onDelete },
-            ])}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="trash-outline" size={s(11)} color="#b91c1c" />
-            <Text style={styles.deleteChipText}>Delete</Text>
-          </TouchableOpacity>
-          <View style={{ flex: 1 }} />
-          <TouchableOpacity
-            onLongPress={dragEnabled ? drag : undefined}
-            delayLongPress={150}
-            style={[styles.dragHandle, isActive && styles.dragHandleActive, !dragEnabled && styles.dragHandleDisabled]}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            disabled={!dragEnabled}
-          >
-            <Ionicons name="menu-outline" size={s(18)} color={isActive ? '#ef4444' : Colors.grayMedium} />
-          </TouchableOpacity>
-        </View>
 
-        {/* Row 2: mark done */}
-        <TouchableOpacity onPress={onToggleDone} style={[styles.doneBtn, done && styles.doneBtnActive]} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-          {done ? (
-            <View style={styles.doneCircleFilled}>
-              <Ionicons name="checkmark" size={s(7)} color={Colors.white} />
+      {/* ── Time column ── */}
+      <View style={styles.timeCol}>
+        <Text style={[styles.timeText, isPast && styles.timeTextActive]}>
+          {activity.time.replace(' ', '\n')}
+        </Text>
+      </View>
+
+      {/* ── Timeline column ── */}
+      <View style={styles.timelineCol}>
+        <View style={[styles.dot, isPast && styles.dotActive]} />
+        {!isLast && <View style={[styles.line, isPast && styles.lineActive]} />}
+      </View>
+
+      {/* ── Card ── */}
+      <View style={[styles.card, done && styles.cardDone, isActive && styles.cardDragging]}>
+
+        {/* Collapsed header — always visible, tap to expand */}
+        <TouchableOpacity style={styles.cardHeader} onPress={() => setExpanded(e => !e)} activeOpacity={0.75}>
+          <View style={[styles.cardIconBox, isPast && styles.cardIconBoxActive]}>
+            <Ionicons name={cat.icon} size={s(18)} color={isPast ? Colors.white : Colors.primary} />
+          </View>
+          <View style={styles.cardHeaderInfo}>
+            <Text style={[styles.cardTitle, done && styles.cardTitleDone]} numberOfLines={1}>
+              {activity.title}
+            </Text>
+            <View style={styles.locationPill}>
+              <Ionicons name="location-outline" size={s(10)} color={locationText ? Colors.primary : Colors.grayMedium} />
+              <Text style={[styles.locationPillText, !locationText && styles.locationPillPlaceholder]} numberOfLines={1}>
+                {locationText || 'No location set'}
+              </Text>
             </View>
-          ) : (
-            <View style={styles.doneCircleEmpty} />
+          </View>
+          {dragEnabled && (
+            <TouchableOpacity
+              onLongPress={drag}
+              delayLongPress={150}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              style={styles.dragHandle}
+            >
+              <Ionicons name="reorder-two-outline" size={s(18)} color={Colors.grayMedium} />
+            </TouchableOpacity>
           )}
-          <Text style={[styles.doneBtnLabel, done && styles.doneBtnLabelActive]}>
-            {done ? 'Done' : 'Mark done'}
-          </Text>
+          <Ionicons
+            name={expanded ? 'chevron-up' : 'chevron-forward'}
+            size={s(16)}
+            color={expanded ? Colors.primary : Colors.grayMedium}
+          />
         </TouchableOpacity>
 
-        <View style={styles.cardTopRow}>
-          <ActivityIconView category={activity.category} />
-          <View style={styles.cardBody}>
-            <Text style={[styles.cardTitle, done && styles.cardTitleDone]}>{activity.title}</Text>
-            {!!activity.subtitle && <Text style={[styles.cardSub, done && styles.cardSubDone]}>{activity.subtitle}</Text>}
-          </View>
-        </View>
-
-        <View style={styles.cardBottomContainer}>
-          {/* Photo row */}
-          <View style={styles.photoRow}>
-            {photos.map((uri, i) => (
-              <TouchableOpacity key={i} onLongPress={() => handleRemovePhoto(i)} activeOpacity={0.85}>
-                <Image source={{ uri }} style={styles.photoThumb} resizeMode="cover" />
-              </TouchableOpacity>
-            ))}
-            {photos.length < MAX_PHOTOS && (
-              <Pressable style={styles.photoPlaceholder} onPress={handleAddPhoto}>
-                <Ionicons name="camera-outline" size={s(16)} color={Colors.grayMedium} />
-                <Text style={styles.photoPlaceholderText}>Add photo</Text>
-              </Pressable>
+        {/* Expanded details */}
+        {expanded && (
+          <View style={styles.cardExpanded}>
+            {!!activity.subtitle && (
+              <Text style={[styles.cardSub, done && styles.cardSubDone]}>{activity.subtitle}</Text>
             )}
-          </View>
 
-          <View style={styles.cardFooter}>
-            <TouchableOpacity
-              onPress={() => { setNotesText(activity.notes || ''); setEditingNotes(true); }}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.notesRowText, !notesText && styles.notesRowPlaceholder]} numberOfLines={2}>
-                {notesText || 'Add a note…'}
-              </Text>
-            </TouchableOpacity>
-
+            {/* Location */}
             <TouchableOpacity
               style={[styles.locationLabel, locationText && styles.locationLabelFilled]}
               onPress={() => { setLocationText(activity.location || ''); setEditingLocation(true); }}
@@ -456,8 +431,57 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
                 {locationText || 'Add location'}
               </Text>
             </TouchableOpacity>
+
+            {/* Notes */}
+            <TouchableOpacity
+              onPress={() => { setNotesText(activity.notes || ''); setEditingNotes(true); }}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.notesRowText, !notesText && styles.notesRowPlaceholder]} numberOfLines={3}>
+                {notesText || 'Add a note…'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Photos */}
+            <View style={styles.photoRow}>
+              {photos.map((uri, i) => (
+                <TouchableOpacity key={i} onLongPress={() => handleRemovePhoto(i)} activeOpacity={0.85}>
+                  <Image source={{ uri }} style={styles.photoThumb} resizeMode="cover" />
+                </TouchableOpacity>
+              ))}
+              {photos.length < MAX_PHOTOS && (
+                <Pressable style={styles.photoPlaceholder} onPress={handleAddPhoto}>
+                  <Ionicons name="camera-outline" size={s(16)} color={Colors.grayMedium} />
+                  <Text style={styles.photoPlaceholderText}>Add photo</Text>
+                </Pressable>
+              )}
+            </View>
+
+            {/* Action row */}
+            <View style={styles.expandedActionRow}>
+              <TouchableOpacity onPress={onToggleDone} style={[styles.doneChip, done && styles.doneChipActive]} activeOpacity={0.7}>
+                <Ionicons name={done ? 'checkmark-circle' : 'ellipse-outline'} size={s(12)} color={done ? Colors.white : Colors.grayMedium} />
+                <Text style={[styles.doneChipText, done && styles.doneChipTextActive]}>{done ? 'Done' : 'Mark done'}</Text>
+              </TouchableOpacity>
+              <View style={{ flex: 1 }} />
+              <TouchableOpacity style={styles.editChip} onPress={onEdit} activeOpacity={0.7}>
+                <Ionicons name="create-outline" size={s(11)} color={Colors.primary} />
+                <Text style={styles.editChipText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteChip}
+                onPress={() => Alert.alert('Delete Activity', `Delete "${activity.title}"?`, [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Delete', style: 'destructive', onPress: onDelete },
+                ])}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="trash-outline" size={s(11)} color="#b91c1c" />
+                <Text style={styles.deleteChipText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
       </View>
     </View>
   );
@@ -466,64 +490,55 @@ function ActivityCard({ activity, isLast, onEdit, onDelete, onToggleDone, onPhot
     <>
       {dragEnabled && ScaleDecorator ? <ScaleDecorator activeScale={1.02}>{cardContent}</ScaleDecorator> : cardContent}
 
-        {/* Notes edit modal */}
-        <Modal visible={editingNotes} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingNotes(false)}>
-          <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingNotes(false)}>
-            <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
-              <Text style={styles.notesModalTitle}>Notes</Text>
-              <TextInput
-                style={styles.notesModalInput}
-                value={notesText}
-                onChangeText={setNotesText}
-                placeholder="e.g. Bring printed tickets, confirm booking ahead"
-                placeholderTextColor={Colors.grayMedium}
-                multiline
-                autoFocus
-                maxLength={300}
-              />
-              <View style={styles.notesModalActions}>
-                <TouchableOpacity onPress={() => setEditingNotes(false)} style={styles.notesCancelBtn}>
-                  <Text style={styles.notesCancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.notesSaveBtn}
-                  onPress={() => { onNotesUpdate(notesText.trim()); setEditingNotes(false); }}
-                >
-                  <Text style={styles.notesSaveText}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+      {/* Notes modal */}
+      <Modal visible={editingNotes} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingNotes(false)}>
+        <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingNotes(false)}>
+          <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
+            <Text style={styles.notesModalTitle}>Notes</Text>
+            <TextInput
+              style={styles.notesModalInput}
+              value={notesText}
+              onChangeText={setNotesText}
+              placeholder="e.g. Bring printed tickets, confirm booking ahead"
+              placeholderTextColor={Colors.grayMedium}
+              multiline autoFocus maxLength={300}
+            />
+            <View style={styles.notesModalActions}>
+              <TouchableOpacity onPress={() => setEditingNotes(false)} style={styles.notesCancelBtn}>
+                <Text style={styles.notesCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.notesSaveBtn} onPress={() => { onNotesUpdate(notesText.trim()); setEditingNotes(false); }}>
+                <Text style={styles.notesSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
-        </Modal>
+        </TouchableOpacity>
+      </Modal>
 
-        {/* Location edit modal */}
-        <Modal visible={editingLocation} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingLocation(false)}>
-          <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingLocation(false)}>
-            <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
-              <Text style={styles.notesModalTitle}>Location</Text>
-              <TextInput
-                style={[styles.notesModalInput, styles.locationModalInput]}
-                value={locationText}
-                onChangeText={setLocationText}
-                placeholder="e.g. Coron Town Port, Palawan"
-                placeholderTextColor={Colors.grayMedium}
-                autoFocus
-                maxLength={120}
-              />
-              <View style={styles.notesModalActions}>
-                <TouchableOpacity onPress={() => setEditingLocation(false)} style={styles.notesCancelBtn}>
-                  <Text style={styles.notesCancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.notesSaveBtn}
-                  onPress={() => { onLocationUpdate(locationText.trim()); setEditingLocation(false); }}
-                >
-                  <Text style={styles.notesSaveText}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+      {/* Location modal */}
+      <Modal visible={editingLocation} animationType="fade" transparent statusBarTranslucent onRequestClose={() => setEditingLocation(false)}>
+        <TouchableOpacity style={styles.notesOverlay} activeOpacity={1} onPress={() => setEditingLocation(false)}>
+          <TouchableOpacity activeOpacity={1} style={styles.notesModal} onPress={() => {}}>
+            <Text style={styles.notesModalTitle}>Location</Text>
+            <TextInput
+              style={[styles.notesModalInput, styles.locationModalInput]}
+              value={locationText}
+              onChangeText={setLocationText}
+              placeholder="e.g. Coron Town Port, Palawan"
+              placeholderTextColor={Colors.grayMedium}
+              autoFocus maxLength={120}
+            />
+            <View style={styles.notesModalActions}>
+              <TouchableOpacity onPress={() => setEditingLocation(false)} style={styles.notesCancelBtn}>
+                <Text style={styles.notesCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.notesSaveBtn} onPress={() => { onLocationUpdate(locationText.trim()); setEditingLocation(false); }}>
+                <Text style={styles.notesSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
-        </Modal>
+        </TouchableOpacity>
+      </Modal>
     </>
   );
 }
@@ -660,6 +675,10 @@ export default function TripDetailsScreen({ navigation, route }) {
   const [editingActivity, setEditingActivity] = useState(null);
   const [memoryHeroIndex, setMemoryHeroIndex] = useState(0);
   const [memoryAutoPlay, setMemoryAutoPlay] = useState(true);
+  const [currentMinutes, setCurrentMinutes] = useState(() => {
+    const now = new Date();
+    return now.getHours() * 60 + now.getMinutes();
+  });
 
   const days = trip?.days || 1;
   const dayNumbers = Array.from({ length: days }, (_, i) => i + 1);
@@ -748,7 +767,11 @@ export default function TripDetailsScreen({ navigation, route }) {
     setEditingDayLabel(false);
   };
 
-  useFocusEffect(useCallback(() => { loadActivities(); loadDayLabel(); loadAllActivities(); loadPackingItems(); }, [loadActivities, loadDayLabel, loadAllActivities, loadPackingItems]));
+  useFocusEffect(useCallback(() => {
+    const now = new Date();
+    setCurrentMinutes(now.getHours() * 60 + now.getMinutes());
+    loadActivities(); loadDayLabel(); loadAllActivities(); loadPackingItems();
+  }, [loadActivities, loadDayLabel, loadAllActivities, loadPackingItems]));
 
   const handleDeleteActivity = async (id) => {
     await deleteTripActivity(id);
@@ -789,6 +812,15 @@ export default function TripDetailsScreen({ navigation, route }) {
     loadActivities();
     loadAllActivities();
   };
+
+  // Update current time every 10 seconds so timeline colors stay accurate
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentMinutes(now.getHours() * 60 + now.getMinutes());
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (allPhotos.length === 0) {
@@ -956,6 +988,7 @@ export default function TripDetailsScreen({ navigation, route }) {
                   key={activity.id}
                   activity={activity}
                   isLast={i === activities.length - 1}
+                  isPast={(() => { const m = timeToMinutes(activity.time); return m !== null && currentMinutes >= m; })()}
                   onEdit={() => setEditingActivity(activity)}
                   onDelete={() => handleDeleteActivity(activity.id)}
                   onToggleDone={() => handleToggleDone(activity)}
@@ -975,6 +1008,7 @@ export default function TripDetailsScreen({ navigation, route }) {
                 <ActivityCard
                   activity={item}
                   isLast={(getIndex?.() ?? 0) === activities.length - 1}
+                  isPast={(() => { const m = timeToMinutes(item.time); return m !== null && currentMinutes >= m; })()}
                   onEdit={() => setEditingActivity(item)}
                   onDelete={() => handleDeleteActivity(item.id)}
                   onToggleDone={() => handleToggleDone(item)}
@@ -1282,90 +1316,66 @@ const styles = StyleSheet.create({
   scrollContent: {},
   activitiesDraggableList: { flex: 1 },
   activitiesList: { paddingHorizontal: s(16), paddingTop: s(16) },
-  activityRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: s(6) },
+  activityRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: s(8) },
   activityRowActive: { zIndex: 2 },
-  timeCol: { width: s(52), paddingTop: s(10) },
+  timeCol: { width: s(52), paddingTop: s(12) },
   timeText: { fontSize: s(10), fontFamily: Fonts.medium, color: Colors.textSecondary, lineHeight: s(14) },
-  timelineCol: { width: s(20), alignItems: 'center', paddingTop: s(13) },
-  dot: { width: s(10), height: s(10), borderRadius: s(5), backgroundColor: Colors.primary, marginBottom: s(3) },
-  line: { width: s(2), flex: 1, minHeight: s(60), backgroundColor: Colors.border },
-  card: {
-    flex: 1, flexDirection: 'column',
-    backgroundColor: Colors.white, borderRadius: s(14),
-    marginLeft: s(10), padding: s(10), paddingBottom: s(12),
-    shadowColor: '#000', shadowOffset: { width: 0, height: s(2) },
-    shadowOpacity: 0.06, shadowRadius: s(6), elevation: 2,
+  timeTextActive: { color: Colors.primary, fontFamily: Fonts.bold },
+  timelineCol: { width: s(20), alignItems: 'center', paddingTop: s(14) },
+  dot: {
+    width: s(12), height: s(12), borderRadius: s(6),
+    backgroundColor: Colors.white,
+    borderWidth: 2, borderColor: Colors.border,
   },
-  cardTopRow: {
+  dotActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  line: {
+    width: s(2), flex: 1, minHeight: s(50),
+    backgroundColor: Colors.border,
+    marginBottom: -(s(8) + s(14)), // bridge activityRow gap + next timelineCol paddingTop
+  },
+  lineActive: { backgroundColor: Colors.primary },
+  card: {
+    flex: 1,
+    backgroundColor: Colors.white, borderRadius: s(14),
+    marginLeft: s(10), paddingHorizontal: s(12), paddingVertical: s(10),
+    shadowColor: '#000', shadowOffset: { width: 0, height: s(1) },
+    shadowOpacity: 0.05, shadowRadius: s(4), elevation: 2,
+  },
+  cardHeader: {
     flexDirection: 'row', alignItems: 'center', gap: s(10),
   },
+  cardHeaderInfo: { flex: 1, minWidth: 0 },
   cardIconBox: {
-    width: s(44), height: s(44), borderRadius: s(10),
+    width: s(38), height: s(38), borderRadius: s(10),
     backgroundColor: Colors.primaryBg, alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-
-  cardBody: { flex: 1 },
-  photoBadge: {
-    flexDirection: 'row', alignItems: 'center', gap: s(3),
-    backgroundColor: Colors.primaryBg, borderRadius: s(8),
-    paddingHorizontal: s(6), paddingVertical: s(3),
+  cardIconBoxActive: { backgroundColor: Colors.primary },
+  locationPill: { flexDirection: 'row', alignItems: 'center', gap: s(3), marginTop: s(3) },
+  locationPillText: { fontSize: s(10), fontFamily: Fonts.medium, color: Colors.primary, flexShrink: 1 },
+  locationPillPlaceholder: { color: Colors.grayMedium, fontFamily: Fonts.regular },
+  cardExpanded: {
+    borderTopWidth: 1, borderTopColor: Colors.border,
+    paddingTop: s(10), marginTop: s(8), gap: s(8),
   },
-  photoBadgeText: { fontSize: s(10), fontFamily: Fonts.bold, color: Colors.primary },
+  expandedActionRow: { flexDirection: 'row', alignItems: 'center', gap: s(6), marginTop: s(2) },
+  doneChip: {
+    alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: s(4),
+    paddingHorizontal: s(8), paddingVertical: s(3),
+    borderRadius: s(20), borderWidth: 1, borderColor: Colors.border,
+    backgroundColor: Colors.bgLight,
+  },
+  doneChipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  doneChipText: { fontSize: s(10), fontFamily: Fonts.bold, color: Colors.grayMedium },
+  doneChipTextActive: { color: Colors.white },
   cardTitle: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.textPrimary },
   cardTitleDone: { color: Colors.textTertiary, textDecorationLine: 'line-through' },
-  cardSub: { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textSecondary, marginTop: s(2) },
+  cardSub: { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textSecondary },
   cardSubDone: { color: Colors.textTertiary },
-  cardDone: { opacity: 0.7 },
-  cardDragging: {
-    shadowOpacity: 0.12,
-    shadowRadius: s(10),
-    elevation: 6,
-  },
-  dragHandle: {
-    paddingLeft: s(6),
-    paddingVertical: s(6),
-    alignSelf: 'flex-start',
-  },
-  dragHandleActive: { opacity: 1 },
-  dragHandleDisabled: { opacity: 0.35 },
-  timeTextDone: { color: Colors.textTertiary },
-  dotDone: { backgroundColor: Colors.textTertiary },
-  doneBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: s(3),
-    paddingHorizontal: s(6), paddingVertical: s(2),
-    borderRadius: s(20), alignSelf: 'flex-start',
-    backgroundColor: Colors.bgLight,
-    borderWidth: 1, borderColor: Colors.border,
-    transform: [{ skewX: '-8deg' }],
-    marginBottom: s(6),
-  },
-  doneBtnActive: {
-    backgroundColor: Colors.primaryBg,
-    borderColor: Colors.primary,
-  },
-  doneBtnLabel: { fontSize: s(9), fontFamily: Fonts.bold, color: Colors.grayMedium, transform: [{ skewX: '8deg' }] },
-  doneBtnLabelActive: { color: Colors.primary },
-  doneCircleEmpty: {
-    width: s(11), height: s(11), borderRadius: s(6),
-    borderWidth: 1.5, borderColor: '#C7C7CC',
-    transform: [{ skewX: '8deg' }],
-  },
-  doneCircleFilled: {
-    width: s(11), height: s(11), borderRadius: s(6),
-    backgroundColor: Colors.primary,
-    alignItems: 'center', justifyContent: 'center',
-    transform: [{ skewX: '8deg' }],
-  },
-  cardBottomContainer: {
-    marginTop: s(10),
-    backgroundColor: Colors.primaryBg,
-    borderRadius: s(10),
-    padding: s(10),
-    gap: s(0),
-  },
-  photoRow: {
-    flexDirection: 'row', gap: s(6),
-  },
+  cardDone: { opacity: 0.65 },
+  cardDragging: { shadowOpacity: 0.12, shadowRadius: s(10), elevation: 6 },
+  dragHandle: { paddingHorizontal: s(4), paddingVertical: s(4) },
+  photoRow: { flexDirection: 'row', gap: s(6) },
   photoThumb: {
     width: PHOTO_SIZE, height: PHOTO_SIZE,
     borderRadius: s(8),
@@ -1500,22 +1510,6 @@ const styles = StyleSheet.create({
     paddingVertical: s(14), alignItems: 'center', marginTop: s(4),
   },
   saveBtnText: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.white },
-  cardFooter: {
-    marginTop: s(8),
-    gap: s(6),
-    paddingBottom: s(2),
-  },
-  cardActionRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    gap: s(4), marginBottom: s(6),
-  },
-  cardMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: s(8),
-  },
-  cardMetaLeft: { flex: 1, alignItems: 'flex-start' },
   notesRow: {
     flexDirection: 'row', alignItems: 'flex-start', gap: s(6),
   },
