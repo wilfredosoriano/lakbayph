@@ -125,6 +125,32 @@ export async function initDB() {
     );
   `);
 
+  // Migrate: create cached_places table (for gist-based auto-updates)
+  await db.execAsync(`
+    CREATE TABLE IF NOT EXISTS cached_places (
+      id            TEXT PRIMARY KEY NOT NULL,
+      destination   TEXT NOT NULL,
+      name          TEXT NOT NULL,
+      category      TEXT NOT NULL DEFAULT 'landmark',
+      description   TEXT,
+      must_visit    INTEGER NOT NULL DEFAULT 0,
+      entrance_fee  REAL    NOT NULL DEFAULT 0,
+      visit_length  TEXT,
+      best_time     TEXT,
+      how_to_get    TEXT,
+      itinerary_tip TEXT,
+      location      TEXT,
+      coordinates   TEXT,
+      travel        TEXT,
+      updated_at    TEXT NOT NULL
+    );
+  `);
+
+  // Migrate: add location column to cached_places if it doesn't exist
+  try {
+    await db.execAsync(`ALTER TABLE cached_places ADD COLUMN location TEXT`);
+  } catch (_) { /* column already exists */ }
+
   // Seed a default budget if none exists
   const existing = await db.getFirstAsync(
     `SELECT id FROM budgets WHERE trip_id = '1' LIMIT 1`
@@ -478,6 +504,107 @@ export async function setDayLabel(tripId, day, label) {
      ON CONFLICT(trip_id, day) DO UPDATE SET label = excluded.label`,
     [tripId, day, label]
   );
+}
+
+// ── Cached Places (synced from GitHub Gist) ──────────────────────────────────
+
+/**
+ * Upsert places received from the remote gist into local SQLite.
+ * Only adds new places (won't override manually curated static data).
+ * Returns the count of brand-new places inserted.
+ */
+export async function upsertCachedPlaces(places) {
+  const d = await initDB();
+  const now = new Date().toISOString();
+  let newCount = 0;
+  for (const p of places) {
+    const existing = await d.getFirstAsync(
+      `SELECT id FROM cached_places WHERE id = ?`, [p.id]
+    );
+    if (!existing) newCount++;
+    await d.runAsync(
+      `INSERT INTO cached_places
+         (id, destination, name, category, description, must_visit, entrance_fee,
+          visit_length, best_time, how_to_get, itinerary_tip, location, coordinates, travel, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(id) DO UPDATE SET
+         name          = excluded.name,
+         category      = excluded.category,
+         description   = excluded.description,
+         must_visit    = excluded.must_visit,
+         entrance_fee  = excluded.entrance_fee,
+         visit_length  = excluded.visit_length,
+         best_time     = excluded.best_time,
+         how_to_get    = excluded.how_to_get,
+         itinerary_tip = excluded.itinerary_tip,
+         location      = excluded.location,
+         coordinates   = excluded.coordinates,
+         travel        = excluded.travel,
+         updated_at    = excluded.updated_at`,
+      [
+        p.id,
+        p.destination,
+        p.name,
+        p.category || 'landmark',
+        p.description || '',
+        p.mustVisit ? 1 : 0,
+        p.entranceFee ?? 0,
+        p.visitLength ?? null,
+        p.bestTimeToVisit ?? null,
+        p.howToGetThere ?? null,
+        p.itineraryTip ?? null,
+        p.location ?? null,
+        p.coordinates ? JSON.stringify(p.coordinates) : null,
+        p.travel ? JSON.stringify(p.travel) : null,
+        now,
+      ]
+    );
+  }
+  return newCount;
+}
+
+/**
+ * Read all cached places for a destination key (e.g. "Baguio").
+ * Returns them in the same shape as PLACES_BY_DESTINATION entries.
+ */
+export async function getCachedPlaces(destination) {
+  const d = await initDB();
+  const rows = await d.getAllAsync(
+    `SELECT * FROM cached_places WHERE destination = ?
+     ORDER BY must_visit DESC, name ASC`,
+    [destination]
+  );
+  return rows.map(r => ({
+    id:              r.id,
+    name:            r.name,
+    category:        r.category,
+    description:     r.description || '',
+    mustVisit:       r.must_visit === 1,
+    entranceFee:     r.entrance_fee,
+    visitLength:     r.visit_length  || null,
+    bestTimeToVisit: r.best_time     || null,
+    howToGetThere:   r.how_to_get    || null,
+    itineraryTip:    r.itinerary_tip || null,
+    location:        r.location      || null,
+    coordinates:     r.coordinates   ? JSON.parse(r.coordinates) : [0, 0],
+    travel:          r.travel        ? JSON.parse(r.travel)      : {},
+  }));
+}
+
+/**
+ * Returns all unique destinations stored in cached_places,
+ * with their place count. Used by DestinationsScreen to build
+ * the destination browser.
+ */
+export async function getCachedDestinations() {
+  const d = await initDB();
+  const rows = await d.getAllAsync(
+    `SELECT destination, COUNT(*) as count
+     FROM cached_places
+     GROUP BY destination
+     ORDER BY destination ASC`
+  );
+  return rows.map(r => ({ destination: r.destination, count: r.count }));
 }
 
 // Category colours & icons (used in breakdown)

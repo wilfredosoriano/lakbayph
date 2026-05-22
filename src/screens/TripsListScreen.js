@@ -9,7 +9,9 @@ import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { getTrips, deleteTrip, updateTrip, updateTripCoverPhoto, duplicateTrip } from '../database/db';
+import { usePremium } from '../context/PremiumContext';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
@@ -26,6 +28,8 @@ const EMOJIS = [
 
 function EditTripModal({ visible, trip, onClose, onSaved }) {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const { isPremium } = usePremium();
   const [name, setName] = useState('');
   const [destination, setDestination] = useState('');
   const [emoji, setEmoji]           = useState('✈️');
@@ -43,6 +47,19 @@ function EditTripModal({ visible, trip, onClose, onSaved }) {
   }, [trip]);
 
   const handlePickCoverPhoto = () => {
+    // ── Premium gate ──────────────────────────────────────────────────────────
+    if (!isPremium) {
+      Alert.alert(
+        '✦ Premium Feature',
+        'Trip cover photos are available to Premium members. Upgrade once for ₱199 and unlock everything!',
+        [
+          { text: 'Not now', style: 'cancel' },
+          { text: 'Upgrade', onPress: () => { onClose(); navigation.navigate('Premium'); } },
+        ],
+      );
+      return;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
     Alert.alert('Cover Photo', 'Choose a source', [
       {
         text: 'Camera',
@@ -389,9 +406,10 @@ export default function TripsListScreen({ navigation }) {
   };
 
   const FREE_TRIP_LIMIT = 3;
+  const { isPremium } = usePremium();
 
   const handleAddTrip = () => {
-    if (trips.length >= FREE_TRIP_LIMIT) {
+    if (!isPremium && trips.length >= FREE_TRIP_LIMIT) {
       navigation.navigate('Premium');
       return;
     }
@@ -410,7 +428,7 @@ export default function TripsListScreen({ navigation }) {
               <Text style={styles.headerPillText}>
                 {trips.length} trip{trips.length !== 1 ? 's' : ''} planned
               </Text>
-              {trips.length < FREE_TRIP_LIMIT && (
+              {!isPremium && trips.length < FREE_TRIP_LIMIT && (
                 <Text style={styles.headerPillSub}>
                   {FREE_TRIP_LIMIT - trips.length} free slot{FREE_TRIP_LIMIT - trips.length !== 1 ? 's' : ''} left
                 </Text>

@@ -2,23 +2,21 @@
 /**
  * scripts/fetchPlacesData.js
  *
- * Fetches Philippine tourist attraction data using Google Places API (New).
- * Outputs: scripts/output/rawPlacesData.json
+ * Fetches ALL Philippine tourist attractions from OpenStreetMap (Overpass API).
+ * No destinations are hardcoded — the script queries the entire Philippines and
+ * groups results by whatever city/municipality each place is tagged with in OSM.
  *
- * ── Setup ────────────────────────────────────────────────────────────────────
- * 1. Go to https://console.cloud.google.com
- * 2. Create a project (or use an existing one)
- * 3. Enable "Places API (New)"
- * 4. APIs & Services → Credentials → Create API Key
- * 5. (Optional but safe) Set a $0 spending limit in Billing → Budgets & Alerts
- * 6. Run:
- *      GOOGLE_PLACES_KEY=your_key node scripts/fetchPlacesData.js
+ *  ✅ Free — no API key, no billing account
+ *  ✅ ODbL license — safe for permanent offline storage in published apps
+ *  ✅ Safe for App Store & Play Store
  *
- * ── Cost estimate ────────────────────────────────────────────────────────────
- * Nearby Search  → $0.032 per request  (1 request per destination = ~$0.30 total)
- * Place Details  → $0.017 per request  (1 per place fetched)
- * Photo          → $0.007 per photo
- * Google gives $200 free credit/month → this script costs < $1 total.
+ * Output: scripts/output/places.json  (gist-ready format)
+ *
+ * ── Run ──────────────────────────────────────────────────────────────────────
+ *   node scripts/fetchPlacesData.js
+ *
+ * ── Attribution (required by ODbL) ──────────────────────────────────────────
+ *   Add "© OpenStreetMap contributors" somewhere in your app's About screen.
  *
  * Requires Node 18+.
  */
@@ -26,269 +24,289 @@
 const fs   = require('fs');
 const path = require('path');
 
-// ── Config ────────────────────────────────────────────────────────────────────
+const OUT_PATH = path.join(__dirname, 'output', 'places.json');
 
-const API_KEY = process.env.GOOGLE_PLACES_KEY || 'YOUR_KEY_HERE';
-const OUT_PATH = path.join(__dirname, 'output', 'rawPlacesData.json');
-
-// Max photo width stored as URL (no extra cost — photo URLs are free to store,
-// you only pay when the app loads them)
-const PHOTO_MAX_WIDTH = 800;
-
-// Place types to search per destination
-// https://developers.google.com/maps/documentation/places/web-service/place-types
-const SEARCH_TYPES = [
-  'tourist_attraction',
-  'natural_feature',
-  'park',
-  'museum',
-  'zoo',
-  'aquarium',
-  'beach',
-  'restaurant',
-  'market',
+// Public Overpass API mirrors — tries each in order if one is busy
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://lz4.overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
 ];
 
-// Google place type → your app's category
-const TYPE_TO_CATEGORY = {
-  beach:              'beach',
-  natural_feature:    'nature',
-  park:               'nature',
-  campground:         'nature',
-  zoo:                'nature',
-  aquarium:           'nature',
-  restaurant:         'food',
-  food:               'food',
-  cafe:               'food',
-  bakery:             'food',
-  bar:                'food',
-  meal_takeaway:      'food',
-  market:             'shopping',
-  shopping_mall:      'shopping',
-  store:              'shopping',
-  church:             'landmark',
-  mosque:             'landmark',
-  hindu_temple:       'landmark',
-  place_of_worship:   'landmark',
-  museum:             'landmark',
-  tourist_attraction: 'landmark',
-  amusement_park:     'activity',
-  stadium:            'activity',
-  gym:                'activity',
-};
+// ── Philippines bounding box ──────────────────────────────────────────────────
+// south, west, north, east
+const PH_BBOX = '4.5,116.9,21.5,127.0';
 
-const DESTINATIONS = [
-  { key: 'Coron',       lat: 11.9987, lon: 119.8684, radiusM: 15000 },
-  { key: 'El Nido',     lat: 11.1868, lon: 119.4082, radiusM: 15000 },
-  { key: 'Siargao',     lat:  9.8137, lon: 126.1652, radiusM: 20000 },
-  { key: 'Bohol',       lat:  9.6590, lon: 123.8543, radiusM: 30000 },
-  { key: 'Baguio',      lat: 16.4023, lon: 120.5960, radiusM: 10000 },
-  { key: 'Vigan',       lat: 17.5747, lon: 120.3870, radiusM:  8000 },
-  { key: 'Sagada',      lat: 17.0867, lon: 120.9028, radiusM: 10000 },
-  { key: 'Banaue',      lat: 16.9185, lon: 121.0598, radiusM: 15000 },
-  { key: 'Pangasinan',  lat: 16.1573, lon: 119.9791, radiusM: 30000 },
-];
+// ── Overpass query ────────────────────────────────────────────────────────────
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-const HEADERS = {
-  'Content-Type':  'application/json',
-  'X-Goog-Api-Key': API_KEY,
-  'X-Goog-FieldMask': [
-    'places.id',
-    'places.displayName',
-    'places.types',
-    'places.rating',
-    'places.userRatingCount',
-    'places.editorialSummary',
-    'places.photos',
-    'places.location',
-    'places.regularOpeningHours',
-    'places.priceLevel',
-  ].join(','),
-};
-
-// Nearby Search (New) — returns up to 20 places per call
-async function nearbySearch(lat, lon, radiusM, type) {
-  const body = {
-    includedTypes:  [type],
-    maxResultCount: 20,
-    locationRestriction: {
-      circle: {
-        center: { latitude: lat, longitude: lon },
-        radius: radiusM,
-      },
-    },
-    rankPreference: 'POPULARITY',
-  };
-
-  const res = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
-    method:  'POST',
-    headers: HEADERS,
-    body:    JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Nearby Search ${res.status}: ${err.slice(0, 200)}`);
-  }
-
-  const data = await res.json();
-  return data.places ?? [];
+function buildQuery() {
+  return `
+[out:json][timeout:180][bbox:${PH_BBOX}];
+(
+  nwr["tourism"~"^(attraction|museum|viewpoint|theme_park|zoo|aquarium|artwork)$"]["name"];
+  nwr["natural"~"^(beach|waterfall|cave_entrance|hot_spring|volcano)$"]["name"];
+  nwr["leisure"~"^(nature_reserve|park)$"]["name"];
+  nwr["historic"~"^(ruins|fort|monument|memorial|archaeological_site|lighthouse|church|building)$"]["name"];
+);
+out body center;
+  `.trim();
 }
 
-// Build a photo URL from a photo resource name (no extra API call needed)
-function buildPhotoUrl(photoName) {
-  return `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=${PHOTO_MAX_WIDTH}&key=${API_KEY}`;
-}
+// ── Category mapping ──────────────────────────────────────────────────────────
 
-function resolveCategory(types = []) {
-  for (const t of types) {
-    if (TYPE_TO_CATEGORY[t]) return TYPE_TO_CATEGORY[t];
-  }
+function resolveCategory(tags) {
+  if (tags.natural === 'beach')                                                    return 'beach';
+  if (['waterfall','cave_entrance','hot_spring','volcano'].includes(tags.natural)) return 'nature';
+  if (['nature_reserve','park'].includes(tags.leisure))                            return 'nature';
+  if (tags.tourism === 'viewpoint')                                                return 'nature';
+  if (['aquarium','zoo','theme_park'].includes(tags.tourism))                      return 'activity';
+  if (['museum','art_gallery'].includes(tags.tourism))                             return 'landmark';
+  if (tags.historic)                                                               return 'landmark';
   return 'landmark';
 }
 
-function buildEntry(destKey, place, index) {
-  const name     = place.displayName?.text ?? 'Unknown';
-  const category = resolveCategory(place.types ?? []);
-  const desc     = place.editorialSummary?.text ?? '';
-  const photo    = place.photos?.[0]?.name
-    ? buildPhotoUrl(place.photos[0].name)
-    : null;
+// ── Destination grouping ──────────────────────────────────────────────────────
+// Reads OSM address tags to figure out which city/municipality a place belongs to.
+// Returns null if no location info is available.
 
-  return {
-    id:              `${destKey.toLowerCase().replace(/\s+/g, '')}-new-${index + 1}`,
-    name,
-    category,
-    description:     desc || `A popular ${category} in ${destKey}.`,
-    mustVisit:       false,
-    entranceFee:     null,   // fill with AI after
-    visitLength:     null,
-    bestTimeToVisit: null,
-    howToGetThere:   null,
-    itineraryTip:    null,
-    image:           photo,
-    coordinates:     [
-      place.location?.longitude ?? 0,
-      place.location?.latitude  ?? 0,
-    ],
-    travel: { walk: null, tricycle: null, jeepney: null, van: null, ferry: null },
-    _googleId:    place.id,
-    _types:       place.types ?? [],
-    _rating:      place.rating ?? null,
-    _ratingCount: place.userRatingCount ?? 0,
-  };
+function resolveDestination(tags) {
+  const raw =
+    tags['addr:city']         ||
+    tags['addr:municipality'] ||
+    tags['is_in:city']        ||
+    tags['addr:town']         ||
+    tags['addr:village']      ||
+    tags['addr:province']     ||
+    null;
+
+  if (!raw) return null;
+
+  // "El Nido, Palawan" → "El Nido"
+  const city = raw.split(',')[0].trim();
+  if (!city) return null;
+
+  // Title-case normalisation: "el nido" → "El Nido"
+  return city
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+}
+
+// ── Junk filter ───────────────────────────────────────────────────────────────
+
+const JUNK_FRAGMENTS = [
+  'barangay', 'brgy ', 'sitio ', 'purok ',
+  'elementary', 'high school', 'national school', 'university', 'college',
+  'hospital', 'clinic', 'health center', 'pharmacy', 'drugstore',
+  'cemetery', 'memorial park', 'funeral',
+  'kingdom hall', 'jehovah', 'seventh day', 'adventist',
+  'pentecostal', 'evangelical', 'born again',
+  'mosque', 'masjid', 'islamic', 'balik islam',
+  'iglesia ni cristo', 'inc locale', 'church of christ',
+  'gas station', 'petron', 'caltex', 'shell ',
+  'campsite', 'camp site', 'glamping',
+  'resort ', ' resort', 'hotel ', ' hotel', 'pension', 'hostel',
+  'homestay', 'apartelle',
+  'parking', 'terminal', 'bus stop', 'bus station',
+  'water district', 'electric cooperative', 'power corp',
+  'hardware', 'motor shop', 'auto shop',
+  'salon', 'barbershop', 'laundry', 'nail spa',
+  'minimart', 'sari-sari store', 'convenience store',
+  'pawnshop', 'money changer', 'atm center',
+];
+
+const FORCE_KEEP = [
+  'falls', 'waterfall', 'lagoon', 'lake ', ' lake',
+  'beach', 'island', 'cave', 'spring', 'hot spring',
+  'reef', 'marine park', 'rice terrace', 'rice field',
+  'viewpoint', 'view deck', 'view point',
+  'national park', 'heritage', 'museum', 'shrine', 'ruins',
+  'fort ', ' fort', 'lighthouse', 'surf break',
+  'chocolate hills', 'tarsier', 'hanging coffin',
+  'zipline', 'skywalk',
+];
+
+function shouldInclude(name) {
+  const lower = name.toLowerCase();
+  if (FORCE_KEEP.some(f => lower.includes(f)))    return true;
+  if (JUNK_FRAGMENTS.some(f => lower.includes(f))) return false;
+  return true;
+}
+
+// ── Coordinate extraction ─────────────────────────────────────────────────────
+
+function getCoords(element) {
+  if (element.type === 'node' && element.lat != null) {
+    return [element.lon, element.lat];
+  }
+  if (element.center) {
+    return [element.center.lon, element.center.lat];
+  }
+  return null;
+}
+
+// ── Overpass fetch with mirror fallback ───────────────────────────────────────
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function overpassFetch(query) {
+  let lastError;
+  for (const url of OVERPASS_MIRRORS) {
+    try {
+      console.log(`  Trying ${url.replace('https://', '').split('/')[0]}...`);
+      const res = await fetch(url, {
+        method:  'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept':       '*/*',
+          'User-Agent':   'LakbayPH/1.0 (Philippine travel app; lakbayph.app@gmail.com)',
+        },
+        body: `data=${encodeURIComponent(query)}`,
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        if ([429, 502, 503, 504].includes(res.status)) {
+          console.log(`  Server busy (${res.status}), trying next mirror...`);
+          lastError = new Error(`${res.status}`);
+          await sleep(4000);
+          continue;
+        }
+        throw new Error(`Overpass error ${res.status}: ${body.slice(0, 300)}`);
+      }
+
+      return await res.json();
+    } catch (e) {
+      lastError = e;
+      await sleep(4000);
+    }
+  }
+  throw lastError;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-async function processDestination(dest, destIdx) {
-  console.log(`\n[${destIdx + 1}/${DESTINATIONS.length}] ${dest.key}`);
-
-  const seen   = new Map(); // id → entry  (deduplication)
-  const errors = [];
-
-  for (const type of SEARCH_TYPES) {
-    await sleep(300); // stay well under rate limits
-
-    let places;
-    try {
-      places = await nearbySearch(dest.lat, dest.lon, dest.radiusM, type);
-    } catch (e) {
-      errors.push(`${type}: ${e.message}`);
-      continue;
-    }
-
-    for (const place of places) {
-      if (!place.id || seen.has(place.id)) continue;
-      seen.set(place.id, buildEntry(dest.key, place, seen.size));
-    }
-  }
-
-  const results = Array.from(seen.values());
-
-  // Sort: highest rated first so must-visit candidates bubble up
-  results.sort((a, b) => {
-    const ra = a._rating ?? 0, rb = b._rating ?? 0;
-    const ca = a._ratingCount ?? 0, cb = b._ratingCount ?? 0;
-    if (rb !== ra) return rb - ra;
-    return cb - ca;
-  });
-
-  // Re-assign clean sequential IDs after sort
-  results.forEach((p, i) => {
-    p.id = `${dest.key.toLowerCase().replace(/\s+/g, '')}-new-${i + 1}`;
-  });
-
-  const withImg = results.filter(p => p.image).length;
-  console.log(`  ${results.length} places  |  ${withImg} with photos`);
-  if (errors.length) {
-    console.log(`  Warnings: ${errors.join(', ')}`);
-  }
-  results.forEach(p => {
-    const star = p._rating ? `⭐${p._rating}` : '   ';
-    const img  = p.image ? '📷' : '  ';
-    console.log(`  ${img} ${star}  ${p.name}`);
-  });
-
-  return results;
-}
-
 async function main() {
-  if (API_KEY === 'YOUR_KEY_HERE') {
-    console.error([
-      '',
-      '  Missing API key!',
-      '',
-      '  Setup steps:',
-      '  1. Go to https://console.cloud.google.com',
-      '  2. Create a project → Enable "Places API (New)"',
-      '  3. APIs & Services → Credentials → Create API Key',
-      '  4. (Safe) Set a $0 spending limit in Billing → Budgets & Alerts',
-      '  5. Run:  GOOGLE_PLACES_KEY=your_key node scripts/fetchPlacesData.js',
-      '',
-    ].join('\n'));
-    process.exit(1);
-  }
-
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
 
-  console.log('LakbayPH — Place Data Fetcher (Google Places API)');
-  console.log(`Fetching ${DESTINATIONS.length} destinations...\n`);
+  console.log('LakbayPH — Tourist Attraction Fetcher');
+  console.log('Source : OpenStreetMap (Overpass API)');
+  console.log('Region : All Philippines\n');
 
-  const result = {};
-  let total    = 0;
+  console.log('Fetching from Overpass API (this may take 30–60 seconds)...');
+  const data     = await overpassFetch(buildQuery());
+  const elements = data.elements || [];
+  console.log(`  Raw results: ${elements.length} elements\n`);
 
-  for (let i = 0; i < DESTINATIONS.length; i++) {
-    result[DESTINATIONS[i].key] = await processDestination(DESTINATIONS[i], i);
-    total += result[DESTINATIONS[i].key].length;
-    await sleep(500);
+  // Group by destination derived from OSM tags
+  const destinations = {};   // destName → Map(osmId → entry)
+  let skippedNoName  = 0;
+  let skippedJunk    = 0;
+  let skippedNoDest  = 0;
+
+  for (const el of elements) {
+    const tags = el.tags || {};
+    const name = tags['name:en'] || tags.name || '';
+
+    if (!name.trim())          { skippedNoName++;  continue; }
+    if (!shouldInclude(name))  { skippedJunk++;    continue; }
+
+    const coords = getCoords(el);
+    if (!coords) continue;
+
+    const dest = resolveDestination(tags);
+    if (!dest) { skippedNoDest++; continue; }
+
+    if (!destinations[dest]) destinations[dest] = new Map();
+    if (destinations[dest].has(el.id)) continue;  // deduplicate
+
+    // Build a location string from OSM address tags (best-effort)
+    const locParts = [];
+    const street   = tags['addr:street'] || tags['addr:place'] || '';
+    const barangay = tags['addr:barangay'] || tags['addr:suburb'] || '';
+    const cityTag  = tags['addr:city'] || tags['addr:municipality'] || tags['addr:town'] || '';
+    const province = tags['addr:province'] || tags['addr:state'] || '';
+    if (street)   locParts.push(street);
+    if (barangay) locParts.push(`Brgy. ${barangay}`);
+    if (cityTag)  locParts.push(cityTag);
+    if (province && province !== cityTag) locParts.push(province);
+    const location = locParts.length > 0 ? locParts.join(', ') : null;
+
+    destinations[dest].set(el.id, {
+      name:            name.trim(),
+      category:        resolveCategory(tags),
+      description:     tags['description:en'] || tags.description || '',
+      mustVisit:       false,
+      entranceFee:     null,
+      visitLength:     null,
+      bestTimeToVisit: null,
+      howToGetThere:   null,
+      itineraryTip:    null,
+      location,
+      coordinates:     coords,
+      travel:          {},
+      // reference only — remove before uploading to gist
+      _osmId:          el.id,
+      _osmType:        el.type,
+      _osmTag:         tags.tourism || tags.natural || tags.historic || tags.leisure || '',
+    });
   }
 
-  fs.writeFileSync(OUT_PATH, JSON.stringify(result, null, 2), 'utf8');
+  // Convert Maps → sorted arrays with clean IDs
+  const finalDestinations = {};
+  const destNames = Object.keys(destinations).sort();
+  let total = 0;
 
-  const withImg = Object.values(result).flat().filter(p => p.image).length;
+  for (const dest of destNames) {
+    const places = Array.from(destinations[dest].values());
+    const slug   = dest.toLowerCase().replace(/\s+/g, '-');
+
+    places.forEach((p, i) => {
+      p.id = `${slug}-${i + 1}`;
+    });
+
+    finalDestinations[dest] = places;
+    total += places.length;
+
+    console.log(`${dest}: ${places.length} places`);
+    places.forEach(p => console.log(`  [${p.category}] ${p.name}`));
+  }
+
+  console.log(`\nSkipped — no name      : ${skippedNoName}`);
+  console.log(`Skipped — junk filter  : ${skippedJunk}`);
+  console.log(`Skipped — no dest tag  : ${skippedNoDest}`);
+
+  const today  = new Date().toISOString().slice(0, 10);
+  const output = {
+    version:      1,
+    updated_at:   today,
+    destinations:  finalDestinations,
+  };
+
+  fs.writeFileSync(OUT_PATH, JSON.stringify(output, null, 2), 'utf8');
 
   console.log([
     '',
     '✓ Done!',
+    `  Destinations : ${destNames.length}`,
     `  Total places : ${total}`,
-    `  With photos  : ${withImg} (${Math.round(withImg / total * 100)}%)`,
-    `  Saved to     : scripts/output/rawPlacesData.json`,
+    `  Output       : scripts/output/places.json`,
     '',
     'Next steps:',
-    '  1. Review the JSON — remove irrelevant entries (hotels, gas stations, etc.)',
-    '  2. Paste batches to Claude → fill: entranceFee, visitLength,',
-    '     bestTimeToVisit, howToGetThere, itineraryTip',
-    '  3. Merge enriched entries into src/data/placesData.js',
+    '  1. Review — remove any destinations or places that slipped through',
+    '  2. Set mustVisit: true for the top picks per destination',
+    '  3. Fill in entranceFee, visitLength, howToGetThere, itineraryTip',
+    '     → paste a destination\'s places to Claude to fill these quickly',
+    '  4. Remove _osmId, _osmType, _osmTag fields before uploading',
+    '  5. Paste final JSON into your GitHub Gist and bump the version number',
+    '',
+    'Attribution (required by ODbL license):',
+    '  Add "© OpenStreetMap contributors" to your app\'s About / More screen.',
     '',
   ].join('\n'));
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(`\nFatal: ${err.message}`);
   process.exit(1);
 });

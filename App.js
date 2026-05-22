@@ -2,10 +2,12 @@ import 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import { UserProvider } from './src/context/UserContext';
+import { PremiumProvider } from './src/context/PremiumContext';
+import { fetchAndCachePlaces } from './src/utils/placesSync';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -19,6 +21,12 @@ export default function App() {
     'Cause-Black':     require('./assets/fonts/Cause-Black.ttf'),
   });
 
+  // Silently sync new places from GitHub Gist after fonts load
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    fetchAndCachePlaces().catch(() => {}); // fire-and-forget, never blocks UI
+  }, [fontsLoaded]);
+
   const onLayoutRootView = useCallback(async () => {
     if (!fontsLoaded) return;
     await SplashScreen.hideAsync();
@@ -28,11 +36,13 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <UserProvider>
-        <SafeAreaProvider>
-          <AppNavigator />
-        </SafeAreaProvider>
-      </UserProvider>
+      <PremiumProvider>
+        <UserProvider>
+          <SafeAreaProvider>
+            <AppNavigator />
+          </SafeAreaProvider>
+        </UserProvider>
+      </PremiumProvider>
     </View>
   );
 }

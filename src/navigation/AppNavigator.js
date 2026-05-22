@@ -16,6 +16,7 @@ import TripsListScreen from '../screens/TripsListScreen';
 import CreateTripScreen from '../screens/CreateTripScreen';
 import BudgetScreen from '../screens/BudgetScreen';
 import MoreScreen from '../screens/MoreScreen';
+import PlaceDiscoveryScreen from '../screens/PlaceDiscoveryScreen';
 import TransportScreen from '../screens/TransportScreen';
 import AIAssistantScreen from '../screens/AIAssistantScreen'; // file rename not needed, just route name
 import PremiumScreen from '../screens/PremiumScreen';
@@ -132,7 +133,8 @@ export default function AppNavigator() {
           <Stack.Screen name="Premium"        component={PremiumScreen} />
           <Stack.Screen name="Terms"         component={TermsScreen} />
           <Stack.Screen name="PrivacyPolicy"  component={PrivacyPolicyScreen} />
-          <Stack.Screen name="Search"        component={SearchScreen} />
+          <Stack.Screen name="Search"          component={SearchScreen} />
+          <Stack.Screen name="PlaceDiscovery" component={PlaceDiscoveryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

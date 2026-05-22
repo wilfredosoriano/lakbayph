@@ -14,6 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import { Swipeable } from 'react-native-gesture-handler';
 import { getTripActivities, getAllTripActivities, addTripActivity, updateTripActivity, deleteTripActivity, toggleActivityDone, updateActivityPhotos, updateActivityNotes, updateActivityLocation, getDayLabel, setDayLabel, getPackingItems, addPackingItem, togglePackingItem, deletePackingItem, reorderActivities } from '../database/db';
+import { usePremium } from '../context/PremiumContext';
 
 const { width, height: screenHeight } = Dimensions.get('window');
 const scale = width / 390;
@@ -639,6 +640,7 @@ function MemoryViewer({ photo, onClose }) {
 
 export default function TripDetailsScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
+  const { isPremium } = usePremium();
   const trip = route?.params?.trip;
   const [selectedDay, setSelectedDay] = useState(0);
   const [activities, setActivities] = useState([]);
@@ -853,14 +855,22 @@ export default function TripDetailsScreen({ navigation, route }) {
             const active = activeView === view;
             const label = view === 'itinerary' ? 'Itinerary' : view === 'packing' ? 'Packing' : 'Memories';
             const icon  = view === 'itinerary' ? 'calendar-outline' : view === 'packing' ? 'bag-outline' : 'images-outline';
+            const locked = view === 'memories' && !isPremium;
             return (
               <TouchableOpacity
                 key={view}
                 style={[styles.segmentBtn, active && styles.segmentBtnActive]}
-                onPress={() => setActiveView(view)}
+                onPress={() => {
+                  if (locked) { navigation.navigate('Premium'); return; }
+                  setActiveView(view);
+                }}
                 activeOpacity={0.85}
               >
-                <Ionicons name={icon} size={s(13)} color={active ? Colors.primary : 'rgba(255,255,255,0.75)'} />
+                <Ionicons
+                  name={locked ? 'lock-closed-outline' : icon}
+                  size={s(13)}
+                  color={active ? Colors.primary : 'rgba(255,255,255,0.75)'}
+                />
                 <Text style={[styles.segmentLabel, active && styles.segmentLabelActive]}>{label}</Text>
                 {view === 'packing' && packingItems.filter(i => !i.checked).length > 0 && (
                   <View style={styles.packingBadge}>

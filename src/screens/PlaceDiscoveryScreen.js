@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   TextInput, StatusBar, Dimensions, Alert, Modal,
-  Platform, Keyboard, Image,
+  Platform, Keyboard, ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/colors';
@@ -12,52 +12,112 @@ import {
   PLACE_CATEGORIES, TRAVEL_MODE_META, CATEGORY_TO_ACTIVITY,
   PLACES_BY_DESTINATION, matchDestination,
 } from '../data/placesData';
-import { addTripActivity, addSavedLocation } from '../database/db';
-import CachedImage from '../components/CachedImage';
-import { PLACE_IMAGES } from '../data/placeImages';
-
-const CATEGORY_PLACEHOLDER = {
-  beach:    { bg: '#D6EEF8', emoji: '🏖️' },
-  nature:   { bg: '#D6EDF0', emoji: '🌿' },
-  food:     { bg: '#FDE8D0', emoji: '🍜' },
-  landmark: { bg: '#EDE0F5', emoji: '🏛️' },
-  activity: { bg: '#FDDDE0', emoji: '🎯' },
-  shopping: { bg: '#DCE8FB', emoji: '🛍️' },
-};
+import { addTripActivity, addSavedLocation, getCachedPlaces, getTrips } from '../database/db';
 
 const { width } = Dimensions.get('window');
 const scale = width / 390;
 const s = (n) => Math.round(n * scale);
 
+// ── Category metadata ─────────────────────────────────────────────────────────
+
+const CATEGORY_META = {
+  beach:    { bg: '#DBEAFE', accent: '#2563EB', emoji: '🏖️', label: 'Beach' },
+  nature:   { bg: '#DCFCE7', accent: '#16A34A', emoji: '🌿', label: 'Nature' },
+  food:     { bg: '#FFEDD5', accent: '#EA580C', emoji: '🍜', label: 'Food' },
+  landmark: { bg: '#EDE9FE', accent: '#7C3AED', emoji: '🏛️', label: 'Landmark' },
+  activity: { bg: '#FFE4E6', accent: '#DC2626', emoji: '🎯', label: 'Activity' },
+  shopping: { bg: '#E0F2FE', accent: '#0284C7', emoji: '🛍️', label: 'Shopping' },
+};
+
+const getCategoryMeta = (category) =>
+  CATEGORY_META[category] || { bg: '#F3F4F6', accent: '#6B7280', emoji: '🗺️', label: 'Place' };
+
+// ── Destination hero colors ───────────────────────────────────────────────────
+
+const DEST_HERO = {
+  // Palawan
+  'El Nido':          { bg: '#0C4A6E', emoji: '🏝️' },
+  Coron:              { bg: '#1E3A5F', emoji: '🤿' },
+  'Puerto Princesa':  { bg: '#065F46', emoji: '🚣' },
+  // Visayas
+  Boracay:            { bg: '#0369A1', emoji: '🏖️' },
+  Cebu:               { bg: '#0F766E', emoji: '🐋' },
+  Bohol:              { bg: '#92400E', emoji: '🦎' },
+  Siargao:            { bg: '#047857', emoji: '🏄' },
+  Siquijor:           { bg: '#5B21B6', emoji: '🌊' },
+  Iloilo:             { bg: '#1E3A5F', emoji: '🏛️' },
+  Carcar:             { bg: '#713F12', emoji: '🏛️' },
+  // Mindanao
+  Davao:              { bg: '#1E3A5F', emoji: '🦅' },
+  Camiguin:           { bg: '#115E59', emoji: '🌋' },
+  'Lake Sebu':        { bg: '#14532D', emoji: '🚣' },
+  Palimbang:          { bg: '#1A3A2A', emoji: '💦' },
+  'Cagayan De Oro':   { bg: '#1C3D5A', emoji: '🏔️' },
+  Butuan:             { bg: '#3B1E0A', emoji: '🏺' },
+  Zamboanga:          { bg: '#0C3547', emoji: '🌺' },
+  // Luzon - Cordillera
+  Baguio:             { bg: '#2A5C3A', emoji: '🌲' },
+  Sagada:             { bg: '#374151', emoji: '⛰️' },
+  Banaue:             { bg: '#713F12', emoji: '🌾' },
+  // Luzon - Ilocos
+  Vigan:              { bg: '#4A2D6B', emoji: '🏛️' },
+  Batac:              { bg: '#3B3047', emoji: '🏛️' },
+  Laoag:              { bg: '#2D3047', emoji: '🏔️' },
+  // Luzon - Tagaytay/Batangas
+  Tagaytay:           { bg: '#4A5E1A', emoji: '🌋' },
+  Batangas:           { bg: '#0C4A6E', emoji: '🌊' },
+  Taal:               { bg: '#4A1E0C', emoji: '🌋' },
+  Calamba:            { bg: '#1A3A2A', emoji: '♨️' },
+  'Los Baños':        { bg: '#166534', emoji: '♨️' },
+  Pangasinan:         { bg: '#0369A1', emoji: '🏝️' },
+  // Luzon - Metro & nearby
+  Manila:             { bg: '#1E3A5F', emoji: '🏙️' },
+  'Quezon City':      { bg: '#1E3A5F', emoji: '🏛️' },
+  Makati:             { bg: '#1C2B3A', emoji: '🏢' },
+  Antipolo:           { bg: '#1A3A22', emoji: '⛰️' },
+  'San Fernando':     { bg: '#3A1A2E', emoji: '🎑' },
+  Malolos:            { bg: '#2D1A3A', emoji: '🏛️' },
+  Maragondon:         { bg: '#1A3A30', emoji: '🏰' },
+  Kawit:              { bg: '#1A2E3A', emoji: '🏛️' },
+  // Quezon
+  Lucban:             { bg: '#2A3A1A', emoji: '🎨' },
+  Tayabas:            { bg: '#3A2A1A', emoji: '⛪' },
+  'San Pablo':        { bg: '#1A3A2E', emoji: '🏞️' },
+  'Santa Cruz':       { bg: '#1A2A3A', emoji: '🏞️' },
+  Lucena:             { bg: '#2A1A3A', emoji: '🏖️' },
+  // Misc
+  Angeles:            { bg: '#2A1A1A', emoji: '🎰' },
+  Cabanatuan:         { bg: '#1A2A1A', emoji: '🏛️' },
+  Batangas:           { bg: '#0C4A6E', emoji: '🌊' },
+  Naga:               { bg: '#2A3A2A', emoji: '🏛️' },
+  Magdiwang:          { bg: '#0C3A4A', emoji: '🏖️' },
+};
+
+const getDestMeta = (key) =>
+  DEST_HERO[key] || { bg: Colors.primary, emoji: '🗺️' };
+
+// ── Helper functions ──────────────────────────────────────────────────────────
 
 function getVisitLength(place) {
   if (place.visitLength) return place.visitLength;
   switch (place.category) {
-    case 'food':
-      return '30 to 90 min stop';
-    case 'shopping':
-      return '45 to 90 min';
-    case 'landmark':
-      return '45 to 120 min';
-    case 'activity':
-      return place.mustVisit ? '2 to 4 hrs' : '1 to 3 hrs';
-    case 'beach':
-      return place.mustVisit ? 'Half day to full day' : '2 to 4 hrs';
-    case 'nature':
-      return place.mustVisit ? '2 to 4 hrs' : '1 to 2 hrs';
-    default:
-      return 'About 1 to 2 hrs';
+    case 'food':     return '30–90 min';
+    case 'shopping': return '45–90 min';
+    case 'landmark': return '45 min–2 hrs';
+    case 'activity': return place.mustVisit ? '2–4 hrs' : '1–3 hrs';
+    case 'beach':    return place.mustVisit ? 'Half–full day' : '2–4 hrs';
+    case 'nature':   return place.mustVisit ? '2–4 hrs' : '1–2 hrs';
+    default:         return '1–2 hrs';
   }
 }
 
 function getBestTimeToVisit(place) {
   if (place.bestTimeToVisit) return place.bestTimeToVisit;
-
   const text = `${place.name} ${place.description}`.toLowerCase();
-  if (/sunset|viewpoint|overlook/.test(text)) return 'Late afternoon to sunset';
-  if (/market|night market/.test(text)) return 'Late afternoon to evening';
+  if (/sunset|viewpoint|overlook/.test(text))              return 'Late afternoon to sunset';
+  if (/market|night market/.test(text))                    return 'Late afternoon to evening';
   if (/beach|lagoon|island|reef|snorkel|swim|falls|spring/.test(text)) return 'Morning to early afternoon';
-  if (/hike|trail|terraces|cave|mount/.test(text)) return 'Early morning';
+  if (/hike|trail|terraces|cave|mount/.test(text))         return 'Early morning';
   return 'Morning or late afternoon';
 }
 
@@ -66,71 +126,27 @@ function getPlanningNote(place) {
   const text = `${place.name} ${place.description}`.toLowerCase();
   const travel = place?.travel || {};
   const hasBoat = !!travel.ferry;
-  const hasWalk = !!travel.walk;
-  const hasVan = !!travel.van;
-  const hasTricycle = !!travel.tricycle;
-  const isSunsetSpot = /sunset|viewpoint|overlook/.test(text);
-  const isMarketOrTown = /market|town proper|street food|shops|shopping/.test(text);
-  const isWaterSpot = /lagoon|lake|beach|island|snorkel|reef|swim|falls|spring/.test(text);
-  const isHikeSpot = /hike|trail|steps|cliff|terraces|cave|mount/.test(text);
-  const isCulturalSpot = /museum|church|shrine|history|heritage|cathedral|park/.test(text);
+  const isSunset = /sunset|viewpoint|overlook/.test(text);
+  const isMarket = /market|town proper|street food|shopping/.test(text);
+  const isWater  = /lagoon|lake|beach|island|snorkel|reef|swim|falls|spring/.test(text);
+  const isHike   = /hike|trail|steps|cliff|terraces|cave|mount/.test(text);
+  const isCultural = /museum|church|shrine|history|heritage|cathedral|park/.test(text);
 
-  if (place.category === 'food') {
-    return place.entranceFee > 0
-      ? 'Good as a planned food stop after a paid activity nearby.'
-      : 'Best as a meal stop between bigger activities or before heading back.';
-  }
-
-  if (isSunsetSpot) {
-    return 'Place this late in the day so you can end the itinerary with the best light and views.';
-  }
-
-  if (hasBoat && isWaterSpot && place.mustVisit) {
-    return 'Make this one of your main anchors for the day since boat-based stops usually shape the whole schedule.';
-  }
-
-  if (hasBoat && isWaterSpot) {
-    return 'Pair this with other water stops on the same side of the destination to avoid wasting transfer time.';
-  }
-
-  if (isHikeSpot && hasWalk) {
-    return 'Schedule this while energy is high and keep the next stop lighter so the day still feels balanced.';
-  }
-
-  if (isMarketOrTown) {
-    return 'Great near the start or end of the day for food, supplies, or an easy flexible stop.';
-  }
-
-  if (isCulturalSpot && place.entranceFee > 0) {
-    return 'Works well as a focused mid-day stop between outdoor activities and meal breaks.';
-  }
-
-  if (place.category === 'shopping') {
-    return 'Best near the end of the day or before your trip back so you are not carrying extra items around.';
-  }
-
-  if (place.mustVisit && hasVan) {
-    return 'Anchor this into the day early since longer land transfers can affect the timing of everything after it.';
-  }
-
-  if (place.mustVisit && hasTricycle) {
-    return 'Easy to build around as one of your key highlights, then fill the day with nearby lighter stops.';
-  }
-
-  if (place.category === 'beach' || place.category === 'nature') {
-    return 'Best paired with one food stop and one lighter activity nearby so the day does not feel too packed.';
-  }
-
-  if (place.mustVisit) {
-    return 'Use this as one of the day’s core highlights and build the rest of the itinerary around it.';
-  }
-
-  return 'Works well as a flexible stop around your main highlights or as a backup if time opens up.';
+  if (place.category === 'food')   return 'Best as a meal stop between bigger activities.';
+  if (isSunset)                    return 'Place this late in the day for the best light and views.';
+  if (hasBoat && isWater && place.mustVisit) return 'Make this one of your main anchors — boat trips shape the whole schedule.';
+  if (hasBoat && isWater)          return 'Pair with other water stops on the same side to minimize transfers.';
+  if (isHike)                      return 'Schedule while energy is high and follow with a lighter stop.';
+  if (isMarket)                    return 'Great near the start or end of the day for food and supplies.';
+  if (isCultural && place.entranceFee > 0) return 'Works well as a focused mid-day stop between outdoor activities.';
+  if (place.category === 'shopping') return 'Best near the end of the day before heading back.';
+  if (place.mustVisit)             return "Use this as one of the day's core highlights.";
+  return 'Works well as a flexible stop around your main highlights.';
 }
 
 function getTransportSummary(place) {
   if (place.howToGetThere) return place.howToGetThere;
-  const options = Object.entries(place?.travel || {}).filter(([, value]) => value);
+  const options = Object.entries(place?.travel || {}).filter(([, v]) => v !== null);
   if (options.length === 0) return 'Ask locally for the most practical ride from town proper.';
   const summary = options
     .slice(0, 2)
@@ -139,42 +155,65 @@ function getTransportSummary(place) {
   return `Usually reached by ${summary}.`;
 }
 
-// ── Add to Trip Modal ────────────────────────────────────────────────────────
+// ── Add to Trip Modal ─────────────────────────────────────────────────────────
+// Two-step when no trip is pre-selected:
+//   Step 1 — pick a trip from the list
+//   Step 2 — pick a day + time
 
-function AddToTripModal({ visible, place, trip, destKey, onClose, onDone }) {
+function AddToTripModal({ visible, place, trip, onClose, onDone }) {
   const insets = useSafeAreaInsets();
-  const [selectedDay, setSelectedDay] = useState(1);
-  const [hour, setHour]     = useState('');
-  const [minute, setMinute] = useState('');
-  const [period, setPeriod] = useState('AM');
-  const [saving, setSaving] = useState(false);
-  const [kbHeight, setKbHeight] = useState(0);
 
+  // step: 'trip' | 'schedule'
+  const [step,        setStep]        = useState(trip ? 'schedule' : 'trip');
+  const [trips,       setTrips]       = useState([]);
+  const [activeTrip,  setActiveTrip]  = useState(trip || null);
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [hour,        setHour]        = useState('');
+  const [minute,      setMinute]      = useState('');
+  const [period,      setPeriod]      = useState('AM');
+  const [saving,      setSaving]      = useState(false);
+  const [kbHeight,    setKbHeight]    = useState(0);
+
+  // Keyboard listeners
   useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const show = Keyboard.addListener(showEvent, (e) => setKbHeight(e.endCoordinates.height));
-    const hide = Keyboard.addListener(hideEvent, () => setKbHeight(0));
-    return () => { show.remove(); hide.remove(); };
+    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const s1 = Keyboard.addListener(show, (e) => setKbHeight(e.endCoordinates.height));
+    const s2 = Keyboard.addListener(hide, () => setKbHeight(0));
+    return () => { s1.remove(); s2.remove(); };
   }, []);
 
-  const days = trip?.days || 1;
-  const dayNumbers = Array.from({ length: days }, (_, i) => i + 1);
+  // Load trips when opening in standalone mode (no pre-selected trip)
+  useEffect(() => {
+    if (visible && !trip) {
+      getTrips().then(setTrips);
+      setStep('trip');
+      setActiveTrip(null);
+    } else if (visible && trip) {
+      setStep('schedule');
+      setActiveTrip(trip);
+    }
+  }, [visible, trip]);
 
   const reset = () => {
     setSelectedDay(1); setHour(''); setMinute(''); setPeriod('AM');
+    setActiveTrip(trip || null);
+    setStep(trip ? 'schedule' : 'trip');
   };
+
+  const handleClose = () => { reset(); onClose(); };
+
+  const handleSelectTrip = (t) => { setActiveTrip(t); setStep('schedule'); };
 
   const handleAdd = async () => {
     if (!hour.trim()) { Alert.alert('Missing', 'Please enter the hour.'); return; }
     setSaving(true);
-    const time = `${hour.padStart(2,'0')}:${(minute||'00').padStart(2,'0')} ${period}`;
     await addTripActivity({
-      tripId:   trip.id,
+      tripId:   activeTrip.id,
       day:      selectedDay,
-      time,
+      time:     `${hour.padStart(2,'0')}:${(minute||'00').padStart(2,'0')} ${period}`,
       title:    place.name,
-      subtitle: place.description.split(' — ')[0],
+      subtitle: (place.description || '').split(' — ')[0],
       category: CATEGORY_TO_ACTIVITY[place.category] || 'activity',
       cost:     0,
     });
@@ -182,206 +221,172 @@ function AddToTripModal({ visible, place, trip, destKey, onClose, onDone }) {
     reset();
     onDone();
     onClose();
-    Alert.alert('Added!', `${place.name} added to Day ${selectedDay}. ✓`);
+    Alert.alert('Added!', `${place.name} added to Day ${selectedDay} of "${activeTrip.name}". ✓`);
   };
 
+  const days       = activeTrip?.days || 1;
+  const dayNumbers = Array.from({ length: days }, (_, i) => i + 1);
+
   return (
-    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent onRequestClose={() => { reset(); onClose(); }}>
-      <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => { reset(); onClose(); }} />
+    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent
+      onRequestClose={handleClose}>
+      <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.45)' }}>
+        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={handleClose} />
         <View style={[styles.modalSheet, {
           paddingBottom: kbHeight > 0 ? s(32) : insets.bottom + s(16),
-          marginBottom: kbHeight > 0 ? kbHeight + s(12) : 0,
+          marginBottom:  kbHeight > 0 ? kbHeight + s(12) : 0,
         }]}>
           <View style={styles.modalHandle} />
-          <Text style={styles.modalTitle}>Add to Itinerary</Text>
-          <Text style={styles.modalPlace}>{place?.name}</Text>
 
-          <Text style={styles.fieldLabel}>Which day?</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: s(8), marginBottom: s(16) }}>
-            {dayNumbers.map(d => (
-              <TouchableOpacity
-                key={d}
-                style={[styles.dayChip, selectedDay === d && styles.dayChipActive]}
-                onPress={() => setSelectedDay(d)}
-              >
-                <Text style={[styles.dayChipText, selectedDay === d && styles.dayChipTextActive]}>Day {d}</Text>
+          {/* ── Step 1: choose a trip ── */}
+          {step === 'trip' && (
+            <>
+              <Text style={styles.modalTitle}>Add to Itinerary</Text>
+              <Text style={styles.modalPlace}>{place?.name}</Text>
+              <Text style={styles.fieldLabel}>Choose a trip</Text>
+
+              {trips.length === 0 ? (
+                <View style={styles.noTripsBox}>
+                  <Text style={styles.noTripsText}>
+                    You don't have any trips yet.{'\n'}Create a trip first from the Trips tab.
+                  </Text>
+                </View>
+              ) : (
+                <ScrollView
+                  style={{ maxHeight: s(280) }}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ gap: s(8) }}>
+                  {trips.map(t => (
+                    <TouchableOpacity
+                      key={t.id}
+                      style={styles.tripRow}
+                      onPress={() => handleSelectTrip(t)}
+                      activeOpacity={0.75}>
+                      <Text style={styles.tripRowEmoji}>{t.emoji || '✈️'}</Text>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.tripRowName} numberOfLines={1}>{t.name}</Text>
+                        <Text style={styles.tripRowSub} numberOfLines={1}>
+                          {t.destination}  ·  {t.days} {t.days === 1 ? 'day' : 'days'}
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={s(16)} color={Colors.textTertiary} />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
+            </>
+          )}
+
+          {/* ── Step 2: choose day + time ── */}
+          {step === 'schedule' && (
+            <>
+              <View style={styles.modalTitleRow}>
+                {!trip && (
+                  <TouchableOpacity onPress={() => setStep('trip')} style={styles.backBtn}>
+                    <Ionicons name="arrow-back" size={s(20)} color={Colors.primary} />
+                  </TouchableOpacity>
+                )}
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.modalTitle}>Add to Itinerary</Text>
+                  <Text style={styles.modalPlace}>{place?.name}</Text>
+                </View>
+              </View>
+
+              {!trip && activeTrip && (
+                <View style={styles.selectedTripBadge}>
+                  <Text style={styles.selectedTripEmoji}>{activeTrip.emoji || '✈️'}</Text>
+                  <Text style={styles.selectedTripName} numberOfLines={1}>{activeTrip.name}</Text>
+                </View>
+              )}
+
+              <Text style={styles.fieldLabel}>Which day?</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: s(8), marginBottom: s(20) }}>
+                {dayNumbers.map(d => (
+                  <TouchableOpacity key={d}
+                    style={[styles.dayChip, selectedDay === d && styles.dayChipActive]}
+                    onPress={() => setSelectedDay(d)}>
+                    <Text style={[styles.dayChipText, selectedDay === d && styles.dayChipTextActive]}>
+                      Day {d}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <Text style={styles.fieldLabel}>What time?</Text>
+              <View style={styles.timeRow}>
+                <TextInput style={styles.timeInput} value={hour}
+                  onChangeText={v => setHour(v.replace(/[^0-9]/g, '').slice(0, 2))}
+                  placeholder="08" placeholderTextColor={Colors.grayMedium}
+                  keyboardType="number-pad" maxLength={2} />
+                <Text style={styles.timeColon}>:</Text>
+                <TextInput style={styles.timeInput} value={minute}
+                  onChangeText={v => setMinute(v.replace(/[^0-9]/g, '').slice(0, 2))}
+                  placeholder="00" placeholderTextColor={Colors.grayMedium}
+                  keyboardType="number-pad" maxLength={2} />
+                <View style={styles.periodToggle}>
+                  {['AM','PM'].map(p => (
+                    <TouchableOpacity key={p}
+                      style={[styles.periodBtn, period === p && styles.periodBtnActive]}
+                      onPress={() => setPeriod(p)}>
+                      <Text style={[styles.periodText, period === p && styles.periodTextActive]}>{p}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <TouchableOpacity style={[styles.confirmBtn, saving && { opacity: 0.7 }]}
+                onPress={handleAdd} disabled={saving}>
+                <Text style={styles.confirmBtnText}>{saving ? 'Adding…' : 'Add to Trip'}</Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <Text style={styles.fieldLabel}>What time?</Text>
-          <View style={styles.timeRow}>
-            <TextInput
-              style={styles.timeInput}
-              value={hour}
-              onChangeText={v => setHour(v.replace(/[^0-9]/g, '').slice(0, 2))}
-              placeholder="08"
-              placeholderTextColor={Colors.grayMedium}
-              keyboardType="number-pad"
-              maxLength={2}
-            />
-            <Text style={styles.timeColon}>:</Text>
-            <TextInput
-              style={styles.timeInput}
-              value={minute}
-              onChangeText={v => setMinute(v.replace(/[^0-9]/g, '').slice(0, 2))}
-              placeholder="00"
-              placeholderTextColor={Colors.grayMedium}
-              keyboardType="number-pad"
-              maxLength={2}
-            />
-            <View style={styles.periodToggle}>
-              <TouchableOpacity
-                style={[styles.periodBtn, period === 'AM' && styles.periodBtnActive]}
-                onPress={() => setPeriod('AM')}
-              >
-                <Text style={[styles.periodText, period === 'AM' && styles.periodTextActive]}>AM</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.periodBtn, period === 'PM' && styles.periodBtnActive]}
-                onPress={() => setPeriod('PM')}
-              >
-                <Text style={[styles.periodText, period === 'PM' && styles.periodTextActive]}>PM</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-
-          <TouchableOpacity
-            style={[styles.confirmBtn, saving && { opacity: 0.7 }]}
-            onPress={handleAdd}
-            disabled={saving}
-          >
-            <Text style={styles.confirmBtnText}>{saving ? 'Adding...' : 'Add to Trip'}</Text>
-          </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     </Modal>
   );
 }
 
-// ── Place Card ───────────────────────────────────────────────────────────────
+// ── Destination Hero ──────────────────────────────────────────────────────────
 
-function PlaceCard({ place, savedIds, onAdd, onSave, canAddToTrip }) {
-  const isSaved = savedIds.has(place.id);
-  const travelModes = Object.entries(place.travel).filter(([, v]) => v !== null);
-  const visitLength = getVisitLength(place);
-  const bestTimeToVisit = getBestTimeToVisit(place);
-  const planningNote = getPlanningNote(place);
-  const transportSummary = getTransportSummary(place);
-  const [showDetails, setShowDetails] = useState(false);
+function DestinationHero({ destKey, effectiveDestination, places }) {
+  const destName    = destKey || effectiveDestination;
+  const meta        = getDestMeta(destName);
+  const mustCount   = places.filter(p => p.mustVisit).length;
 
-  const hasImage = PLACE_IMAGES[place.id] || place.image;
-  const ph = CATEGORY_PLACEHOLDER[place.category] || { bg: '#EEF0F2', emoji: '🗺️' };
+  // Category breakdown
+  const catCounts = places.reduce((acc, p) => {
+    acc[p.category] = (acc[p.category] || 0) + 1;
+    return acc;
+  }, {});
+  const topCats = Object.entries(catCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4);
 
   return (
-    <View style={styles.placeCard}>
-      {hasImage ? (
-        <CachedImage
-          placeId={place.id}
-          uri={place.image}
-          style={styles.placeCardImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.placeCardImage, styles.placeCardPlaceholder, { backgroundColor: ph.bg }]}>
-          <Text style={styles.placeholderEmoji}>{ph.emoji}</Text>
-          <Text style={styles.placeholderText}>Photo coming soon</Text>
-        </View>
-      )}
-      <View style={styles.placeCardHeader}>
-        <View style={styles.placeTitleWrap}>
-          <Text style={styles.placeName}>{place.name}</Text>
-          {place.mustVisit && (
-            <View style={styles.mustVisitBadgeInline}>
-              <Text style={styles.mustVisitTextInline}>Must-visit</Text>
-            </View>
-          )}
-        </View>
-        <TouchableOpacity
-          style={[styles.saveIconBtn, isSaved && styles.saveIconBtnActive]}
-          onPress={() => onSave(place)}
-        >
-          <Ionicons
-            name={isSaved ? 'bookmark' : 'bookmark-outline'}
-            size={s(14)}
-            color={isSaved ? Colors.white : Colors.primary}
-          />
-          <Text style={[styles.saveIconBtnText, isSaved && styles.saveIconBtnTextActive]}>
-            {isSaved ? 'Saved' : 'Save'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+    <View style={[styles.heroBanner, { backgroundColor: meta.bg }]}>
+      {/* Decorative circles */}
+      <View style={styles.heroCircle1} />
+      <View style={styles.heroCircle2} />
 
-      <View style={styles.placeInfo}>
-        <Text style={styles.placeDesc}>{place.description}</Text>
+      <View style={styles.heroInner}>
+        <Text style={styles.heroEmoji}>{meta.emoji}</Text>
+        <Text style={styles.heroName}>{destName}</Text>
+        <Text style={styles.heroStats}>
+          {places.length} places{mustCount > 0 ? `  ·  ${mustCount} must-visit` : ''}
+        </Text>
 
-        <View style={styles.travelRow}>
-          <View style={place.entranceFee > 0 ? styles.feeBadge : styles.freeBadge}>
-            <Text style={place.entranceFee > 0 ? styles.feeText : styles.freeText}>
-              {place.entranceFee > 0 ? `Entrance: PHP ${place.entranceFee}` : 'Free entry'}
-            </Text>
-          </View>
-          <View style={styles.infoBadge}>
-            <Ionicons name="time-outline" size={s(12)} color={Colors.primary} />
-            <Text style={styles.infoBadgeText}>{visitLength}</Text>
-          </View>
-          {travelModes.length > 0 ? (
-            travelModes.slice(0, 3).map(([mode, time]) => {
-              const meta = TRAVEL_MODE_META[mode];
-              if (!meta) return null;
+        {topCats.length > 0 && (
+          <View style={styles.heroCatRow}>
+            {topCats.map(([cat, count]) => {
+              const cm = getCategoryMeta(cat);
               return (
-                <View key={mode} style={styles.travelChip}>
-                  <Text style={styles.travelEmoji}>{meta.emoji}</Text>
-                  <Text style={styles.travelTime}>{`${time} ${meta.label.toLowerCase()}`}</Text>
+                <View key={cat} style={styles.heroCatChip}>
+                  <Text style={styles.heroCatEmoji}>{cm.emoji}</Text>
+                  <Text style={styles.heroCatText}>{count} {cm.label}</Text>
                 </View>
               );
-            })
-          ) : null}
-        </View>
-
-        <TouchableOpacity
-          style={styles.detailsToggle}
-          onPress={() => setShowDetails((prev) => !prev)}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.detailsToggleText}>
-            {showDetails ? 'Hide details' : 'More details'}
-          </Text>
-          <Ionicons
-            name={showDetails ? 'chevron-up' : 'chevron-down'}
-            size={s(14)}
-            color={Colors.primary}
-          />
-        </TouchableOpacity>
-
-        {showDetails ? (
-          <>
-            <View style={styles.planSection}>
-              <Text style={styles.planSectionTitle}>How to get there</Text>
-              <Text style={styles.planSectionText}>{transportSummary}</Text>
-            </View>
-
-            <View style={styles.planSection}>
-              <Text style={styles.planSectionTitle}>Best time to visit</Text>
-              <Text style={styles.planSectionText}>{bestTimeToVisit}</Text>
-            </View>
-
-            <View style={styles.planSection}>
-              <Text style={styles.planSectionTitle}>Itinerary tip</Text>
-              <Text style={styles.planSectionText}>{planningNote}</Text>
-            </View>
-          </>
-        ) : null}
-
-        {canAddToTrip && (
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={styles.addPrimaryBtn} onPress={() => onAdd(place)}>
-              <Ionicons name="add" size={s(16)} color={Colors.white} />
-              <Text style={styles.addPrimaryBtnText}>Add to Trip</Text>
-            </TouchableOpacity>
+            })}
           </View>
         )}
       </View>
@@ -389,60 +394,192 @@ function PlaceCard({ place, savedIds, onAdd, onSave, canAddToTrip }) {
   );
 }
 
-function DestinationHero({ destKey, effectiveDestination, places }) {
-  const mustVisitCount = places.filter((place) => place.mustVisit).length;
-  const heroPlace = places.find(p => p.mustVisit) || places[0];
-  const hasImage  = heroPlace && (PLACE_IMAGES[heroPlace.id] || heroPlace.image);
+// ── Place Card ────────────────────────────────────────────────────────────────
+
+function PlaceCard({ place, savedIds, onAdd, onSave }) {
+  const [expanded, setExpanded] = useState(false);
+  const isSaved   = savedIds.has(place.id);
+  const cm        = getCategoryMeta(place.category);
+  const visitLen  = getVisitLength(place);
+  const transport = getTransportSummary(place);
+  const bestTime  = getBestTimeToVisit(place);
+  const tip       = getPlanningNote(place);
+  const travelModes = Object.entries(place.travel || {}).filter(([, v]) => v !== null);
 
   return (
-    <View style={styles.heroCard}>
-      {hasImage ? (
-        <CachedImage
-          placeId={heroPlace.id}
-          uri={heroPlace.image}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.heroImage, styles.heroFallback]}>
-          <Ionicons name="sparkles-outline" size={s(32)} color={Colors.primary} />
+    <View style={styles.card}>
+      {/* Card header row */}
+      <View style={styles.cardHeader}>
+        {/* Category icon */}
+        <View style={[styles.catIcon, { backgroundColor: cm.bg }]}>
+          <Text style={styles.catIconEmoji}>{cm.emoji}</Text>
+        </View>
+
+        {/* Name + meta */}
+        <View style={styles.cardHeaderText}>
+          <Text style={styles.cardName} numberOfLines={2}>{place.name}</Text>
+          {!!place.location && (
+            <View style={styles.locationRow}>
+              <Ionicons name="location-outline" size={s(11)} color={Colors.textTertiary} />
+              <Text style={styles.locationText} numberOfLines={1}>{place.location}</Text>
+            </View>
+          )}
+          <View style={styles.cardMetaRow}>
+            <Text style={[styles.cardMetaLabel, { color: cm.accent }]}>{cm.label}</Text>
+            <Text style={styles.cardMetaDot}>·</Text>
+            <Text style={styles.cardMetaValue}>
+              {place.entranceFee > 0 ? `PHP ${place.entranceFee}` : 'Free'}
+            </Text>
+            <Text style={styles.cardMetaDot}>·</Text>
+            <Text style={styles.cardMetaValue}>{visitLen}</Text>
+          </View>
+        </View>
+
+        {/* Save button */}
+        <TouchableOpacity
+          style={[styles.saveBtn, isSaved && styles.saveBtnActive]}
+          onPress={() => onSave(place)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons
+            name={isSaved ? 'bookmark' : 'bookmark-outline'}
+            size={s(16)}
+            color={isSaved ? Colors.white : Colors.primary}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Must-visit badge */}
+      {place.mustVisit && (
+        <View style={styles.mustVisitRow}>
+          <View style={styles.mustVisitBadge}>
+            <Text style={styles.mustVisitText}>⭐  Must-visit</Text>
+          </View>
         </View>
       )}
-      <View style={styles.heroOverlay} />
-      <View style={styles.heroContent}>
-        <Text style={styles.heroEyebrow}>Explore {destKey || effectiveDestination}</Text>
-        <Text style={styles.heroTitle}>{destKey || effectiveDestination}</Text>
-        <Text style={styles.heroMeta}>{`${places.length} places • ${mustVisitCount} must-visit`}</Text>
+
+      {/* Description */}
+      {!!place.description && (
+        <Text style={styles.cardDesc} numberOfLines={expanded ? undefined : 3}>
+          {place.description}
+        </Text>
+      )}
+
+      {/* Travel chips */}
+      {travelModes.length > 0 && (
+        <View style={styles.travelRow}>
+          {travelModes.slice(0, 3).map(([mode, time]) => {
+            const tm = TRAVEL_MODE_META[mode];
+            if (!tm) return null;
+            return (
+              <View key={mode} style={styles.travelChip}>
+                <Text style={styles.travelEmoji}>{tm.emoji}</Text>
+                <Text style={styles.travelTime}>{time} {tm.label.toLowerCase()}</Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {/* Separator */}
+      <View style={styles.divider} />
+
+      {/* Expand toggle */}
+      <TouchableOpacity
+        style={styles.expandRow}
+        onPress={() => setExpanded(p => !p)}
+        activeOpacity={0.7}>
+        <Text style={styles.expandLabel}>{expanded ? 'Less info' : 'More details'}</Text>
+        <Ionicons
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+          size={s(14)}
+          color={Colors.primary}
+        />
+      </TouchableOpacity>
+
+      {/* Expanded details */}
+      {expanded && (
+        <View style={styles.expandedBlock}>
+          <DetailRow icon="navigate-outline" label="How to get there" value={transport} />
+          <DetailRow icon="sunny-outline"    label="Best time to visit" value={bestTime} />
+          <DetailRow icon="bulb-outline"     label="Itinerary tip"      value={tip} />
+        </View>
+      )}
+
+      {/* Add to trip button */}
+      <TouchableOpacity style={styles.addBtn} onPress={() => onAdd(place)}>
+        <Ionicons name="add-circle-outline" size={s(16)} color={Colors.white} />
+        <Text style={styles.addBtnText}>Add to Trip</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function DetailRow({ icon, label, value }) {
+  return (
+    <View style={styles.detailRow}>
+      <View style={styles.detailIconWrap}>
+        <Ionicons name={icon} size={s(14)} color={Colors.primary} />
+      </View>
+      <View style={styles.detailContent}>
+        <Text style={styles.detailLabel}>{label}</Text>
+        <Text style={styles.detailValue}>{value}</Text>
       </View>
     </View>
   );
 }
 
-// ── Main Screen ──────────────────────────────────────────────────────────────
+// ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function PlaceDiscoveryScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
   const trip   = route?.params?.trip;
-  const destinationOverride = route?.params?.destinationOverride || '';
-  const effectiveDestination = destinationOverride || trip?.destination || '';
+  const destinationOverride   = route?.params?.destinationOverride || '';
+  const effectiveDestination  = destinationOverride || trip?.destination || '';
+  const destKey               = matchDestination(effectiveDestination);
+  const [search,       setSearch]       = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [savedIds,     setSavedIds]     = useState(new Set());
+  const [addTarget,    setAddTarget]    = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [cachedPlaces, setCachedPlaces] = useState([]);
+  const [loadingCache, setLoadingCache] = useState(true);
 
-  const destKey = matchDestination(effectiveDestination);
-  const places  = destKey ? (PLACES_BY_DESTINATION[destKey] || []) : [];
-  const canAddToTrip = !!trip?.id;
+  useEffect(() => {
+    setLoadingCache(true);
+    // Try raw destination first (exact DB key), fall back to normalized destKey
+    const primaryLookup   = effectiveDestination;
+    const fallbackLookup  = destKey && destKey !== effectiveDestination ? destKey : null;
 
-  const [search,          setSearch]          = useState('');
-  const [activeFilter,    setActiveFilter]    = useState('all');
-  const [savedIds,        setSavedIds]        = useState(new Set());
-  const [addTarget,       setAddTarget]       = useState(null);
-  const [showAddModal,    setShowAddModal]    = useState(false);
+    if (!primaryLookup && !fallbackLookup) { setLoadingCache(false); return; }
+
+    getCachedPlaces(primaryLookup || fallbackLookup)
+      .then(rows => {
+        if (rows.length > 0) { setCachedPlaces(rows); setLoadingCache(false); return; }
+        if (fallbackLookup) {
+          return getCachedPlaces(fallbackLookup).then(r => { setCachedPlaces(r); setLoadingCache(false); });
+        }
+        setLoadingCache(false);
+      })
+      .catch(() => setLoadingCache(false));
+  }, [destKey, effectiveDestination]);
+
+  const places = useMemo(() => {
+    const staticPlaces = destKey ? (PLACES_BY_DESTINATION[destKey] || []) : [];
+    if (cachedPlaces.length === 0) return staticPlaces;
+    const map = new Map(staticPlaces.map(p => [p.id, p]));
+    cachedPlaces.forEach(p => { if (!map.has(p.id)) map.set(p.id, p); });
+    return Array.from(map.values());
+  }, [destKey, cachedPlaces]);
 
   const filtered = useMemo(() => {
-    let list = [...places].sort((a, b) => Number(b.mustVisit) - Number(a.mustVisit) || a.name.localeCompare(b.name));
+    let list = [...places].sort(
+      (a, b) => Number(b.mustVisit) - Number(a.mustVisit) || a.name.localeCompare(b.name)
+    );
     if (activeFilter !== 'all') list = list.filter(p => p.category === activeFilter);
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(p =>
-        p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
+        p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q)
       );
     }
     return list;
@@ -480,60 +617,63 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
         <View style={{ width: s(36) }} />
       </View>
 
-
       {/* Search bar */}
       <View style={styles.searchWrap}>
-        <Ionicons name="search-outline" size={s(18)} color={Colors.grayMedium} />
+        <Ionicons name="search-outline" size={s(16)} color={Colors.textTertiary} />
         <TextInput
           style={styles.searchInput}
           value={search}
           onChangeText={setSearch}
-          placeholder="Search places..."
-          placeholderTextColor={Colors.grayMedium}
+          placeholder="Search places…"
+          placeholderTextColor={Colors.textTertiary}
           returnKeyType="search"
         />
         {search.length > 0 && (
-          <TouchableOpacity onPress={() => setSearch('')}>
-            <Ionicons name="close-circle" size={s(18)} color={Colors.grayMedium} />
+          <TouchableOpacity onPress={() => setSearch('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Ionicons name="close-circle" size={s(16)} color={Colors.textTertiary} />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Category filters */}
+      {/* Category filter chips */}
       <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
+        horizontal showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.filterRow}
-        style={styles.filterBar}
-      >
-        {PLACE_CATEGORIES.map(cat => (
-          <TouchableOpacity
-            key={cat.key}
-            style={[styles.filterChip, activeFilter === cat.key && styles.filterChipActive]}
-            onPress={() => setActiveFilter(cat.key)}
-          >
-            <Text style={styles.filterEmoji}>{cat.emoji}</Text>
-            <Text
-              numberOfLines={1}
-              style={[styles.filterLabel, activeFilter === cat.key && styles.filterLabelActive]}
-            >
-              {cat.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        style={styles.filterBar}>
+        {PLACE_CATEGORIES.map(cat => {
+          const isActive = activeFilter === cat.key;
+          return (
+            <TouchableOpacity
+              key={cat.key}
+              style={[styles.filterChip, isActive && styles.filterChipActive]}
+              onPress={() => setActiveFilter(cat.key)}>
+              <Text style={styles.filterEmoji}>{cat.emoji}</Text>
+              <Text style={[styles.filterLabel, isActive && styles.filterLabelActive]}>
+                {cat.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
+      {/* Content */}
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.list}
-        style={{ flex: 1 }}
-      >
-        {places.length === 0 ? (
-          <View style={styles.noDestState}>
-            <Text style={{ fontSize: s(52) }}>🗺️</Text>
-            <Text style={styles.noDestTitle}>No places found</Text>
-            <Text style={styles.noDestSub}>
-              We don't have data for "{effectiveDestination}" yet.{'\n'}Try Banaue, Sagada, Siargao, Camiguin, Siquijor, Puerto Princesa, or Rizal.
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled">
+
+        {loadingCache && places.length === 0 ? (
+          <View style={styles.emptyState}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+            <Text style={styles.emptySub}>Loading places…</Text>
+          </View>
+        ) : places.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyEmoji}>🗺️</Text>
+            <Text style={styles.emptyTitle}>No places found</Text>
+            <Text style={styles.emptySub}>
+              We don't have data for "{effectiveDestination}" yet.{'\n'}
+              Try Baguio, Sagada, Vigan, Siargao, El Nido, or Cebu.
             </Text>
           </View>
         ) : (
@@ -543,12 +683,23 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
               effectiveDestination={effectiveDestination}
               places={places}
             />
-            <Text style={styles.resultCount}>{filtered.length} places in {destKey || effectiveDestination}</Text>
+
+            <View style={styles.resultRow}>
+              <Text style={styles.resultCount}>
+                {filtered.length} {filtered.length === 1 ? 'place' : 'places'}
+              </Text>
+              {activeFilter !== 'all' && (
+                <TouchableOpacity onPress={() => setActiveFilter('all')}>
+                  <Text style={styles.clearFilter}>Clear filter</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
             {filtered.length === 0 ? (
-              <View style={styles.noDestStateCompact}>
-                <Text style={{ fontSize: s(40) }}>🔍</Text>
-                <Text style={styles.noDestTitle}>No results</Text>
-                <Text style={styles.noDestSub}>Try a different search or filter.</Text>
+              <View style={styles.emptyStateSmall}>
+                <Text style={{ fontSize: s(36) }}>🔍</Text>
+                <Text style={styles.emptyTitle}>No results</Text>
+                <Text style={styles.emptySub}>Try a different search or filter.</Text>
               </View>
             ) : (
               filtered.map(place => (
@@ -558,7 +709,6 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
                   savedIds={savedIds}
                   onAdd={handleAddPress}
                   onSave={handleSave}
-                  canAddToTrip={canAddToTrip}
                 />
               ))
             )}
@@ -566,381 +716,320 @@ export default function PlaceDiscoveryScreen({ navigation, route }) {
         )}
       </ScrollView>
 
-      {canAddToTrip ? (
-        <AddToTripModal
-          visible={showAddModal}
-          place={addTarget}
-          trip={trip}
-          destKey={destKey}
-          onClose={() => { setShowAddModal(false); setAddTarget(null); }}
-          onDone={() => {}}
-        />
-      ) : null}
+      <AddToTripModal
+        visible={showAddModal}
+        place={addTarget}
+        trip={trip}
+        onClose={() => { setShowAddModal(false); setAddTarget(null); }}
+        onDone={() => {}}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.bgLight },
+// ── Styles ────────────────────────────────────────────────────────────────────
 
+const styles = StyleSheet.create({
+  container:   { flex: 1, backgroundColor: Colors.bgLight },
+
+  // Header
   header: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: Colors.primary,
     paddingHorizontal: s(16), paddingBottom: s(14),
   },
-  headerBtn: { width: s(36), height: s(36), alignItems: 'center', justifyContent: 'center' },
+  headerBtn:   { width: s(36), height: s(36), alignItems: 'center', justifyContent: 'center' },
   headerTitle: { flex: 1, textAlign: 'center', fontSize: s(17), fontFamily: Fonts.bold, color: Colors.white },
+
+  // Search
   searchWrap: {
     flexDirection: 'row', alignItems: 'center', gap: s(8),
-    backgroundColor: Colors.white, marginHorizontal: s(16), marginTop: s(12),
-    borderRadius: s(12), paddingHorizontal: s(12), paddingVertical: s(8),
-    borderWidth: 1.5, borderColor: Colors.border,
+    backgroundColor: Colors.white,
+    marginHorizontal: s(16), marginTop: s(12), marginBottom: s(4),
+    borderRadius: s(12), paddingHorizontal: s(12), paddingVertical: s(10),
+    borderWidth: 1, borderColor: Colors.border,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
   },
   searchInput: {
-    flex: 1,
-    fontSize: s(14),
-    fontFamily: Fonts.regular,
-    color: Colors.textPrimary,
-    paddingVertical: 0,
+    flex: 1, fontSize: s(14), fontFamily: Fonts.regular,
+    color: Colors.textPrimary, paddingVertical: 0,
   },
 
-  filterBar: {
-    maxHeight: s(44),
-    marginTop: s(4),
-    marginBottom: 0,
-    flexShrink: 0,
-  },
+  // Filter chips
+  filterBar: { maxHeight: s(48), flexShrink: 0 },
   filterRow: {
-    paddingHorizontal: s(16),
-    paddingVertical: 0,
-    gap: s(6),
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    paddingHorizontal: s(16), paddingVertical: s(8),
+    gap: s(6), alignItems: 'center',
   },
   filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: s(3),
-    minHeight: s(32),
-    paddingHorizontal: s(10),
-    paddingVertical: s(4),
-    backgroundColor: Colors.white,
-    borderRadius: s(16),
-    borderWidth: 1.5,
-    borderColor: Colors.border,
+    flexDirection: 'row', alignItems: 'center', gap: s(4),
+    paddingHorizontal: s(12), paddingVertical: s(6),
+    backgroundColor: Colors.white, borderRadius: s(20),
+    borderWidth: 1.5, borderColor: Colors.border,
   },
   filterChipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  filterEmoji: {
-    fontSize: s(12),
-    lineHeight: s(12),
-  },
-  filterLabel: {
-    flexShrink: 0,
-    fontSize: s(11),
-    lineHeight: s(12),
-    fontFamily: Fonts.bold,
-    color: Colors.textSecondary,
-    includeFontPadding: false,
-    textAlignVertical: 'center',
-  },
-  filterLabelActive: { color: Colors.white },
+  filterEmoji:      { fontSize: s(12) },
+  filterLabel:      { fontSize: s(12), fontFamily: Fonts.bold, color: Colors.textSecondary },
+  filterLabelActive:{ color: Colors.white },
 
-  list: { padding: s(16), paddingTop: s(12), gap: s(12) },
-  resultCount: { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.textSecondary },
+  // List
+  listContent: { padding: s(16), paddingTop: s(12), gap: s(10), paddingBottom: s(40) },
 
-  heroCard: {
-    position: 'relative',
-    borderRadius: s(18),
-    overflow: 'hidden',
-    minHeight: s(184),
-    backgroundColor: Colors.white,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: s(3) },
-    shadowOpacity: 0.08,
-    shadowRadius: s(10),
-    elevation: 4,
+  // Hero banner
+  heroBanner: {
+    borderRadius: s(20), overflow: 'hidden',
+    padding: s(24), paddingBottom: s(20),
+    marginBottom: s(4),
+    shadowColor: '#000', shadowOffset: { width: 0, height: s(4) },
+    shadowOpacity: 0.15, shadowRadius: s(12), elevation: 5,
   },
-  heroImage: {
-    width: '100%',
-    height: s(184),
+  heroCircle1: {
+    position: 'absolute', width: s(160), height: s(160),
+    borderRadius: s(80), backgroundColor: 'rgba(255,255,255,0.06)',
+    top: -s(40), right: -s(40),
   },
-  heroFallback: {
-    backgroundColor: Colors.primaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
+  heroCircle2: {
+    position: 'absolute', width: s(100), height: s(100),
+    borderRadius: s(50), backgroundColor: 'rgba(255,255,255,0.04)',
+    bottom: -s(20), left: s(20),
   },
-  heroOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '62%',
-    backgroundColor: 'rgba(0,0,0,0.34)',
+  heroInner:   { alignItems: 'center', gap: s(6) },
+  heroEmoji:   { fontSize: s(56), lineHeight: s(64) },
+  heroName: {
+    fontSize: s(26), fontFamily: Fonts.bold, color: Colors.white,
+    textAlign: 'center', marginTop: s(4),
   },
-  heroContent: {
-    position: 'absolute',
-    left: s(16),
-    right: s(16),
-    bottom: s(16),
+  heroStats: {
+    fontSize: s(13), fontFamily: Fonts.medium,
+    color: 'rgba(255,255,255,0.8)', textAlign: 'center',
   },
-  heroEyebrow: {
-    fontSize: s(11),
-    fontFamily: Fonts.bold,
-    color: 'rgba(255,255,255,0.82)',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
+  heroCatRow: {
+    flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center',
+    gap: s(6), marginTop: s(10),
   },
-  heroTitle: {
-    marginTop: s(6),
-    fontSize: s(24),
-    fontFamily: Fonts.bold,
-    color: Colors.white,
+  heroCatChip: {
+    flexDirection: 'row', alignItems: 'center', gap: s(4),
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: s(20), paddingHorizontal: s(10), paddingVertical: s(4),
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)',
   },
-  heroMeta: {
-    marginTop: s(4),
-    fontSize: s(12),
-    fontFamily: Fonts.medium,
-    color: 'rgba(255,255,255,0.9)',
+  heroCatEmoji: { fontSize: s(11) },
+  heroCatText:  { fontSize: s(11), fontFamily: Fonts.bold, color: 'rgba(255,255,255,0.9)' },
+
+  // Result row
+  resultRow: {
+    flexDirection: 'row', alignItems: 'center',
+    justifyContent: 'space-between', marginBottom: s(2),
   },
+  resultCount:  { fontSize: s(12), fontFamily: Fonts.medium, color: Colors.textSecondary },
+  clearFilter:  { fontSize: s(12), fontFamily: Fonts.bold, color: Colors.primary },
 
   // Place card
-  placeCard: {
-    backgroundColor: Colors.white, borderRadius: s(16),
-    shadowColor: '#000', shadowOffset: { width: 0, height: s(2) },
-    shadowOpacity: 0.07, shadowRadius: s(8), elevation: 3,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    overflow: 'hidden',
-  },
-  placeCardImage: {
-    width: '100%',
-    height: s(160),
-  },
-  placeCardPlaceholder: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: s(6),
-  },
-  placeholderEmoji: {
-    fontSize: s(40),
-  },
-  placeholderText: {
-    fontSize: s(11),
-    fontFamily: Fonts.medium,
-    color: Colors.textSecondary,
-    letterSpacing: 0.3,
-  },
-  placeCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: s(10),
-    paddingHorizontal: s(14),
-    paddingTop: s(14),
-  },
-  placeTitleWrap: {
-    flex: 1,
-    gap: s(8),
-  },
-  mustVisitBadgeInline: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#FFF2E3',
-    borderRadius: s(999),
-    paddingHorizontal: s(10),
-    paddingVertical: s(4),
-  },
-  mustVisitTextInline: {
-    fontSize: s(11),
-    fontFamily: Fonts.bold,
-    color: '#A85A11',
-  },
-  saveIconBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: s(4),
+  card: {
     backgroundColor: Colors.white,
-    borderWidth: 1.25,
-    borderColor: Colors.primary,
-    borderRadius: s(999),
-    paddingHorizontal: s(10),
-    paddingVertical: s(7),
+    borderRadius: s(16),
+    padding: s(14),
+    shadowColor: '#000', shadowOffset: { width: 0, height: s(2) },
+    shadowOpacity: 0.06, shadowRadius: s(8), elevation: 2,
+    borderWidth: 1, borderColor: Colors.border,
+    gap: s(10),
   },
-  saveIconBtnActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  saveIconBtnText: {
-    fontSize: s(11),
-    fontFamily: Fonts.bold,
-    color: Colors.primary,
-  },
-  saveIconBtnTextActive: { color: Colors.white },
 
-  placeInfo: { padding: s(14), paddingTop: s(10) },
-  placeName: { fontSize: s(16), fontFamily: Fonts.bold, color: Colors.textPrimary },
-  placeDesc: { fontSize: s(12), fontFamily: Fonts.regular, color: Colors.textSecondary, lineHeight: s(18) },
+  // Card header
+  cardHeader:     { flexDirection: 'row', alignItems: 'flex-start', gap: s(12) },
+  catIcon: {
+    width: s(44), height: s(44), borderRadius: s(12),
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  catIconEmoji:   { fontSize: s(22) },
+  cardHeaderText: { flex: 1, gap: s(3) },
+  cardName: {
+    fontSize: s(15), fontFamily: Fonts.bold,
+    color: Colors.textPrimary, lineHeight: s(20),
+  },
+  locationRow:    { flexDirection: 'row', alignItems: 'center', gap: s(3), marginBottom: s(2) },
+  locationText:   { fontSize: s(10), fontFamily: Fonts.regular, color: Colors.textTertiary, flex: 1 },
+  cardMetaRow:    { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: s(4) },
+  cardMetaLabel:  { fontSize: s(11), fontFamily: Fonts.bold },
+  cardMetaDot:    { fontSize: s(11), color: Colors.textTertiary },
+  cardMetaValue:  { fontSize: s(11), fontFamily: Fonts.medium, color: Colors.textSecondary },
 
-  travelRow: { flexDirection: 'row', flexWrap: 'wrap', gap: s(6), marginTop: s(10) },
+  // Save button
+  saveBtn: {
+    width: s(32), height: s(32), borderRadius: s(10),
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: Colors.primaryBg,
+    borderWidth: 1, borderColor: Colors.primary + '30',
+    flexShrink: 0,
+  },
+  saveBtnActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+
+  // Must visit
+  mustVisitRow: { marginTop: -s(2) },
+  mustVisitBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFBEB',
+    borderRadius: s(8), paddingHorizontal: s(10), paddingVertical: s(4),
+    borderWidth: 1, borderColor: '#FCD34D',
+  },
+  mustVisitText: { fontSize: s(11), fontFamily: Fonts.bold, color: '#92400E' },
+
+  // Description
+  cardDesc: {
+    fontSize: s(13), fontFamily: Fonts.regular,
+    color: Colors.textSecondary, lineHeight: s(19),
+  },
+
+  // Travel chips
+  travelRow: { flexDirection: 'row', flexWrap: 'wrap', gap: s(6) },
   travelChip: {
     flexDirection: 'row', alignItems: 'center', gap: s(4),
     backgroundColor: Colors.bgLight, borderRadius: s(8),
     paddingHorizontal: s(8), paddingVertical: s(4),
     borderWidth: 1, borderColor: Colors.border,
   },
-  travelEmoji: { fontSize: s(12) },
-  travelTime: { fontSize: s(11), fontFamily: Fonts.medium, color: Colors.textSecondary },
-  infoBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: s(4),
-    backgroundColor: Colors.primaryBg,
-    borderRadius: s(8),
-    paddingHorizontal: s(8),
-    paddingVertical: s(4),
-    borderWidth: 1,
-    borderColor: Colors.primary + '35',
-  },
-  infoBadgeText: { fontSize: s(11), fontFamily: Fonts.bold, color: Colors.primary },
-  freeBadge: {
-    backgroundColor: '#E8FFF3', borderRadius: s(8),
-    paddingHorizontal: s(8), paddingVertical: s(4),
-    borderWidth: 1, borderColor: '#10B981',
-  },
-  freeText: { fontSize: s(11), fontFamily: Fonts.bold, color: '#10B981' },
-  feeBadge: {
-    backgroundColor: Colors.primaryBg, borderRadius: s(8),
-    paddingHorizontal: s(8), paddingVertical: s(4),
-    borderWidth: 1, borderColor: Colors.primary,
-  },
-  feeText: { fontSize: s(11), fontFamily: Fonts.bold, color: Colors.primary },
-  detailsToggle: {
-    marginTop: s(10),
-    flexDirection: 'row',
-    alignItems: 'center',
+  travelEmoji: { fontSize: s(11) },
+  travelTime:  { fontSize: s(11), fontFamily: Fonts.medium, color: Colors.textSecondary },
+
+  // Divider
+  divider: { height: 1, backgroundColor: Colors.border, marginVertical: s(2) },
+
+  // Expand toggle
+  expandRow: {
+    flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  expandLabel: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.primary },
+
+  // Expanded details
+  expandedBlock: {
+    backgroundColor: Colors.bgLight, borderRadius: s(12),
+    padding: s(12), gap: s(10),
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  detailRow:     { flexDirection: 'row', gap: s(10), alignItems: 'flex-start' },
+  detailIconWrap:{
+    width: s(26), height: s(26), borderRadius: s(8),
     backgroundColor: Colors.primaryBg,
-    borderRadius: s(10),
-    paddingHorizontal: s(12),
-    paddingVertical: s(10),
-    borderWidth: 1,
-    borderColor: Colors.primary + '30',
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
-  detailsToggleText: {
-    fontSize: s(12),
-    fontFamily: Fonts.bold,
-    color: Colors.primary,
+  detailContent: { flex: 1, gap: s(2) },
+  detailLabel: {
+    fontSize: s(10), fontFamily: Fonts.bold,
+    color: Colors.primary, textTransform: 'uppercase', letterSpacing: 0.4,
   },
-
-  planSection: {
-    marginTop: s(10),
-    backgroundColor: '#FFF8F3',
-    borderRadius: s(12),
-    padding: s(10),
-    borderWidth: 1,
-    borderColor: '#F4D7BE',
-  },
-  planSectionTitle: {
-    fontSize: s(11),
-    fontFamily: Fonts.bold,
-    color: '#A85A11',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-  },
-  planSectionText: {
-    marginTop: s(4),
-    fontSize: s(12),
-    fontFamily: Fonts.regular,
-    color: Colors.textSecondary,
-    lineHeight: s(17),
+  detailValue: {
+    fontSize: s(12), fontFamily: Fonts.regular,
+    color: Colors.textSecondary, lineHeight: s(17),
   },
 
-  actionRow: { marginTop: s(12) },
-  addPrimaryBtn: {
-    width: '100%',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: s(4),
-    backgroundColor: Colors.primary,
-    borderRadius: s(12),
-    paddingHorizontal: s(14),
+  // Add to trip
+  addBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: s(6),
+    backgroundColor: Colors.primary, borderRadius: s(12),
     paddingVertical: s(12),
   },
-  addPrimaryBtnText: {
-    fontSize: s(13),
-    fontFamily: Fonts.bold,
-    color: Colors.white,
-  },
+  addBtnText: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.white },
 
-  // No destination state
-  noDestState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: s(12),
-    paddingHorizontal: s(32),
-    paddingTop: s(72),
-    paddingBottom: s(40),
+  // Empty states
+  emptyState: {
+    alignItems: 'center', gap: s(12),
+    paddingHorizontal: s(32), paddingTop: s(80), paddingBottom: s(40),
   },
-  noDestStateCompact: {
-    backgroundColor: Colors.white,
-    borderRadius: s(16),
-    borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: s(2) },
-    shadowOpacity: 0.05,
-    shadowRadius: s(8),
-    elevation: 2,
-    alignItems: 'center',
-    gap: s(12),
-    paddingHorizontal: s(20),
-    paddingVertical: s(24),
+  emptyStateSmall: {
+    alignItems: 'center', gap: s(10),
+    backgroundColor: Colors.white, borderRadius: s(16),
+    padding: s(24), borderWidth: 1, borderColor: Colors.border,
   },
-  noDestTitle: { fontSize: s(20), fontFamily: Fonts.bold, color: Colors.textPrimary },
-  noDestSub: { fontSize: s(14), fontFamily: Fonts.regular, color: Colors.textSecondary, textAlign: 'center', lineHeight: s(20) },
+  emptyEmoji: { fontSize: s(52) },
+  emptyTitle: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary },
+  emptySub: {
+    fontSize: s(13), fontFamily: Fonts.regular,
+    color: Colors.textSecondary, textAlign: 'center', lineHeight: s(19),
+  },
 
   // Modal
   modalSheet: {
-    backgroundColor: Colors.white, borderTopLeftRadius: s(24), borderTopRightRadius: s(24),
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: s(24), borderTopRightRadius: s(24),
     padding: s(24), paddingTop: s(12),
   },
   modalHandle: {
     width: s(40), height: s(4), borderRadius: s(2),
     backgroundColor: Colors.grayMedium, alignSelf: 'center', marginBottom: s(20),
   },
-  modalTitle: { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary },
-  modalPlace: { fontSize: s(14), fontFamily: Fonts.medium, color: Colors.primary, marginBottom: s(16) },
-  fieldLabel: { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.textSecondary, marginBottom: s(8) },
+  modalTitle:    { fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary, marginBottom: s(4) },
+  modalPlace:    { fontSize: s(14), fontFamily: Fonts.medium, color: Colors.primary, marginBottom: s(20) },
+  fieldLabel:    { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.textSecondary, marginBottom: s(8) },
   dayChip: {
-    paddingHorizontal: s(16), paddingVertical: s(8), borderRadius: s(20),
-    backgroundColor: Colors.grayLight, borderWidth: 1.5, borderColor: Colors.border,
+    paddingHorizontal: s(16), paddingVertical: s(8),
+    borderRadius: s(20), backgroundColor: Colors.bgLight,
+    borderWidth: 1.5, borderColor: Colors.border,
   },
   dayChipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  dayChipText: { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.textSecondary },
+  dayChipText:   { fontSize: s(13), fontFamily: Fonts.bold, color: Colors.textSecondary },
   dayChipTextActive: { color: Colors.white },
-  timeRow: { flexDirection: 'row', alignItems: 'center', gap: s(8), marginBottom: s(16) },
+  timeRow:       { flexDirection: 'row', alignItems: 'center', gap: s(8), marginBottom: s(20) },
   timeInput: {
     borderWidth: 1.5, borderColor: Colors.border, borderRadius: s(12),
     paddingHorizontal: s(14), paddingVertical: s(12),
     fontSize: s(18), fontFamily: Fonts.bold, color: Colors.textPrimary,
     textAlign: 'center', width: s(64),
   },
-  timeColon: { fontSize: s(20), fontFamily: Fonts.bold, color: Colors.textPrimary },
+  timeColon:     { fontSize: s(20), fontFamily: Fonts.bold, color: Colors.textPrimary },
   periodToggle: {
     flexDirection: 'row', borderRadius: s(12), overflow: 'hidden',
     borderWidth: 1.5, borderColor: Colors.border, marginLeft: s(4),
   },
-  periodBtn: { paddingHorizontal: s(14), paddingVertical: s(12), backgroundColor: Colors.white },
-  periodBtnActive: { backgroundColor: Colors.primary },
-  periodText: { fontSize: s(14), fontFamily: Fonts.bold, color: Colors.textSecondary },
-  periodTextActive: { color: Colors.white },
-  feeNote: {
-    flexDirection: 'row', alignItems: 'center', gap: s(8),
-    backgroundColor: Colors.primaryBg, borderRadius: s(10),
-    padding: s(10), marginBottom: s(16),
-  },
-  feeNoteText: { flex: 1, fontSize: s(12), fontFamily: Fonts.regular, color: Colors.textSecondary },
+  periodBtn:      { paddingHorizontal: s(14), paddingVertical: s(12), backgroundColor: Colors.white },
+  periodBtnActive:{ backgroundColor: Colors.primary },
+  periodText:     { fontSize: s(14), fontFamily: Fonts.bold, color: Colors.textSecondary },
+  periodTextActive:{ color: Colors.white },
   confirmBtn: {
     backgroundColor: Colors.primary, borderRadius: s(14),
-    paddingVertical: s(14), alignItems: 'center',
+    paddingVertical: s(14), alignItems: 'center', marginTop: s(4),
   },
   confirmBtnText: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.white },
+
+  // Trip picker (step 1)
+  noTripsBox: {
+    backgroundColor: Colors.bgLight, borderRadius: s(12),
+    padding: s(16), borderWidth: 1, borderColor: Colors.border,
+    marginBottom: s(16), alignItems: 'center',
+  },
+  noTripsText: {
+    fontSize: s(13), fontFamily: Fonts.regular,
+    color: Colors.textSecondary, textAlign: 'center', lineHeight: s(19),
+  },
+  tripRow: {
+    flexDirection: 'row', alignItems: 'center', gap: s(12),
+    backgroundColor: Colors.bgLight, borderRadius: s(14),
+    paddingHorizontal: s(14), paddingVertical: s(12),
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  tripRowEmoji: { fontSize: s(22) },
+  tripRowName: { fontSize: s(14), fontFamily: Fonts.bold, color: Colors.textPrimary },
+  tripRowSub:  { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textSecondary, marginTop: s(1) },
+
+  // Step 2 header with back button
+  modalTitleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: s(10), marginBottom: s(0) },
+  backBtn: {
+    width: s(34), height: s(34), borderRadius: s(10),
+    backgroundColor: Colors.bgLight, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: Colors.border, marginTop: s(2), flexShrink: 0,
+  },
+
+  // Selected trip badge
+  selectedTripBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: s(8),
+    backgroundColor: Colors.primaryBg, borderRadius: s(10),
+    paddingHorizontal: s(12), paddingVertical: s(8),
+    borderWidth: 1, borderColor: Colors.primary + '30',
+    marginBottom: s(16),
+  },
+  selectedTripEmoji: { fontSize: s(16) },
+  selectedTripName: {
+    flex: 1, fontSize: s(13), fontFamily: Fonts.bold, color: Colors.primary,
+  },
 });

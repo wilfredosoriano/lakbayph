@@ -41,15 +41,11 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.shadow882026.lakbayph"
+      "package": "com.shadow882026.lakbayph",
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/0cc3e3fa-6845-457e-916c-581118b01217",
-      "fallbackToCacheTimeout": 0,
-      "checkAutomatically": "ON_LOAD"
     },
     "runtimeVersion": {
       "policy": "appVersion"
@@ -67,8 +63,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "0cc3e3fa-6845-457e-916c-581118b01217"
+        "projectId": "5d252f1c-5788-4933-aa73-23656630f5ad"
       }
-    }
+    },
+    "owner": "wil.soriano"
   }
 }

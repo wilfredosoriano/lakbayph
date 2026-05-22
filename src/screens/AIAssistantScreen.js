@@ -11,6 +11,7 @@ import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '../context/UserContext';
+import { usePremium } from '../context/PremiumContext';
 import { parseMessage } from '../utils/chatParser';
 import {
   addExpense, getBudget, updateBudgetTotal, createTrip, addPackingItem, getTrips,
@@ -137,6 +138,7 @@ function Message({ msg, onAction, lang = 'en' }) {
 export default function AIAssistantScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { userName } = useUser();
+  const { isPremium, isLoading: premiumLoading } = usePremium();
   const scrollRef = useRef(null);
   const [input, setInput] = useState('');
   const [pendingContext, setPendingContext] = useState(null);
@@ -361,6 +363,46 @@ export default function AIAssistantScreen({ navigation }) {
 
     scrollToEnd();
   }, [addBotMessage, scrollToEnd, lang]);
+
+  // ── Premium gate ────────────────────────────────────────────────────────────
+  if (!premiumLoading && !isPremium) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+        <View style={[styles.header, { paddingTop: insets.top + s(12) }]}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <Ionicons name="arrow-back" size={s(22)} color={Colors.white} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Lakbay Assistant</Text>
+          <View style={{ width: s(36) }} />
+        </View>
+        <View style={styles.gateWrap}>
+          <Image source={MASCOT_SMILING} style={styles.gateMascot} resizeMode="contain" />
+          <Text style={styles.gateTitle}>Meet your Lakbay Assistant</Text>
+          <Text style={styles.gateSub}>
+            Plan trips, track budgets, build packing lists, and discover destinations — all with your AI companion. Available with Premium.
+          </Text>
+          <View style={styles.gateFeatureList}>
+            {['Trip planning & itinerary ideas', 'Budget tracking & tips', 'Packing list builder', 'Destination recommendations'].map((f) => (
+              <View key={f} style={styles.gateFeatureRow}>
+                <Ionicons name="checkmark-circle" size={s(16)} color={Colors.primary} />
+                <Text style={styles.gateFeatureText}>{f}</Text>
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={styles.gateBtn}
+            onPress={() => navigation.navigate('Premium')}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="star" size={s(16)} color={Colors.white} />
+            <Text style={styles.gateBtnText}>Upgrade to Premium — ₱199</Text>
+          </TouchableOpacity>
+          <Text style={styles.gateNote}>One-time · No subscription · Yours forever</Text>
+        </View>
+      </View>
+    );
+  }
 
   // ── Render ──────────────────────────────────────────────────────────────────
 
@@ -594,4 +636,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: s(10), paddingVertical: s(4),
   },
   contextBadgeText: { fontSize: s(11), fontFamily: Fonts.medium, color: Colors.primary },
+
+  // ── Premium gate styles
+  gateWrap: {
+    flex: 1, alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: s(28), gap: s(12),
+  },
+  gateMascot: { width: s(130), height: s(130), marginBottom: s(4) },
+  gateTitle: { fontSize: s(20), fontFamily: Fonts.bold, color: Colors.textPrimary, textAlign: 'center' },
+  gateSub: {
+    fontSize: s(13), fontFamily: Fonts.regular, color: Colors.textSecondary,
+    textAlign: 'center', lineHeight: s(19),
+  },
+  gateFeatureList: { alignSelf: 'stretch', gap: s(8), marginVertical: s(4) },
+  gateFeatureRow: { flexDirection: 'row', alignItems: 'center', gap: s(10) },
+  gateFeatureText: { fontSize: s(13), fontFamily: Fonts.medium, color: Colors.textPrimary },
+  gateBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: s(8),
+    backgroundColor: Colors.primary, borderRadius: s(14),
+    paddingVertical: s(14), paddingHorizontal: s(24),
+    alignSelf: 'stretch', justifyContent: 'center',
+    shadowColor: Colors.primary, shadowOffset: { width: 0, height: s(4) },
+    shadowOpacity: 0.35, shadowRadius: s(8), elevation: 4,
+    marginTop: s(4),
+  },
+  gateBtnText: { fontSize: s(15), fontFamily: Fonts.bold, color: Colors.white },
+  gateNote: { fontSize: s(11), fontFamily: Fonts.regular, color: Colors.textTertiary },
 });

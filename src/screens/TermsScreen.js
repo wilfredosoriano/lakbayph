@@ -53,34 +53,45 @@ export default function TermsScreen({ navigation }) {
         </Section>
 
         <Section title="3. User Data">
-          All data you create in LakbayPH — including trips, activities, notes, locations, attached photos, budgets, and preferences — is stored locally on your device. LakbayPH does not collect or transmit your personal data to any server. You are responsible for backing up your own data.
+          All personal data you create in LakbayPH — including trips, activities, notes, locations, photos, budgets, and preferences — is stored locally on your device. LakbayPH does not collect or transmit your personal data to any external server. You are responsible for backing up your own data.
         </Section>
 
-        <Section title="4. Accuracy of Information">
+        <Section title="4. Destination Content Updates">
+          To keep place and destination information current, LakbayPH may periodically fetch updated content (such as new places, entrance fees, and travel tips) from a remote source when your device has an active internet connection. This content is general travel information — not personal data — and is stored locally on your device after download. No personal information is included in or attached to these requests.
+        </Section>
+
+        <Section title="5. Premium Features & In-App Purchases">
+          LakbayPH offers an optional one-time Premium upgrade (LakbayPH Premium) that unlocks additional features including unlimited trips, the Lakbay Assistant, Memories Slideshow, and trip cover photos.{'\n\n'}
+          All purchases are processed by Apple App Store or Google Play. By completing a purchase, you agree to their respective terms of service. Payments are final and non-refundable except where required by applicable law or the platform's own refund policy.{'\n\n'}
+          The Premium upgrade is a one-time, non-consumable purchase — you pay once and it is yours forever, including all future feature updates included in the Premium tier. You can restore your purchase at any time using the "Restore Purchases" option in the app if you reinstall or switch devices.{'\n\n'}
+          Purchase processing is handled by RevenueCat. LakbayPH does not process or store any payment or billing information.
+        </Section>
+
+        <Section title="6. Accuracy of Information">
           The destination information, place details, and travel tips provided in LakbayPH are for general reference only. We do not guarantee the accuracy, completeness, or timeliness of this information. Always verify details with official sources before traveling.
         </Section>
 
-        <Section title="5. Third-Party Links">
-          LakbayPH may open external services such as your email app or a web browser when you choose to view photos, send feedback, or visit legal pages. Those services are governed by their own terms and privacy policies.
+        <Section title="7. Third-Party Links">
+          LakbayPH may open external services such as your email app or a web browser when you choose to send feedback or visit legal pages. Those services are governed by their own terms and privacy policies.
         </Section>
 
-        <Section title="6. Intellectual Property">
+        <Section title="8. Intellectual Property">
           All content within LakbayPH — including design, text, icons, and graphics — is the property of LakbayPH and may not be copied, modified, or redistributed without permission.
         </Section>
 
-        <Section title="7. Disclaimer of Warranties">
+        <Section title="9. Disclaimer of Warranties">
           LakbayPH is provided "as is" without warranties of any kind. We do not guarantee that the app will be error-free or uninterrupted. Use of the app is at your own risk.
         </Section>
 
-        <Section title="8. Limitation of Liability">
+        <Section title="10. Limitation of Liability">
           To the fullest extent permitted by law, LakbayPH shall not be liable for any direct, indirect, or incidental damages arising from your use of the app, including any travel decisions made based on information within the app.
         </Section>
 
-        <Section title="9. Changes to Terms">
+        <Section title="11. Changes to Terms">
           We may update these Terms from time to time. Continued use of the app after changes are posted constitutes your acceptance of the revised Terms.
         </Section>
 
-        <Section title="10. Contact">
+        <Section title="12. Contact">
           If you have questions about these Terms, please contact us at: lakbayph.app@gmail.com
         </Section>
       </ScrollView>
