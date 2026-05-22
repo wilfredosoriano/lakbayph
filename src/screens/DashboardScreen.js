@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   StatusBar, Dimensions, ImageBackground, Image,
@@ -18,6 +18,19 @@ import CachedImage from '../components/CachedImage';
 const { width, height } = Dimensions.get('window');
 const scale = width / 390;
 const s = (size) => Math.round(size * scale);
+
+// ── Mascot tips ──────────────────────────────────────────────────────────────
+
+const MASCOT_TIPS = [
+  { icon: 'list-outline',        title: 'Itinerary First',        sub: 'Plan your days around must-visit spots, food stops, and practical travel tips.' },
+  { icon: 'wallet-outline',      title: 'Budget Smart',           sub: 'Log expenses as you go so you never lose track of your travel budget.' },
+  { icon: 'map-outline',         title: 'Explore More',           sub: 'Discover hundreds of destinations across the Philippines — from Batanes to Tawi-Tawi.' },
+  { icon: 'partly-sunny-outline',title: 'Check the Weather',      sub: 'The Philippines has two seasons. Always check before you pack your bags.' },
+  { icon: 'bag-outline',         title: 'Pack the Essentials',    sub: 'Use the packing list feature so you never forget sunscreen, IDs, or your charger.' },
+  { icon: 'bus-outline',         title: 'Know Your Transport',    sub: 'Check the Transport tab for buses, ferries, and jeepney routes before you go.' },
+  { icon: 'camera-outline',      title: 'Capture the Moments',    sub: 'Attach photos to your activities and relive every adventure through Memories.' },
+  { icon: 'people-outline',      title: 'Travel with Friends',    sub: 'Add your group size when creating a trip to better plan your budget per person.' },
+];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -206,6 +219,8 @@ export default function DashboardScreen({ navigation }) {
   const [showNotif, setShowNotif]         = useState(false);
   const [notifRead, setNotifRead]         = useState(false);
   const [notifPrefs, setNotifPrefs]       = useState({ trip: true, budget: true });
+  const [tipIndex, setTipIndex]           = useState(0);
+  const tipOpacity                        = useRef(new Animated.Value(1)).current;
 
   useFocusEffect(useCallback(() => {
     let mounted = true;
@@ -318,6 +333,23 @@ export default function DashboardScreen({ navigation }) {
     return () => { mounted = false; };
   }, []));
 
+  // Rotate mascot tip every 4 seconds with a fade transition
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Animated.timing(tipOpacity, {
+        toValue: 0, duration: 300, useNativeDriver: true,
+      }).start(() => {
+        setTipIndex(i => (i + 1) % MASCOT_TIPS.length);
+        Animated.timing(tipOpacity, {
+          toValue: 1, duration: 300, useNativeDriver: true,
+        }).start();
+      });
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [tipOpacity]);
+
+  const currentTip = MASCOT_TIPS[tipIndex];
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 18) return 'Magandang gabi,';
@@ -368,21 +400,15 @@ export default function DashboardScreen({ navigation }) {
               <Text style={styles.username}>{userName}! ✦</Text>
             </View>
             <View style={styles.heroBottom}>
-              <View style={styles.itineraryCard}>
+              <Animated.View style={[styles.itineraryCard, { opacity: tipOpacity }]}>
                 <View style={styles.itineraryIconBg}>
-                  <Ionicons
-                    name="list-outline"
-                    size={s(16)}
-                    color={Colors.primary}
-                  />
+                  <Ionicons name={currentTip.icon} size={s(16)} color={Colors.primary} />
                 </View>
                 <View style={styles.itineraryTexts}>
-                  <Text style={styles.itineraryTitle}>Itinerary First</Text>
-                  <Text style={styles.itinerarySub}>
-                    Plan your days around must-visit spots, food stops, and practical travel tips.
-                  </Text>
+                  <Text style={styles.itineraryTitle}>{currentTip.title}</Text>
+                  <Text style={styles.itinerarySub}>{currentTip.sub}</Text>
                 </View>
-              </View>
+              </Animated.View>
             </View>
           </View>
 
