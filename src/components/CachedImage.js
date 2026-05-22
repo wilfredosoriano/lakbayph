@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Image, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { getCachedUri, downloadAndCache } from '../utils/imageCache';
-import { PLACE_IMAGES } from '../data/placeImages';
 
 export default function CachedImage({ placeId, uri, style, resizeMode = 'cover', resizeMethod = 'resize', placeholder }) {
-  const localAsset = placeId ? PLACE_IMAGES[placeId] : null;
-
-  // Hooks must always be called — skip async work when a local asset exists
   const [resolvedUri, setResolvedUri] = useState(null);
-  const [loading, setLoading]         = useState(!localAsset);
+  const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState(false);
 
   useEffect(() => {
-    if (localAsset) return; // bundled image — no network needed
-
     let cancelled = false;
 
     async function resolve() {
@@ -28,11 +22,7 @@ export default function CachedImage({ placeId, uri, style, resizeMode = 'cover',
 
     resolve();
     return () => { cancelled = true; };
-  }, [placeId, uri, localAsset]);
-
-  if (localAsset) {
-    return <Image source={localAsset} style={style} resizeMode={resizeMode} resizeMethod={resizeMethod} />;
-  }
+  }, [placeId, uri]);
 
   if (loading) {
     return (
